@@ -1,0 +1,58 @@
+
+
+* INSTALL INSTRUCTIONS
+
+  mkdir airquality
+  cd airquality
+  sudo apt-get install python-virtualenv  # if virtualenv not installed	
+  virtualenv .
+  source bin/activate
+  git clone https://github.com/johnsonc/airquality.git
+  cd indiaspend
+  sudo bash dependencies.sh  # run as root to install deps
+  pip install -r requirements.txt 
+  
+
+* Run
+  python manage.py runserver  
+
+
+
+* DEPLOY
+  
+  If you want to deploy, follow intial setup steps from /srv/
+  the folder structure should look like:
+  /srv/AirQualityInitiative
+  
+  Clean room practice: 
+  To create a clean separation and record of threads, processes and system resource usage, 
+  we create a linux user for our process
+
+  sudo useradd -m -d /srv/airquality -U -s /bin/bash airquality
+  sudo apt-get install python-virtualenv  # if virtualenv not installed	
+
+  cd /srv/airquality
+  sudo su airquality
+  virtualenv .
+  source bin/activate
+  git clone https://github.com/johnsonc/airquality.git
+  #git clone https://johnsonc@bitbucket.org/johnsonc/airquality.git
+  cd airquality
+  sudo bash dependencies.sh  # run as root to install deps, you will have to use another login,  user airquality does not have sudo rights
+  pip install -r requirements.txt 
+
+  #Copy the site conf to apache2
+  cp wsgi/pinganalytics.conf /etc/apache2/sites-available/
+  a2ensite pinganalytics
+  sudo service apache2 reload  
+  
+  The site will start on the suburl /airquality
+  and one may test it using:
+  http://<Address>/airquality
+
+  If we want to remove the user after testing  
+  one may remove the user like so:
+
+  userdel airquality 
+  rm -r /srv/airquality
+  
