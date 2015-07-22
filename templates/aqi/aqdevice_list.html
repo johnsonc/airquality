@@ -1,0 +1,47 @@
+{% extends "home.html" %}
+
+{% load leaflet_tags %}
+{% load geojson_tags %}
+
+{% block extra_assets %}
+  {% leaflet_js %}
+  {% leaflet_css %}
+{% endblock %}
+
+
+{% block content %}
+
+<p>
+  <div style="overflow:hidden;">
+    <img src="/static/img/smog2.jpg" alt="" style="margin:-30% 0px -10% 0px;" />
+  </div>
+</p>
+
+
+<div> 
+<script type="text/javascript">
+    var collection = {{ aqdevice_list|geojsonfeature|safe }};
+    function map_init(map, options) {
+    L.geoJson(collection).addTo(map);
+    }
+  </script>
+  
+  {% leaflet_map "spots" callback="window.map_init" %}
+
+</div>
+
+
+<p class="todo">
+{% for aqdevice in aqdevice_list %}
+  <h2><a href="/device/{{ aqdevice.id }}">{{ aqdevice.title }}</a></h2>
+  <p>
+    Created on:
+    {{ aqdevice.created_on }} 
+  </p>
+{% endfor %}
+  
+
+
+</p>
+
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "home.html" %}
+
+{% block content %}
+
+<p>
+  <div style="overflow:hidden;">
+    <img src="/static/img/smog2.jpg" alt="" style="margin:-30% 0px -10% 0px;" />
+  </div>
+</p>
+
+
+<p class="row todo">
+
+
+
+
+<div class="todo">
+  <div class="todo-search">
+    <h1 >{{ aqdevice.title }}</h1>
+    
+  </div>
+  <ul>
+    <li class="">
+      <div class="todo-icon "></div>
+      <div class="todo-content">
+        <h4 class="todo-name">
+	  Created:     
+        </h4>
+	<h5>{{ aqdevice.created_on }}<h5>
+      </div>
+    </li>
+
+    <li class="">
+      <div class="todo-icon "></div>
+      <div class="todo-content">
+        <h4 class="todo-name">
+	  Description:     
+        </h4>
+	<h5>{{ aqdevice.desc }}<h5>
+      </div>
+    </li>
+
+    <li class="">
+      <div class="todo-icon "></div>
+      <div class="todo-content">
+        <h4 class="todo-name">
+	  ID:     
+        </h4>
+	<h5>{{ aqdevice.id }}<h5>
+      </div>
+    </li>
+
+
+    <li class="">
+      <div class="todo-icon "></div>
+      <div class="todo-content">
+        <h4 class="todo-name">
+	  IMEI:     
+        </h4>
+	<h5>{{ aqdevice.imei }}<h5>
+      </div>
+    </li>
+
+    <li class="">
+      <div class="todo-icon "></div>
+      <div class="todo-content">
+        <h4 class="todo-name">
+	  URL:     
+        </h4>
+	<h5>{{ aqdevice.url }}<h5>
+      </div>
+    </li>
+
+    <li class="">
+      <div class="todo-icon "></div>
+      <div class="todo-content">
+        <h4 class="todo-name">
+	  Location
+        </h4>
+	<h5>{{ aqdevice.lat }}, {{ aqdevice.lon }} </h5>
+      </div>
+    </li>
+
+  </ul>
+</div>
+
+
+
+{% endblock %}
+
+
