@@ -1,6 +1,7 @@
 from django.db import models
 from djangotoolbox.fields import ListField, DictField
 from djgeojson.fields import PointField
+import datetime
 
 class AQDevice(models.Model):
     #simpleid = models.CharField(max_length=512)
@@ -16,7 +17,6 @@ class AQDevice(models.Model):
     
     class Meta:
         ordering = ('created_on',)
-
 
 
 class AQFeed(models.Model):
