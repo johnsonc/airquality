@@ -1,0 +1,32 @@
+<VirtualHost *:80>
+    #change to your server 
+    ServerName 52.2.55.100  
+    ServerAlias 52.2.55.100   
+    # add admin
+    ServerAdmin jc@therateof.com
+
+    <Location />
+        Options -Indexes
+    </Location>
+
+    <Directory /srv/pingapi/pingapi>
+        Order deny,allow
+        Require all granted
+    </Directory>
+
+
+   # Alias /static      /home/johnny/play/collected-static
+   # Alias /favicon.ico /home/johnny/play/static/favicon.ico
+   # Alias /media       /home/johnny/play/media
+   # Alias /admin/media /home/johnny/play/django/django/contrib/admin/medi\
+
+    WSGIScriptAlias /analytics  /srv/pingapi/pingapi/wsgi/django.wsgi
+
+    WSGIDaemonProcess pingapi user=pingapi group=pingapi threads=16 python-path=/srv/pingapi/lib/python2.7/site-packages/
+    WSGIProcessGroup pingapi
+    WSGIPassAuthorization On
+    LogLevel warn
+    ErrorLog /var/log/apache2/analytics-py-errors.log
+    CustomLog /var/log/apache2/analytics-py.log combined
+    ServerSignature Off
+</VirtualHost>
