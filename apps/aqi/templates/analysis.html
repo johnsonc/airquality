@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="filter.css" />
+<body>
+	<span>
+		<h1>Twisters</h1>
+		
+		<span id="instructions">
+			Click map to zoom. Click and drag histograms to filter the datasets.
+		</span>
+	</span>
+
+	<span id='about'>
+		<div>
+			<a class= "blacklink" href="http://www.urbansensors.net/blog-post">
+				about</a> |
+		</div>
+	</span>
+
+	<div id="charts">
+		<div id="map" class="display"></div>
+
+		<div id="width-chart" class="bChart display">
+			<div class="title">PM 10</div>
+		</div>
+
+		<div id="length-chart" class="bChart display">
+			<div class="title">PM 2.5</div>
+		</div>
+
+		<div id="inj-chart" class="bChart display">
+			<div class="title">Temperature</div>
+		</div>
+
+		<div id="fscale-chart" class="bChart display">
+			<div class="title">Humidity</div>
+		</div>
+
+		<div id="year-chart" class="bChart display">
+			<div class="title">Year</div>
+		</div>
+
+		<span class='textBlock' id='leftText'>
+			<div class='stat' id='num'></div>
+		</br>
+			tornadoes
+		</br>
+			<div class='stat' id='miles'></div>
+		</br>
+			miles 
+		</br>
+			<div class='stat' id='inj'></div>
+		</br>
+			injured
+		</span>
+
+		<div class="cChart display">
+			<div class="title">Hour</div>
+		</div>
+
+		<div class="cChart display">
+			<div class="title">Month</div>
+		</div>
+
+		<div class="cChart display">
+			<div class="title">Direction</div>
+		</div>
+
+		<span class='textBlock' id='rightText'>
+		<div id='faq' class='title'>FAQ</div>
+			Each line represents a single tornado.
+		<div class='lineBreak'></div>
+			Line length and width are proportional to the tornado's; opacity and color to wind speed.
+		<div class='lineBreak'></div>
+			<a class= "blacklink" href="http://www.spc.noaa.gov/wcm/">NOAA</a> 
+			only collects start and end locations - tornadoes do not actually travel in perfectly straight lines. 
+		<div class='lineBreak'></div>
+			Questions? Comments? 
+			<a class= "blacklink" href="mailto:johnsonchetty@gmail.com">johnsonchetty@gmail.com</a>
+	</div>
+
+</body>
+
+<script src="lib/d3.js"></script>
+<script src="lib/topojson.v1.js"></script>
+<script src="lib/queue.js"></script>
+<script src="lib/crossfilter.js"></script>
+<script src="barChart.js"></script>
+<script src="circleChart.js"></script>
+<script src="drawMap.js"></script>
+
+</html>

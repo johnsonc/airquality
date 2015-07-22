@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+{% load leaflet_tags %}
+
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    {% leaflet_js %}
+    {% leaflet_css %}
+
+    <meta name="viewport" content="width=device-width">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title> IndiaSpend AQI Portal</title>
+
+    <style>
+      @import url("http://fonts.googleapis.com/css?family=Lato:400,700,900,400italic");
+    </style>
+    <!--<link rel="stylesheet" type="text/css" href="/static/css/flat-ui.css" /> -->
+    <link rel="stylesheet" href="/static/css/flat-ui-drum.css" type="text/css">
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse">
+      <div class="navbar-inner navbar-fixed-top">
+	<div class="container">
+	  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+	  </a>
+
+	  <a class="brand" href="/"> IndiaSpend</a>
+	  <ul class="nav">
+
+	    <ul class="nav pull-right"><li class="divider-vertical"></li></ul>
+            <li><a href="/view-devices/">View Devices</a></li>
+            <li><a href="/analysis">Analysis</a></li>
+	  </ul>
+	  <div class="nav-collapse">
+            <div class="pull-right">
+              <a class="btn btn-small btn-warning no-pjax" href="/register-device/">Register Device</a>
+            </div>       
+	    <ul class="nav pull-right"><li class="divider-vertical"></li></ul>	   	    
+	  </div>
+	</div>
+      </div>
+    </div>
+</div>
+
+<div class="container main">
+  
+  
+  <h1></h1>
+</div>
+
+<div class="container main">
+  <div class="row">
+
+    <div class="span12 middle">            
+
+      
+      {% block content%}
+      
+      {% endblock %}
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <div class="container">
+    <p>
+      <span class="separator">|</span>
+
+      <span class="separator">|</span>
+    </p>
+  </div>
+</footer>
+
+
+</body>
+
+</html>
