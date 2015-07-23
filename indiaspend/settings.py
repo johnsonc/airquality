@@ -144,6 +144,7 @@ INSTALLED_APPS = (
     #'bootstrapform',
     'rest_framework',
     'apps.aqi',
+    #'account',
     'djgeojson',
     'leaflet',
     'indiaspend',
