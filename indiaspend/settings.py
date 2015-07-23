@@ -68,7 +68,7 @@ MEDIA_URL = ''
 STATIC_ROOT = join(PROJECT_ROOT, 'static')
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = '/airquality/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -104,8 +104,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "account.middleware.LocaleMiddleware",
-    "account.middleware.TimezoneMiddleware",
+    #"account.middleware.LocaleMiddleware",
+    #"account.middleware.TimezoneMiddleware",
 )
 
 ROOT_URLCONF = 'indiaspend.urls'
@@ -124,8 +124,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
-    'pinax_theme_bootstrap.context_processors.theme',
-    "account.context_processors.account",
+    #'pinax_theme_bootstrap.context_processors.theme',
+    #"account.context_processors.account",
 )
 
 
@@ -140,13 +140,13 @@ INSTALLED_APPS = (
      'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
      'django.contrib.admindocs',
-    'pinax_theme_bootstrap',
-    'bootstrapform',
+    #'pinax_theme_bootstrap',
+    #'bootstrapform',
     'rest_framework',
-    'apps.aqi',
-    'account',
     'djgeojson',
     'leaflet',
+    'indiaspend',
+    'apps.aqi',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
