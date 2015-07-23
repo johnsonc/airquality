@@ -2,7 +2,7 @@ import os
 import sys
 import site
 
-project_module = 'airquality'
+project_module = 'indiaspend'
 
 root_dir = os.path.normpath(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 

@@ -13,7 +13,7 @@
 
 <p>
   <div style="overflow:hidden;">
-    <img src="/static/img/smog2.jpg" alt="" style="margin:-30% 0px -10% 0px;" />
+    <img src="/airquality/static/img/smog2.jpg" alt="" style="margin:-30% 0px -10% 0px;" />
   </div>
 </p>
 
@@ -33,7 +33,7 @@
 
 <p class="todo">
 {% for aqdevice in aqdevice_list %}
-  <h2><a href="/device/{{ aqdevice.id }}">{{ aqdevice.title }}</a></h2>
+  <h2><a href="/airquality/device/{{ aqdevice.id }}">{{ aqdevice.title }}</a></h2>
   <p>
     Created on:
     {{ aqdevice.created_on }} 
