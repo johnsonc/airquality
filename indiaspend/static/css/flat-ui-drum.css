@@ -8825,7 +8825,7 @@ body.vjs-full-window {
 .navbar a.btn {padding:3px 10px !important; margin:7px 3px;}
 .navbar-search .btn {display:none;}
 a.brand {
-    background:url('/static/img/is-logo.png') no-repeat; background-position:5px 6px;
+    background:url('/airquality/static/img/is-logo.png') no-repeat; background-position:5px 6px;
     text-indent:13px; margin-left:-3px !important;
     font-family: 'Lato', cursive;
     font-size:28px !important;
