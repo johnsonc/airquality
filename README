@@ -1,6 +1,6 @@
 
 
-* INSTALL INSTRUCTIONS
+* INSTALL INSTRUCTIONS  
 
   mkdir airquality
   cd airquality
@@ -8,7 +8,7 @@
   virtualenv .
   source bin/activate
   git clone https://github.com/johnsonc/airquality.git
-  cd indiaspend
+  cd airquality
   sudo bash dependencies.sh  # run as root to install deps
   pip install -r requirements.txt 
   
@@ -17,12 +17,11 @@
   python manage.py runserver  
 
 
-
 * DEPLOY
   
   If you want to deploy, follow intial setup steps from /srv/
   the folder structure should look like:
-  /srv/AirQualityInitiative
+  /srv/airquality/airquality
   
   Clean room practice: 
   To create a clean separation and record of threads, processes and system resource usage, 
@@ -42,8 +41,8 @@
   pip install -r requirements.txt 
 
   #Copy the site conf to apache2
-  cp wsgi/pinganalytics.conf /etc/apache2/sites-available/
-  a2ensite pinganalytics
+  cp wsgi/airquality.conf /etc/apache2/sites-available/
+  a2ensite airquality
   sudo service apache2 reload  
   
   The site will start on the suburl /airquality
