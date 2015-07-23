@@ -143,6 +143,7 @@ INSTALLED_APPS = (
     #'pinax_theme_bootstrap',
     #'bootstrapform',
     'rest_framework',
+    'apps.aqi',
     'djgeojson',
     'leaflet',
     'indiaspend',
