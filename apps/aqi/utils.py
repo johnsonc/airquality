@@ -51,9 +51,10 @@ def do(num=10, start_time='2015-06-22-12-23', end_time='2015-07-22-16-00'):
         aqd.imei=imei
         aqd.title="IndiaSpend Air Quality Device " + str(i + 1)
         aqd.url = name_prefix + str(i)
+        url = aqd.url
         aqd.desc = "Batch: " + str(1)  + ". Given to XYZ Inc. "
         aqd.lat = lat
         aqd.lon = lon
         aqd.geom = {u'type': u'Point', u'coordinates': [lon,lat]}
         aqd.save()
-        #generate_random_data(start_time,end_time,imei, url, lat, lon)
+        generate_random_data(start_time,end_time,imei, url, lat, lon)

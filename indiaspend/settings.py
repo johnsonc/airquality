@@ -68,7 +68,7 @@ MEDIA_URL = ''
 STATIC_ROOT = join(PROJECT_ROOT, 'static')
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = '/airquality/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -147,6 +147,8 @@ INSTALLED_APPS = (
     #'account',
     'djgeojson',
     'leaflet',
+    'indiaspend',
+    'apps.aqi',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
