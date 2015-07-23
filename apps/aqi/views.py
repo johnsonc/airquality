@@ -24,6 +24,7 @@ class JSONResponse(HttpResponse):
 
 
 @csrf_exempt
+@api_view(['GET', 'POST'])
 def aqdevice_list(request):
     """
     List all devices, or create a new device.
@@ -31,18 +32,19 @@ def aqdevice_list(request):
     if request.method == 'GET':
         aqdevices = AQDevice.objects.all()
         serializer = AQDeviceSerializer(aqdevices, many=True)
-        return JSONResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = AQDeviceSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return JSONResponse(serializer.data, status=201)
-        return JSONResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
 
 @csrf_exempt
+@api_view(['GET', 'PUT'])
 def aqdevice_detail(request, pk):
     """
     Retrieve, update or delete an AQDevice
@@ -50,23 +52,23 @@ def aqdevice_detail(request, pk):
     try:
         aqdevice = AQDevice.objects.get(pk=pk)
     except AQDevice.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=404)
 
     if request.method == 'GET':
         serializer = AQDeviceSerializer(aqdevice)
-        return JSONResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
         serializer = AQDeviceSerializer(aqdevice, data=data)
         if serializer.is_valid():
             serializer.save()
-            return JSONResponse(serializer.data)
-        return JSONResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
     elif request.method == 'DELETE':
         aqdevice.delete()
-        return HttpResponse(status=204)
+        return Response(status=204)
 
 
 @api_view(['GET', 'POST'])
@@ -75,7 +77,7 @@ def aqfeed_list(request):
     List all data points or create a new one.
     """
     if request.method == 'GET':
-        aqfeeds = AQFeed.objects.all()
+        aqfeeds = AQFeed.objects.all()[0:20]
         serializer = AQFeedSerializer(aqfeeds, many=True)
         return Response(serializer.data)
 
@@ -87,7 +89,7 @@ def aqfeed_list(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT'])
 def aqfeed_detail(request, pk):
     """
     Retrieve, update or delete a feed instance.
