@@ -20,7 +20,7 @@ class AQDevice(models.Model):
 
 
 class AQFeed(models.Model):
-    name = models.CharField(max_length=128)    
+    name = models.CharField(max_length=128, null=True, blank=True )   
     imei = models.CharField(max_length=128)    
     humidity =  models.FloatField(null=True, blank=True )
     temperature =  models.FloatField(null=True, blank=True)
@@ -30,6 +30,7 @@ class AQFeed(models.Model):
     count_small =  models.FloatField(null=True, blank=True)    
     lat =  models.CharField(max_length=24,  null=True, blank=True)
     lon =  models.CharField(max_length=24, null=True, blank=True)
+    ip =  models.CharField(max_length=28, null=True, blank=True) # include IPv6
     created_on = models.DateTimeField(blank=True, null=True)    
 
     class Meta:

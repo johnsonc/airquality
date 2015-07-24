@@ -7,7 +7,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from models import AQDevice, AQFeed
 from serializers import AQDeviceSerializer, AQFeedSerializer
-
+import datetime
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -70,7 +70,7 @@ def aqdevice_detail(request, pk):
         aqdevice.delete()
         return Response(status=204)
 
-
+@csrf_exempt
 @api_view(['GET', 'POST'])
 def aqfeed_list(request):
     """
@@ -88,7 +88,7 @@ def aqfeed_list(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@csrf_exempt
 @api_view(['GET', 'PUT'])
 def aqfeed_detail(request, pk):
     """
@@ -100,8 +100,14 @@ def aqfeed_detail(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = AQFeedSerializer(aqfeed)
-        return Response(serializer.data)
+        serializer = AQFeedSerializer(aqfeed, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        #serializer = AQFeedSerializer(aqfeed)
+        #return Response(serializer.data)
 
     elif request.method == 'PUT':
         serializer = AQFeedSerializer(aqfeed, data=request.data)
@@ -113,3 +119,42 @@ def aqfeed_detail(request, pk):
     elif request.method == 'DELETE':
         aqfeed.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def aqdatapoint(request):
+    """
+    Add a AQ data point via GET
+    """
+    if request.method == "GET":        
+        #import pdb; pdb.set_trace()
+        d={}
+        d['imei'] = request.GET['imei']
+        d['humidity'] = request.GET['h']
+        d['temperature'] = request.GET['t']
+        d['pm10'] = request.GET['pm10']
+        d['pm25'] = request.GET['pm25']
+        d['count_large'] = request.GET['cl']
+        d['count_small'] = request.GET['cs']        
+        try:
+            d['ip'] = request.GET['ip']
+        except:
+            pass
+        d['created_on'] = datetime.datetime.now()
+
+        serializer = AQFeedSerializer(data=d)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['GET'])
+def aqdatapointintime(request, start_time, end_time):
+    """
+    Add a AQ data point via GET
+    """
+    if request.method == 'GET':
+        aqdevices = AQDevice.objects.filter()
+        serializer = AQDeviceSerializer(aqdevices, many=True)
+        return Response(serializer.data)
