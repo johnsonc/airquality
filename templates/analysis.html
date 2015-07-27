@@ -3,6 +3,7 @@
 {% load static from staticfiles %}
 <link rel="stylesheet" href={% static "/static/css/filter.css" %} />
 <link rel="stylesheet" href={% static "/static/css/dc.css" %} />
+<link rel="stylesheet" href={% static "/static/leaflet/leaflet.css" %} />
 <body>
 	<span id="header">
 	  <h1>IndiaSpend Air Quality Initiative</h1>
@@ -25,19 +26,15 @@
 	</span>
 
 		<div id="charts">	  
+		  <!-- <div id="map" class="display"></div> -->
+		  <div id="mappa" class="display"></div> 		  
 
-		  <div id="map" class="display"></div>
-
-
-		  
 		  <div id="dashboard">
 		    <div id="chart-line-concperday"></div> <br/>
 		    <div id="conc-fluctuation-chart"></div> <br/>
 		    <div id="temp-fluctuation-chart"></div> <br/>
 		    <div id="hum-fluctuation-chart"></div> <br/>
 		  </div> 
-
-
 
 		<div id="pm10-chart" class="bChart display">
 			<div class="title">PM 10</div>
@@ -101,10 +98,12 @@
 		<div class='lineBreak'></div>
 			Questions? Comments? 
 			<a class= "blacklink" href="mailto:johnsonchetty@gmail.com">johnsonchetty@gmail.com</a>
+		  <div id="map2" class="display"></div>
+
 	</div>
 
 </body>
-
+<script src={% static "/static/js/lib/colorbrewer.js" %}></script>
 <script src={% static "/static/js/lib/d3.js" %}></script>
 <script src={% static "/static/js/lib/topojson.v1.js" %}></script>
 <script src={% static "/static/js/lib/queue.js" %}></script>
@@ -113,5 +112,7 @@
 <script src={% static "/static/js/elems/barChart.js"%}></script>
 <script src={% static "/static/js/elems/circleChart.js"%}></script>
 <script src={% static "/static/js/drawMap2.js" %}></script>
+<script src={% static "/static/leaflet/leaflet.js" %}></script>
+<script src={% static "/static/js/india-map.js" %}></script>
 
 </html>
