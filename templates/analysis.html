@@ -1,39 +1,66 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<link rel="stylesheet" href="/static/css/filter.css" />
+{% load static from staticfiles %}
+<link rel="stylesheet" href={% static "/static/css/filter.css" %} />
+<link rel="stylesheet" href={% static "/static/css/dc.css" %} />
 <body>
-	<span>
-		<h1>Twisters</h1>
-		
-		<span id="instructions">
+	<span id="header">
+	  <h1>IndiaSpend Air Quality Initiative</h1>
+	  
+	  <span id="instructions">
 			Click map to zoom. Click and drag histograms to filter the datasets.
-		</span>
+	  </span>
 	</span>
 
 	<span id='about'>
-		<div>
-			<a class= "blacklink" href="http://www.urbansensors.net/blog-post">
-				about</a> |
-		</div>
+	  <div>
+	    <a class= "blacklink" href="http://www.urbansensors.net/blog-post">
+	      about</a> |
+	  </div>
+	  <div id="banner">
+	    Select a device:
+	    <select id="devicePicker">
+	    </select>
+	  </div>
 	</span>
 
-	<div id="charts">
-		<div id="map" class="display"></div>
+		<div id="charts">	  
 
-		<div id="width-chart" class="bChart display">
+		  <div id="map" class="display"></div>
+
+
+		  
+		  <div id="dashboard">
+		    <div id="chart-line-concperday"></div> <br/>
+		    <div id="conc-fluctuation-chart"></div> <br/>
+		    <div id="temp-fluctuation-chart"></div> <br/>
+		    <div id="hum-fluctuation-chart"></div> <br/>
+		  </div> 
+
+
+
+		<div id="pm10-chart" class="bChart display">
 			<div class="title">PM 10</div>
 		</div>
 
-		<div id="length-chart" class="bChart display">
+		<div id="pm25-chart" class="bChart display">
 			<div class="title">PM 2.5</div>
 		</div>
 
-		<div id="inj-chart" class="bChart display">
+		<div id="temp-chart" class="bChart display">
 			<div class="title">Temperature</div>
 		</div>
 
-		<div id="fscale-chart" class="bChart display">
+		<div id="humidity-chart" class="bChart display">
 			<div class="title">Humidity</div>
+		</div>
+
+		<div id="cs-chart" class="bChart display">
+			<div class="title">Small particle count</div>
+		</div>
+
+		<div id="cl-chart" class="bChart display">
+			<div class="title">Large particle count</div>
 		</div>
 
 		<div id="year-chart" class="bChart display">
@@ -62,9 +89,6 @@
 			<div class="title">Month</div>
 		</div>
 
-		<div class="cChart display">
-			<div class="title">Direction</div>
-		</div>
 
 		<span class='textBlock' id='rightText'>
 		<div id='faq' class='title'>FAQ</div>
@@ -81,12 +105,13 @@
 
 </body>
 
-<script src="/static/js/lib/d3.js"></script>
-<script src="/static/js/lib/topojson.v1.js"></script>
-<script src="/static/js/lib/queue.js"></script>
-<script src="/static/js/lib/crossfilter.js"></script>
-<script src="/static/js/elems/barChart.js"></script>
-<script src="/static/js/elems/circleChart.js"></script>
-<script src="/static/js/drawMap.js"></script>
+<script src={% static "/static/js/lib/d3.js" %}></script>
+<script src={% static "/static/js/lib/topojson.v1.js" %}></script>
+<script src={% static "/static/js/lib/queue.js" %}></script>
+<script src={% static "/static/js/lib/crossfilter.js"%}></script>
+<script src={% static "/static/js/lib/dc.js" %}></script>
+<script src={% static "/static/js/elems/barChart.js"%}></script>
+<script src={% static "/static/js/elems/circleChart.js"%}></script>
+<script src={% static "/static/js/drawMap2.js" %}></script>
 
 </html>

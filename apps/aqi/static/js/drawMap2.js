@@ -83,11 +83,14 @@ queue()
 
 function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, instategram, datapoints, aqdevices){
     picker = d3.select("#devicePicker")
-    var devices =  picker.selectAll("option")
+    devices =  picker.selectAll("option")
         .data(aqdevices)
-        .attr("value", function(d){ return d.imei;})
-        .text(function (d) { return d.title;} )
-	
+        .enter()
+        .append("option")
+        .attr("value", function(d){ return d['imei'];})
+        .text(function (d) { return d['title'];})        
+
+    datapoint = datapoints;
 
     datapoints.forEach(function(t,i){
 	t['time'] = aqparseDate(t['created_on']);
@@ -95,7 +98,6 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 	t['x'] = proj([t.lon, t.lat])[0];
 	t['y'] = proj([t.lon, t.lat])[1];	
     })
-    
         //draw tornados
 	tornados.forEach(function(t, i){
 		['inj', 'fat', 'elat', 'elon', 'slat', 'slon', 'fscale', 'length', 'width'].forEach(function(field){
@@ -114,7 +116,6 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 
 	//remove those w/o angle
 	tornados = tornados.filter(function(d){ return d.angle != 180; });
-
 	vtornados = tornados.filter(function(d){ return d.length > 20; });
 
 	widthScale.range([.25, 2.6])
@@ -164,7 +165,7 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 		});
 
 
-	lines = g.selectAll("line").data(vtornados).enter().append("line")
+               lines = g.selectAll("line").data(vtornados).enter().append("line")
 			.attr("x1", p('x1'))
 			.attr("y1", p('y1'))
 			.attr("x2", p('x1'))
@@ -183,91 +184,103 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 
 	tornadoCF = crossfilter(tornados);
     
-        datapointsCF = crossfilter(datapoints);
-	all = tornadoCF.groupAll();
+        datapointCF = crossfilter(datapoints);
+	all = datapointCF.groupAll();
 
-	tornadoIndex = tornadoCF.dimension(function(d){ return d.index; });
-	tornadoIndexs = tornadoIndex.group();
+	datapointIndex = datapointCF.dimension(function(d){ return d.index; });
+	datapointIndexs = datapointIndex.group();
 
-	state = tornadoCF.dimension(function(d){ return d.states; });
-	states = state.group();
+	//state = datapointCF.dimension(function(d){ return d.states; });
+	//states = state.group();
 
-	fscale = tornadoCF.dimension(function(d){ return d.fscale; });
-	fscales = fscale.group();
+	temp = datapointCF.dimension(function(d){ return d.temperature; });
+	temps = temp.group();
 
-	hour = tornadoCF.dimension(function(d){ return d.time.getHours(); });
+	humidity = datapointCF.dimension(function(d){ return d.humidity; });
+	hums = humidity.group();
+
+	pm10 = datapointCF.dimension(function(d){ return d.pm10; });
+	pm10s = pm10.group();
+
+	pm25 = datapointCF.dimension(function(d){ return d.pm25; });
+	pm25s = pm25.group();
+
+	small_particle_count = datapointCF.dimension(function(d){ return d.count_small; });
+	small_particle_counts = small_particle_count.group();
+
+        large_particle_count = datapointCF.dimension(function(d){ return d.count_large; });
+	large_particle_counts = large_particle_count.group();
+
+	hour = datapointCF.dimension(function(d){ return d.time.getHours(); });
 	hours = hour.group();
 
-	month = tornadoCF.dimension(function(d){ return d.time.getMonth(); });
+	month = datapointCF.dimension(function(d){ return d.time.getMonth(); });
 	months = month.group();
 
-	year = tornadoCF.dimension(function(d){ return Math.floor(d.time.getFullYear()/1)*1; });
+	year = datapointCF.dimension(function(d){ return Math.floor(d.time.getFullYear()/1)*1; });
 	years = year.group();
-
-	var Wlb = 2.3;
-	tWidth = tornadoCF.dimension(function(d){ return d.width; });
-	widthLogs = tWidth.group(function(d, i){ 
-	 return Math.pow(Wlb, Math.floor(Math.log(d + 1)/Math.log(Wlb))); });	
-
-	var Llb = 1.8;
-	length = tornadoCF.dimension(function(d){ return d.length; });
-	//lengths = length.group(function(d, i){ return d3.round(d, -1); });
-	lengthLogs = length.group(function(d, i){ 
-	 return Math.pow(Llb, Math.floor(Math.log(d + 1)/Math.log(Llb))); });
-	
-	var Ilb = 2;
-	injury = tornadoCF.dimension(function(d){ return d.inj; });
-	injurys = injury.group(function(d, i){ 
-	 return Math.pow(Ilb, Math.floor(Math.log(d + 1)/Math.log(Ilb))); });
-
-	angle = tornadoCF.dimension(function(d){ return d.angle; });
-	angles = angle.group(function(d, i){ return d3.round(d); });
 
 	var bCharts = [
 		barChart()
-			.dimension(fscale)
-			.group(fscales)
+			.dimension(temp)
+			.group(temps)
 			.x(d3.scale.linear()
-				.domain([0, 5.8])
-				.rangeRound([0, 130]))
+				.domain([0, 100])
+			   .rangeRound([0, 130]))
+			.barWidth(10),
+	    /*
+		barChart()
+			.dimension(humidity)
+			.group(hums)
+			.x(d3.scale.linear()
+			   .domain([0, 100])
+		           .rangeRound([0, 130]))
+			.barWidth(10),
+
+
+		barChart()
+			.dimension(pm10)
+			.group(pm10s)
+			.x(d3.scale.linear()
+			   .domain([0, 100])
+		           .rangeRound([0, 130]))
+			.barWidth(10),
+
+
+		barChart()
+			.dimension(pm25)
+			.group(pm25s)
+			.x(d3.scale.linear()
+			   .domain([0, 150])
+		           .rangeRound([0, 200]))
 			.barWidth(10),
 
 		barChart()
-			.dimension(tWidth)
-			.group(widthLogs)
-			.tickFormat(function(d){ return d3.format('.0f')(d-1); }, 3)
-			.x(d3.scale.log().base([Wlb])
-				.domain([1, 70 +  d3.max(widthLogs.all().map(function(d, i){ return d.key; }))])
-				.rangeRound([0, 190]))
+			.dimension(small_particle_count)
+			.group(small_particle_counts)
+			.x(d3.scale.linear()
+			   .domain([0, 100])
+		           .rangeRound([0, 130]))
 			.barWidth(10),
 
 		barChart()
-			.dimension(length)
-			.group(lengthLogs)
-			.tickFormat(function(d){ return d3.format('.0f')(d-1); })			
-			.x(d3.scale.log().base([Llb])
-				.domain([1, 60 + d3.max(lengthLogs.all().map(function(d, i){ return d.key; }))])
-				.rangeRound([0, 190]))
+			.dimension(large_particle_count)
+			.group(large_particle_counts)
+			.x(d3.scale.linear()
+			   .domain([0, 100])
+		           .rangeRound([0, 130]))
 			.barWidth(10),
-
-		barChart()
-			.dimension(injury)
-			.group(injurys)
-			.tickFormat(function(d){ return d3.format('.0f')(d-1); })			
-			.x(d3.scale.log().base([Ilb])
-				.domain([1, 500+  d3.max(injurys.all().map(function(d, i){ return d.key; }))])
-				.rangeRound([0, 200]))
-			.barWidth(10),	
 
 		barChart()
 			.dimension(year)
 			.group(years)
 			.tickFormat(d3.format(''))
 			.x(d3.scale.linear()
-				.domain([1950, 2013])
-				.rangeRound([0,210]))
-			.barWidth(1)
-		]
+				.domain([2014, 2020])
+			   .rangeRound([0,210]))
+			   .barWidth(1),
+			   */
+	];
 
 	cCharts = [
 		circleChart()
@@ -280,33 +293,27 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 			.group(months)
 			.label(['JAN', 'APR', 'JUL', 'OCT']),		
 
-		circleChart()
-			.dimension(angle)
-			.group(angles)
-			.label(['N', 'E', 'S', 'W'])
 	];
 
 	d3.selectAll("#total")
-			.text(tornadoCF.size());
+			.text(datapointCF.size());
 
 	function render(method){
 		d3.select(this).call(method);
 	}
 
 	var oldFilterObject = {};
-	tornadoIndexs.all().forEach(function(d){ oldFilterObject[d.key] = d.value; });
+	datapointIndexs.all().forEach(function(d){ oldFilterObject[d.key] = d.value; });
 
 	renderAll = function(){
-		bChart.each(render);
-		cChart.each(render);
-
-		zoomRender = false;
-
-		newFilterObject = {};
-		tornadoIndexs.all().forEach(function(d){ newFilterObject[d.key] = d.value; });
+	    bChart.each(render);
+	    cChart.each(render);
+	    zoomRender = false;
+	    newFilterObject = {};
+	    datapointIndexs.all().forEach(function(d){ newFilterObject[d.key] = d.value; });
 
 		//exit animation
-		lines.filter(function(d){ return oldFilterObject[d.index] > newFilterObject[d.index]; })
+		/*lines.filter(function(d){ return oldFilterObject[d.index] > newFilterObject[d.index]; })
 				.transition().duration(1400)
 					.attr("x1", function(d){ return d.x2; })
 					.attr("y1", function(d){ return d.y2; })
@@ -323,18 +330,21 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 				.transition().duration(1400)
 					.attr("x2", function(d){ return d.x2; })
 					.attr("y2", function(d){ return d.y2; })
+		*/
 
 		oldFilterObject = newFilterObject;
 		
-		// update dealths/distance/ect
-		visible = tornados.filter(function(d){ return newFilterObject[d.index] == 1; });
+		// update humidity/temp, etc
+		visible = datapoints.filter(function(d){ return newFilterObject[d.index] == 1; });
+	        // Cumulative numbers
+	    /*
 		d3.select("#num").text(
 			d3.format(',')(all.value()));
 		d3.select("#miles").text(
 			d3.format(',.0f')(d3.sum(visible.map(function(d, i){ return d.length; }))));
 		d3.select("#inj").text(
 			d3.format(',')(d3.sum(visible.map(function(d, i){ return d.inj; }))));
-
+			*/
 	}
 
 
@@ -360,6 +370,7 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 	renderAll();
 
 	//remove extra width ticks (there is a better way of doing this!)
+    
 	d3.select('#width-chart').selectAll('.major')
 			.filter(function(d, i){ return i % 2; })
 		.selectAll('text')
@@ -368,5 +379,86 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 	d3.select('#inj-chart').selectAll('.major')
 			.filter(function(d, i){ return !(i % 2); })
 		.selectAll('text')
-			.remove();
+			.remove(); 
+    drawCharts();
+                function drawCharts(){
+		    var chartDim = Math.min(document.getElementById('map').clientWidth, window.innerHeight) - 20;	    
+		    var chartWidthDim = Math.min(document.getElementById('map').clientWidth, window.innerHeight ) - 20;
+		    var chartHeightDim =  (window.innerHeight)/6;
+
+
+		ndx = crossfilter(datapoint);
+		dateDim = ndx.dimension(function(d) { return d.time;});
+		var concDim = ndx.dimension(function(d) { return d.count_small; });   
+		var humidityDim = ndx.dimension(function(d) { return d.humidity; });   
+		var tempDim = ndx.dimension(function(d) { return d.temperature; });   
+		var minDate = dateDim.bottom(1)[0].time;
+		var maxDate = dateDim.top(1)[0].time;
+
+		// Charts
+
+		var conclineChart  = dc.lineChart("#chart-line-concperday"); 
+		var concfluctuationChart = dc.barChart('#conc-fluctuation-chart');
+		var tempfluctuationChart = dc.barChart('#temp-fluctuation-chart');
+		var humfluctuationChart = dc.barChart('#hum-fluctuation-chart');
+
+		var dimwidth = chartWidthDim;
+		var dimheight=chartHeightDim;
+
+		totalDim = ndx.dimension(function(d) { return d.count_large; });   
+		var concGroup = dateDim.group().reduceSum(function(d) {return d.concentration;}); 
+		var tempGroup = dateDim.group().reduceSum(function(d) {return d.temperature;}); 
+		var humidityGroup = dateDim.group().reduceSum(function(d) {return d.humidity;}); 
+		    /*
+		var yearDim  = ndx.dimension(function(d) {return +d.Year;});
+		var year_total = yearDim.group().reduceSum(function(d) {return d.count_large;});
+		var yearRingChart   = dc.pieChart("#chart-ring-year");
+		*/
+
+		conclineChart
+		    .width(chartWidthDim).height(chartHeightDim)
+		    .dimension(dateDim)
+		    .group(concGroup)
+		    .x(d3.time.scale().domain([minDate,maxDate]))
+		    .xAxisLabel("Time")
+			.yAxisLabel("PM 10");
+
+		concfluctuationChart
+		    .width(chartWidthDim).height(chartHeightDim)
+		    .dimension(dateDim)
+		    .group(concGroup)
+		    .x(d3.time.scale().domain([minDate,maxDate]))
+		    .xAxisLabel("Time")
+		    .yAxisLabel("PM 2.5");
+
+		tempfluctuationChart
+		    .width(chartWidthDim).height(chartHeightDim)
+		    .dimension(dateDim)
+		    .group(tempGroup)
+		    .x(d3.time.scale().domain([minDate,maxDate]))
+		    .xAxisLabel("Time")
+		    .yAxisLabel("Temperature")
+		    .y(d3.scale.linear().domain([-10, 60]));
+			 
+		humfluctuationChart
+		    .width(chartWidthDim).height(chartHeightDim)
+		    .dimension(dateDim)
+		    .group(humidityGroup)
+		    .x(d3.time.scale().domain([minDate,maxDate]))
+		    .xAxisLabel("Time")
+		    .y(d3.scale.linear().domain([0, 100]))
+		    .yAxisLabel("Humidity");
+
+		dc.renderAll();
+
+	    }
+
 }
+
+    function print_filter(filter){
+		var f=eval(filter);
+		if (typeof(f.length) != "undefined") {}else{}
+		if (typeof(f.top) != "undefined") {f=f.top(Infinity);}else{}
+		if (typeof(f.dimension) != "undefined") {f=f.dimension(function(d) { return "";}).top(Infinity);}else{}
+		console.log(filter+"("+f.length+") = "+JSON.stringify(f).replace("[","[\n\t").replace(/}\,/g,"},\n\t").replace("]","\n]"));
+	    } 

@@ -155,6 +155,34 @@ def aqdatapointintime(request, start_time, end_time):
     Add a AQ data point via GET
     """
     if request.method == 'GET':
-        aqdevices = AQDevice.objects.filter()
-        serializer = AQDeviceSerializer(aqdevices, many=True)
+        try:
+            sd = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
+            ed = datetime.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
+        except:
+            return Response({'error': "Format of date should be YYYY-MM-DDTHH:MM:SS, eg. 2015-06-22T17:03:00"}, status=status.HTTP_400_BAD_REQUEST)
+        aqdatapoints = AQFeed.objects.filter(created_on__gte=sd).filter(created_on__lte=ed)
+        serializer = AQFeedSerializer(aqdatapoints, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['GET'])
+def aqdatapointsfordevice(request, device_imei, start_time, end_time):
+    """
+    Add a AQ data point via GET
+    """
+    if request.method == 'GET':
+        try:
+            aqd = AQDevice.objects.filter(imei=device_imei)
+            if not len(aqd) > 0:
+                return Response({'error': "Device not found"}, status=status.HTTP_400_BAD_REQUEST)                     
+        except:
+            return Response({'error': "Error in finding device. Is the device imei proper or registered?"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            sd = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
+            ed = datetime.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')            
+        except:
+            return Response({'error': "Format of date should be YYYY-MM-DDTHH:MM:SS, eg. 2015-06-22T17:03:00"}, status=status.HTTP_400_BAD_REQUEST)
+        aqdatapoints = AQFeed.objects.filter(imei=device_imei).filter(created_on__gte=sd).filter(created_on__lte=ed)
+        serializer = AQFeedSerializer(aqdatapoints, many=True)
         return Response(serializer.data)
