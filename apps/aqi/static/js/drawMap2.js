@@ -99,7 +99,7 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 	t['y'] = proj([t.lon, t.lat])[1];	
     })
         //draw tornados
-	tornados.forEach(function(t, i){
+	/*tornados.forEach(function(t, i){
 		['inj', 'fat', 'elat', 'elon', 'slat', 'slon', 'fscale', 'length', 'width'].forEach(function(field){
 			t[field] = +t[field];});
 		t['index'] = i;
@@ -181,7 +181,7 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 			.attr("x2", function(d){ return d.x2 })
 			.attr("y2", function(d){ return d.y2; })
 
-
+				*/
 	tornadoCF = crossfilter(tornados);
     
         datapointCF = crossfilter(datapoints);
@@ -228,7 +228,7 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 				.domain([0, 100])
 			   .rangeRound([0, 130]))
 			.barWidth(10),
-	    /*
+	    
 		barChart()
 			.dimension(humidity)
 			.group(hums)
@@ -259,7 +259,7 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 			.dimension(small_particle_count)
 			.group(small_particle_counts)
 			.x(d3.scale.linear()
-			   .domain([0, 100])
+			   .domain([0,100])
 		           .rangeRound([0, 130]))
 			.barWidth(10),
 
@@ -278,8 +278,7 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 			.x(d3.scale.linear()
 				.domain([2014, 2020])
 			   .rangeRound([0,210]))
-			   .barWidth(1),
-			   */
+			   .barWidth(5),			   
 	];
 
 	cCharts = [
@@ -337,14 +336,13 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 		// update humidity/temp, etc
 		visible = datapoints.filter(function(d){ return newFilterObject[d.index] == 1; });
 	        // Cumulative numbers
-	    /*
+	    
 		d3.select("#num").text(
 			d3.format(',')(all.value()));
 		d3.select("#miles").text(
 			d3.format(',.0f')(d3.sum(visible.map(function(d, i){ return d.length; }))));
 		d3.select("#inj").text(
-			d3.format(',')(d3.sum(visible.map(function(d, i){ return d.inj; }))));
-			*/
+			d3.format(',')(d3.sum(visible.map(function(d, i){ return d.inj; }))));			
 	}
 
 
@@ -380,16 +378,21 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 			.filter(function(d, i){ return !(i % 2); })
 		.selectAll('text')
 			.remove(); 
+
+
     drawCharts();
+
+
                 function drawCharts(){
-		    var chartDim = Math.min(document.getElementById('map').clientWidth, window.innerHeight) - 20;	    
-		    var chartWidthDim = Math.min(document.getElementById('map').clientWidth, window.innerHeight ) - 20;
+		    var chartDim = Math.min(document.getElementById('mappa').clientWidth, window.innerHeight) - 20;	    
+		    var chartWidthDim = Math.min(document.getElementById('mappa').clientWidth, window.innerHeight ) - 20;
 		    var chartHeightDim =  (window.innerHeight)/6;
 
 
 		ndx = crossfilter(datapoint);
 		dateDim = ndx.dimension(function(d) { return d.time;});
 		var concDim = ndx.dimension(function(d) { return d.count_small; });   
+		var clDim  = ndx.dimension(function(d) { return d.count_large; });   
 		var humidityDim = ndx.dimension(function(d) { return d.humidity; });   
 		var tempDim = ndx.dimension(function(d) { return d.temperature; });   
 		var minDate = dateDim.bottom(1)[0].time;
@@ -399,21 +402,41 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 
 		var conclineChart  = dc.lineChart("#chart-line-concperday"); 
 		var concfluctuationChart = dc.barChart('#conc-fluctuation-chart');
+		var clChart = dc.barChart('#cl-chart');
 		var tempfluctuationChart = dc.barChart('#temp-fluctuation-chart');
 		var humfluctuationChart = dc.barChart('#hum-fluctuation-chart');
 
-		var dimwidth = chartWidthDim;
-		var dimheight=chartHeightDim;
+		var dimwidth = chartWidthDim+20;
+		var dimheight=chartHeightDim +20;
 
 		totalDim = ndx.dimension(function(d) { return d.count_large; });   
-		var concGroup = dateDim.group().reduceSum(function(d) {return d.concentration;}); 
+		var concGroup = dateDim.group().reduceSum(function(d) {return d.count_small;}); 
 		var tempGroup = dateDim.group().reduceSum(function(d) {return d.temperature;}); 
 		var humidityGroup = dateDim.group().reduceSum(function(d) {return d.humidity;}); 
+		var count_largeGroup = dateDim.group().reduceSum(function(d) {return d.count_large;}); 
+
 		    /*
 		var yearDim  = ndx.dimension(function(d) {return +d.Year;});
 		var year_total = yearDim.group().reduceSum(function(d) {return d.count_large;});
 		var yearRingChart   = dc.pieChart("#chart-ring-year");
 		*/
+			//.colorAccessor(function (d, i){return i;})
+		clChart
+		    .width(500).height(200)
+		    .dimension(dateDim)
+		    .group(count_largeGroup)
+		    .barPadding(0.5)
+		    .outerPadding(0.1)
+			.colorDomain([0,1000])
+			.colorAccessor(function (d,i) {
+			    if(d.value < 200){ return "yellow";}			    
+			    if(d.value < 400){ return "blue";}			    
+			    if(d.value < 500 ){ return "green";}			    
+			    if(d.value < 1000){ return "red";}			    
+			})
+		    
+
+		    .x(d3.time.scale().domain([minDate,maxDate])); 
 
 		conclineChart
 		    .width(chartWidthDim).height(chartHeightDim)
