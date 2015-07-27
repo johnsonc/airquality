@@ -6,5 +6,7 @@ urlpatterns = patterns('',
     url(r'devices/(?P<pk>[a-z\d]+)/$', aqviews.aqdevice_detail),
     url(r'aqfeed/$', aqviews.aqfeed_list),
     url(r'aqfeed/(?P<pk>[a-z\d]+)/$', aqviews.aqfeed_detail),
-    url(r'aqd/$', aqviews.aqdatapoint),
+    url(r'aqfeed/(?P<start_time>[:T\-\d]+)/(?P<end_time>[:T\-\d]+)/$', aqviews.aqdatapointintime),
+    url(r'aqfeed/(?P<device_imei>[a-z\d]+)/(?P<start_time>[:T\-\d]+)/(?P<end_time>[:T\-\d]+)/$', aqviews.aqdatapointsfordevice),
+    url(r'aqd/$', aqviews.aqdatapoint),                       
                        )
