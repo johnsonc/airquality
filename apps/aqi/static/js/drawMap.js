@@ -252,8 +252,8 @@ function getAQI(t){
 //    .defer(d3.json, "/static/data/india-states-gramener.json")
 
 queue()
-    .defer(d3.json, "/api/aqfeed/?format=json")
-    .defer(d3.json, "/api/devices/?format=json")
+    .defer(d3.json, "/airquality/api/aqfeed/?format=json")
+    .defer(d3.json, "/airquality/api/devices/?format=json")
     .await(intialLoad);
 
 
