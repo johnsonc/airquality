@@ -1,16 +1,14 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
 {% load static from staticfiles %}
   <title>IndiaSpend Air Quality Initiative</title>
-  <link rel="stylesheet" href={% static "/static/css/filter.css" %} />
-  <link rel="stylesheet" href={% static "/static/css/dc.css" %} /> 
-  <link rel="stylesheet" href={% static "/static/leaflet/leaflet.css" %} />
-  <link rel="stylesheet" href={% static "/static/chosen/chosen.min.css" %} /> 
-  <link rel="stylesheet" type="text/css" href="/static/keen/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" type="text/css" href="/static/keen/assets/css/keen-dashboards.css" />
+  <link rel="stylesheet" href={% static "/airquality/static/css/filter.css" %} />
+  <link rel="stylesheet" href={% static "/airquality/static/css/dc.css" %} /> 
+  <link rel="stylesheet" href={% static "/airquality/static/leaflet/leaflet.css" %} />
+  <link rel="stylesheet" href={% static "/airquality/static/chosen/chosen.min.css" %} /> 
+  <link rel="stylesheet" type="text/css" href="/airquality/static/keen/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="/airquality/static/keen/assets/css/keen-dashboards.css" />
 
 </head>
 <body class="application">
@@ -232,30 +230,30 @@
 
   </div>
 
-  <script type="text/javascript" src="/static/keen/assets/lib/jquery/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="/static/keen/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/airquality/static/keen/assets/lib/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="/airquality/static/keen/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 
-  <script type="text/javascript" src="/static/keen/assets/lib/holderjs/holder.js"></script>
+  <script type="text/javascript" src="/airquality/static/keen/assets/lib/holderjs/holder.js"></script>
   <script>
     Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
   </script>
 
-  <script type="text/javascript" src="/static/keen/assets/lib/keen-js/dist/keen.min.js"></script>
-  <script type="text/javascript" src="/static/keen/assets/js/meta.js"></script>
+  <script type="text/javascript" src="/airquality/static/keen/assets/lib/keen-js/dist/keen.min.js"></script>
+  <script type="text/javascript" src="/airquality/static/keen/assets/js/meta.js"></script>
 
-  <script src={% static "/static/js/lib/colorbrewer.js" %}></script>
-  <script src={% static "/static/js/lib/d3.js" %}></script>
-  <script src={% static "/static/js/lib/crossfilter.js"%}></script>
-  <script src={% static "/static/js/lib/dc.js" %}></script>
+  <script src={% static "/airquality/static/js/lib/colorbrewer.js" %}></script>
+  <script src={% static "/airquality/static/js/lib/d3.js" %}></script>
+  <script src={% static "/airquality/static/js/lib/crossfilter.js"%}></script>
+  <script src={% static "/airquality/static/js/lib/dc.js" %}></script>
 
-  <script src={% static "/static/js/lib/topojson.v1.js" %}></script>
-  <script src={% static "/static/js/lib/queue.js" %}></script>
-  <script src={% static "/static/js/elems/barChart.js"%}></script>
-  <script src={% static "/static/js/elems/circleChart.js"%}></script>
-  <script src={% static "/static/leaflet/leaflet.js" %}></script>
- <!--  <script src={% static "/static/jquery/js/jquery-2.1.4.min.js" %}></script> -->
-  <script src={% static "/static/chosen/chosen.jquery.min.js" %}></script>
-  <script src={% static "/static/js/drawMap.js" %}></script>
+  <script src={% static "/airquality/static/js/lib/topojson.v1.js" %}></script>
+  <script src={% static "/airquality/static/js/lib/queue.js" %}></script>
+  <script src={% static "/airquality/static/js/elems/barChart.js"%}></script>
+  <script src={% static "/airquality/static/js/elems/circleChart.js"%}></script>
+  <script src={% static "/airquality/static/leaflet/leaflet.js" %}></script>
+ <!--  <script src={% static "/airquality/static/jquery/js/jquery-2.1.4.min.js" %}></script> -->
+  <script src={% static "/airquality/static/chosen/chosen.jquery.min.js" %}></script>
+  <script src={% static "/airquality/static/js/drawMap.js" %}></script>
 
 </body>
 </html>
