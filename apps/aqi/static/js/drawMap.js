@@ -24,8 +24,10 @@ var svg = d3.select("#map").append("svg")
     .attr("height", height)
 
 var g = svg.append("g");
+//d3=d3;
 
 // Leaflet
+
 
 var OpenWeatherMap_Clouds = L.tileLayer('http://{s}.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -314,8 +316,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	daydateDimG = dateDim.group(d3.time.day);
 	monthdateDimG = dateDim.group(d3.time.month);
 	yeardateDimG = dateDim.group(d3.time.year);
-
-	hour= datapointCF.dimension(function(d) { return d.time.getHours() + d.time.getMinutes() / 60; }); 
+	hour = datapointCF.dimension(function(d) { return d.time.getHours() + d.time.getMinutes() / 60; }); 
 	hours = hour.group(Math.floor);	
 	day = datapointCF.dimension(function(d) { return d.time; });
 	days = day.group(d3.time.day);
@@ -744,15 +745,18 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .dimension(hourDim)
 	    .group(pm10AvgGroupByHour)
 	    .barPadding(0.5)
-	    .y(d3.scale.linear().domain([0, 300]))
+	    .y(d3.scale.linear().domain([0, 500]))
             //.elasticY(true)
 	    .outerPadding(0.1)
 	    .colorAccessor(function (d,i) {
-		if(d.value.avg < 200) { return "yellow";}			    
-		if(d.value.avg < 400) { return "blue";}			    
-		if(d.value.avg < 500 ){ return "green";}			    
-		if(d.value.avg < 1000){ return "red";}			    
-	    })
+		var a = getpm10AQI(d.value.avg)
+		if(a < 50 ){ return d3.rgb(0, 228, 0);  }
+		if(a < 101){ return d3.rgb(255, 255, 0);}			    
+		if(a < 201){ return d3.rgb(255, 126, 0);}			    
+		if(a < 301){ return d3.rgb(255, 0, 0)  ;}			    
+		if(a < 401){ return d3.rgb(153, 0, 76) ;}			    
+		if(a > 400){ return d3.rgb(126, 0, 35) ;}			    
+	    })	
 	    .x(d3.time.scale().domain([minDate,maxDate]))
 	    .valueAccessor(function(p) {
 		return p.value.avg;
@@ -785,8 +789,6 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .yAxisLabel("PM 10");
 	pm10Chart2.yAxis().ticks(4);
 	*/
-
-
 	
 	pm25Chart
 	    .width(chartWidthDim).height(chartHeightDim)
@@ -800,10 +802,13 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		return p.value.avg;
 	    })
 	    .colorAccessor(function (d,i) {
-		if(d.value.avg < 200) { return "yellow";}			    
-		if(d.value.avg < 400) { return "blue";}			    
-		if(d.value.avg < 500 ){ return "green";}			    
-		if(d.value.avg < 1000){ return "red";}			    
+		var a = getpm25AQI(d.value.avg)
+		if(a < 50 ){ return d3.rgb(0, 228, 0);  }
+		if(a < 101){ return d3.rgb(255, 255, 0);}			    
+		if(a < 201){ return d3.rgb(255, 126, 0);}			    
+		if(a < 301){ return d3.rgb(255, 0, 0)  ;}			    
+		if(a < 401){ return d3.rgb(153, 0, 76) ;}			    
+		if(a > 400){ return d3.rgb(126, 0, 35) ;}			    
 	    })
 	    .yAxisLabel("PM 25")
      	    .xAxis().ticks(8);
