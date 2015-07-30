@@ -198,7 +198,7 @@ var colorScale = d3.scale.linear();
 var opacityScale = d3.scale.quantile();
 var mmm;
 var parseDate = d3.time.format("%x %H:%M").parse;
-aqparseDate = d3.time.format("%Y-%m-%dT%H:%M:%S").parse;
+aqparseDate = d3.time.format("%Y-%m-%dT%H:%M").parse;
 var datapoint;
 var datapointCF;
 
@@ -293,7 +293,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
     function processdata(datapoints){
 	datapoints.forEach(function(t,i){
-	    t['time'] = aqparseDate(t['created_on']);
+	    t['time'] = aqparseDate(t['created_on'].substr(0,16));
 	    t['index'] = i;
 	    t['aqi'] = getAQI(t);
 	    t['day']= t.time.getDay();
@@ -793,7 +793,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .dimension(hourDim)
 	    .group(pm25AvgGroupByHour)
 	    .transitionDuration(500)
-	    .y(d3.scale.linear().domain([0, 300]))
+	    .y(d3.scale.linear().domain([0, 1000]))
             //.elasticY(true)
 	    .x(d3.time.scale().domain([minDate,maxDate]))
 	    .valueAccessor(function(p) {
