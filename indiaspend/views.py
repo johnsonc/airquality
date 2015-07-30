@@ -21,3 +21,7 @@ def register(request):
 
 def analysis(request):
     return render_to_response('analysis.html', {} )
+
+
+def fryanalysis(request):
+    return render_to_response('analysis-redone.html', {} )

@@ -1,92 +1,261 @@
+
+
 <!DOCTYPE html>
-<meta charset="utf-8">
-<link rel="stylesheet" href="/static/css/filter.css" />
-<body>
-	<span>
-		<h1>Twisters</h1>
-		
-		<span id="instructions">
-			Click map to zoom. Click and drag histograms to filter the datasets.
-		</span>
-	</span>
+<html>
+<head>
+{% load static from staticfiles %}
+  <title>IndiaSpend Air Quality Initiative</title>
+  <link rel="stylesheet" href={% static "/static/css/filter.css" %} />
+  <link rel="stylesheet" href={% static "/static/css/dc.css" %} /> 
+  <link rel="stylesheet" href={% static "/static/leaflet/leaflet.css" %} />
+  <link rel="stylesheet" href={% static "/static/chosen/chosen.min.css" %} /> 
+  <link rel="stylesheet" type="text/css" href="/static/keen/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="/static/keen/assets/css/keen-dashboards.css" />
 
-	<span id='about'>
-		<div>
-			<a class= "blacklink" href="http://www.urbansensors.net/blog-post">
-				about</a> |
+</head>
+<body class="application">
+
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="navbar-brand" href="./">IndiaSpend Air Quality Initiative</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-left">
+          <li><a href="/">Home</a></li>
+          <li><a href="/">About</a></li>
+          <li><a href="/">Source</a></li>
+          <li><a href="/">Community</a></li>
+	  <li><a href="/">Technical Support</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="fullrow">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Total: <div class="total"> </div> readings.
+          </div>
+          <div class="chart-stage">
+	    <div id=""> Time line</div> 
+	    <div id="time-chart"></div> 
+          </div>
+          <div class="chart-notes">
+            AQI over time
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Air Quality Dashboard &nbsp; &nbsp; | 
+	    
+	    <div id="banner">
+	      Select a device:
+	      <select id="devicePicker">
+	      </select>
+	    </div>
+	    
+	    <a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
+
+          </div>
+          <div class="chart-stage">
+            <div id="grid-1-1">
+	      <div id="mappa" class="display" style="height: 400px"> </div> 
+              <!-- img data-src="holder.js/100%x240/white/text:#grid-1-1"> -->
+            </div>
+          </div>
+          <div class="chart-notes">
+            Click on the map markers or choose from the menu. Click on the other map layers to add to the map view.
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Sensor data
+          </div>
+          <div class="chart-stage">
+            <div id="dashboard">
+	      <div class="max"> </div>
+	      <div id="pm10-chart"></div> <br/>
+	      <div id="pm25-chart"></div> <br/>
+	      <div id="temp-chart"></div> <br/>
+	      <div id="hum-chart"></div> <br/>
+	    </div>
+	            
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 col-md-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+	    Particle counts (Experimental data)
+          </div>
+          <div class="chart-stage">
+		<div id="cs-chart" class="">
+			<div class="title">Small particle count</div>
 		</div>
-	</span>
 
-	<div id="charts">
-		<div id="map" class="display"></div>
-
-		<div id="width-chart" class="bChart display">
-			<div class="title">PM 10</div>
+		<div id="cl-chart" class="">
+			<div class="title">Large particle count</div>
 		</div>
 
-		<div id="length-chart" class="bChart display">
-			<div class="title">PM 2.5</div>
-		</div>
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
 
-		<div id="inj-chart" class="bChart display">
+
+      <div class="col-sm-6 col-md-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Averages
+          </div>
+          <div class="chart-stage">
+
+	    <div id="chart-ring-year" class="">
+
+	    </div>
+		  
+		  <div id="pm10-chart2" class="bChart display">
+		    <div class="title">PM 10</div>
+		  </div>
+		  
+		  <div id="pm25-chart2" class="bChart display">
+		    <div class="title">PM 2.5</div>
+		  </div>
+		  <br/>
+		   <p>Need more data to compute averages! </p>
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Averages
+          </div>
+          <div class="chart-stage">
+		<div id="temp-chart2" class="bChart display">
 			<div class="title">Temperature</div>
 		</div>
 
-		<div id="fscale-chart" class="bChart display">
+		<div id="humidity-chart2" class="bChart display">
 			<div class="title">Humidity</div>
 		</div>
+		  <br/>
+		   <p>Need more data to compute averages!</p>
+		
+          </div>
+          <div class="chart-notes">
+            Notes about this chart
+          </div>
+        </div>
+      </div>
+<!-- end of three -->
+    <hr>
 
-		<div id="year-chart" class="bChart display">
-			<div class="title">Year</div>
-		</div>
+<div>
 
-		<span class='textBlock' id='leftText'>
-			<div class='stat' id='num'></div>
-		</br>
-			tornadoes
-		</br>
-			<div class='stat' id='miles'></div>
-		</br>
-			miles 
-		</br>
-			<div class='stat' id='inj'></div>
-		</br>
-			injured
-		</span>
+  <table class="table panel panel-default table-hover">
+    <thead>
+      <tr class="active">
+        <th class="col-md-1 text-center">AQI</th>
+        <th class="col-md-2 text-center">Remark</th>
+        <th class="col-md-1">Color Code</th>
+        <th class="col-md-8">Possible Health Impacts</th>                  
+      </tr>
+    </thead>
+    <tbody class="aqi-desc-container">
+      <tr class="" style="">
+        <td class="col-md-1 aqi-value text-center text-middle">0-50</td>
+        <td class="col-md-2 remark text-center text-middle">Good</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(0, 228, 0);"></td>          
+        <td class="col-md-8 desc">Minimal impact</td>     
+      </tr><tr class="" style="">
+        <td class="col-md-1 aqi-value text-center text-middle">51-100</td>
+        <td class="col-md-2 remark text-center text-middle">Satisfactory</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(255, 255, 0);"></td>          
+        <td class="col-md-8 desc">Minor breathing discomfort to sensitive people</td>     
+      </tr><tr class="" style="">
+        <td class="col-md-1 aqi-value text-center text-middle">101-200</td>
+        <td class="col-md-2 remark text-center text-middle">Moderate</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(255, 126, 0);"></td>          
+        <td class="col-md-8 desc">Breathing discomfort to the people with lungs, asthma and heart diseases</td>     
+      </tr><tr class="" style="">
+        <td class="col-md-1 aqi-value text-center text-middle">201-300</td>
+        <td class="col-md-2 remark text-center text-middle">Poor</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(255, 0, 0);"></td>          
+        <td class="col-md-8 desc">Breathing discomfort to most people on prolonged exposure</td>     
+      </tr><tr class="" style="">
+	<td class="col-md-1 aqi-value text-center text-middle">301-400</td>
+        <td class="col-md-2 remark text-center text-middle">Very Poor</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(153, 0, 76);"></td>          
+        <td class="col-md-8 desc">Respiratory illness on prolonged exposure</td>     
+      </tr><tr class="" style="">
+	<td class="col-md-1 aqi-value text-center text-middle">401 and above</td>
+        <td class="col-md-2 remark text-center text-middle">Severe</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(126, 0, 35);"></td>          
+        <td class="col-md-8 desc">Affects even healthy people and seriously impacts those with existing diseases</td>     
+    </tr></tbody>
+</table>
+</div>
 
-		<div class="cChart display">
-			<div class="title">Hour</div>
-		</div>
+    <p class="small text-muted">By IndiaSpend.org  License:Creative Commons CC-By-SA 3.0<a href=""></a></p>
 
-		<div class="cChart display">
-			<div class="title">Month</div>
-		</div>
+  </div>
 
-		<div class="cChart display">
-			<div class="title">Direction</div>
-		</div>
+  <script type="text/javascript" src="/static/keen/assets/lib/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="/static/keen/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 
-		<span class='textBlock' id='rightText'>
-		<div id='faq' class='title'>FAQ</div>
-			Each line represents a single tornado.
-		<div class='lineBreak'></div>
-			Line length and width are proportional to the tornado's; opacity and color to wind speed.
-		<div class='lineBreak'></div>
-			<a class= "blacklink" href="http://www.spc.noaa.gov/wcm/">NOAA</a> 
-			only collects start and end locations - tornadoes do not actually travel in perfectly straight lines. 
-		<div class='lineBreak'></div>
-			Questions? Comments? 
-			<a class= "blacklink" href="mailto:johnsonchetty@gmail.com">johnsonchetty@gmail.com</a>
-	</div>
+  <script type="text/javascript" src="/static/keen/assets/lib/holderjs/holder.js"></script>
+  <script>
+    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
+  </script>
+
+  <script type="text/javascript" src="/static/keen/assets/lib/keen-js/dist/keen.min.js"></script>
+  <script type="text/javascript" src="/static/keen/assets/js/meta.js"></script>
+
+  <script src={% static "/static/js/lib/colorbrewer.js" %}></script>
+  <script src={% static "/static/js/lib/d3.js" %}></script>
+  <script src={% static "/static/js/lib/crossfilter.js"%}></script>
+  <script src={% static "/static/js/lib/dc.js" %}></script>
+
+  <script src={% static "/static/js/lib/topojson.v1.js" %}></script>
+  <script src={% static "/static/js/lib/queue.js" %}></script>
+  <script src={% static "/static/js/elems/barChart.js"%}></script>
+  <script src={% static "/static/js/elems/circleChart.js"%}></script>
+  <script src={% static "/static/leaflet/leaflet.js" %}></script>
+ <!--  <script src={% static "/static/jquery/js/jquery-2.1.4.min.js" %}></script> -->
+  <script src={% static "/static/chosen/chosen.jquery.min.js" %}></script>
+  <script src={% static "/static/js/drawMap.js" %}></script>
 
 </body>
-
-<script src="/static/js/lib/d3.js"></script>
-<script src="/static/js/lib/topojson.v1.js"></script>
-<script src="/static/js/lib/queue.js"></script>
-<script src="/static/js/lib/crossfilter.js"></script>
-<script src="/static/js/elems/barChart.js"></script>
-<script src="/static/js/elems/circleChart.js"></script>
-<script src="/static/js/drawMap.js"></script>
-
 </html>
