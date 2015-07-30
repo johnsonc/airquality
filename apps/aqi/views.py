@@ -74,10 +74,12 @@ def aqdevice_detail(request, pk):
 @api_view(['GET', 'POST'])
 def aqfeed_list(request):
     """
-    List all data points or create a new one.
+    List all data points for the last two days or create a new datapoint.
     """
     if request.method == 'GET':
-        aqfeeds = AQFeed.objects.all()[0:20]
+        ed = datetime.datetime.now()
+        sd = ed - datetime.timedelta(days=5)         
+        aqfeeds = AQFeed.objects.filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
         serializer = AQFeedSerializer(aqfeeds, many=True)
         return Response(serializer.data)
 
