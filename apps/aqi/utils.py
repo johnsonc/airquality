@@ -2,14 +2,13 @@ from datetime import date, datetime, timedelta
 
 import random
 from models import AQFeed, AQDevice
+import dateutil.parser
 
 def datespan(startDate, endDate, delta=timedelta(days=1)):
     currentDate = startDate
     while currentDate < endDate:
         yield currentDate
-        currentDate += delta
-
-    
+        currentDate += delta    
 
 def generate_random_data(start_date, end_date, imei, name, lat, lon):
     try:
@@ -58,3 +57,30 @@ def do(num=10, start_time='2015-06-22-12-23', end_time='2015-07-22-16-00'):
         aqd.geom = {u'type': u'Point', u'coordinates': [lon,lat]}
         aqd.save()
         generate_random_data(start_time,end_time,imei, url, lat, lon)
+
+
+def initfeed(xfeed):
+    x = xfeed['with'][0]
+    aqd = AQDevice.objects.get(imei=x['content']['imei'])
+    lat = aqd.geom['coordinates'][1]
+    lon = aqd.geom['coordinates'][0]
+    lastUpdateTime = dateutil.parser.parse("2015-07-30T13:35:00")
+    for x in xfeed['with']:
+        if dateutil.parser.parse(x['created']) < lastUpdateTime:
+            continue
+        
+        aqf = AQFeed()
+        aqf.imei=x['content']['imei']
+        aqf.name=""
+        aqf.humidity = x['content']['h']
+        aqf.temperature = x['content']['t']
+        aqf.pm10 = x['content']['pm10']
+        aqf.pm25 = x['content']['pm25']
+        aqf.count_large = x['content']['cl']
+        aqf.count_small = x['content']['cs']
+        aqf.lat = lat
+        aqf.lon = lon
+        aqf.created_on=x['created']
+        print aqf
+        //aqf.save()
+
