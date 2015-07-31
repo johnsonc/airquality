@@ -64,11 +64,11 @@ def initfeed(xfeed):
     aqd = AQDevice.objects.get(imei=x['content']['imei'])
     lat = aqd.geom['coordinates'][1]
     lon = aqd.geom['coordinates'][0]
-    lastUpdateTime = dateutil.parser.parse("2015-07-30T13:35:00")
-    for x in xfeed['with']:
-        if dateutil.parser.parse(x['created']) < lastUpdateTime:
-            continue
-        
+    lastUpdateTime = dateutil.parser.parse("2015-07-30T13:35:00.000Z")
+    for x in xfeed['with']:    
+        d = dateutil.parser.parse(x['created'])
+        if d < lastUpdateTime:
+            continue        
         aqf = AQFeed()
         aqf.imei=x['content']['imei']
         aqf.name=""
@@ -81,6 +81,5 @@ def initfeed(xfeed):
         aqf.lat = lat
         aqf.lon = lon
         aqf.created_on=x['created']
-        print aqf
-        //aqf.save()
+        aqf.save()
 
