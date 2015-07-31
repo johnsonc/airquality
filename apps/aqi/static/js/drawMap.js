@@ -194,6 +194,47 @@ var stateNameToAbv = {"Alabama":"AL","Alaska":"AK","American Samoa":"AS","Arizon
 
 var stateNametoAbv1 = {'Andaman and Nicobar': 'AN', 'Andhra Pradesh': 'AP', 'Arunachal Pradesh': 'AR', 'Assam': 'AS', 'Bihar': 'BR', 'Chandigarh': 'CH', 'Chhattisgarh': 'CT', 'Dadra and Nagar Haveli': 'DN', 'Daman and Diu': 'DD', 'Delhi': 'DL', 'Goa': 'GA', 'Gujarat': 'GJ', 'Haryana': 'HR', 'Himachal Pradesh': 'HP', 'Jammu and Kashmir': 'JK', 'Jharkhand': 'JH', 'Karnataka': 'KA', 'Kerala': 'KL', 'Lakshadweep': 'LD', 'Madhya Pradesh': 'MP', 'Maharashtra': 'MH', 'Manipur': 'MN', 'Meghalaya': 'ML', 'Mizoram': 'MZ', 'Nagaland': 'NL', 'Orissa': 'OR', 'Puducherry': 'PY', 'Punjab': 'PB', 'Rajasthan': 'RJ', 'Sikkim': 'SK', 'Tamil Nadu': 'TN', 'Telengana': 'TS', 'Tripura': 'TR', 'Uttar Pradesh': 'UP', 'Uttarakhand': 'UT', 'West Bengal': 'WB'}
 
+var lastStreamTimeStamp;
+var timerId; // current timer if started                                                      
+function streamStart(){
+    if (timerId) return;
+    timerId = setInterval( streamUpdate, 30000);
+    streamUpdate();
+}
+
+function streamStop() {
+    clearInterval(timerId);
+    timerId = null;
+}
+
+function streamUpdate()
+{
+    now = new Date();
+    queue()
+	.defer(d3.json, "/airquality/api/aqfeed/"+lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
+	.await(dataUpdate);        
+    
+    function dataUpdate(error, newdatapoints){    
+	if(newdatapoints.length != 0){
+	    processdata(newdatapoints);
+	    console.log(newdatapoints);	
+	    console.log('Stream updated');
+	    datapointCF.add(newdatapoints);
+	    dc.renderAll();
+	    console.log('Charts updated from stream');
+	}
+	else{
+	    console.log('Nothing to add from stream ');
+	}   
+	lastStreamTimeStamp = new Date();
+    }
+}
+
+var begin = setTimeout(function(){
+    streamStart();
+    console.log('Stream started');
+}, 15000);
+
 
 var widthScale = d3.scale.pow().exponent(.5);
 var colorScale = d3.scale.linear();
@@ -203,6 +244,7 @@ var parseDate = d3.time.format("%x %H:%M").parse;
 aqparseDate = d3.time.format("%Y-%m-%dT%H:%M").parse;
 var datapoint;
 var datapointCF;
+
 
 var getpm10AQI = function(d){    
     scale = [
@@ -251,14 +293,27 @@ function getAQI(t){
 //    .defer(d3.json, "/static/data/in-states-topo.json")
 //    .defer(d3.json, "/static/data/india-states-gramener.json")
 
+function processdata(datapoints){
+    datapoints.forEach(function(t,i){
+	t['time'] = aqparseDate(t['created_on'].substr(0,16));
+	t['index'] = i;
+	t['aqi'] = getAQI(t);
+	t['day']= t.time.getDay();
+	t['month']= t.time.getMonth();
+	t['year']= t.time.getFullYear();
+    })	
+}
+
+
 queue()
     .defer(d3.json, "/airquality/api/aqfeed/?format=json")
     .defer(d3.json, "/airquality/api/devices/?format=json")
     .await(intialLoad);
 
 
-function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aqdevices){
-    datapoint = datapoints
+function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aqdevices){    
+    lastStreamTimeStamp = new Date();    
+    datapoint = datapoints;
     picker = d3.select("#devicePicker");
     devices = picker.selectAll("option")
         .data(aqdevices)
@@ -274,7 +329,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    'imei':d.imei
 	}).addTo(map);
 
-	marker.on('click', function(e) {
+	marker.on('mouseout', function(e) {
 	    //open popup;
 	    var popup = L.popup()
 		.setLatLng(e.latlng) 
@@ -293,17 +348,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
     // datapoints;    
     processdata(datapoints);   
 
-    function processdata(datapoints){
-	datapoints.forEach(function(t,i){
-	    t['time'] = aqparseDate(t['created_on'].substr(0,16));
-	    t['index'] = i;
-	    t['aqi'] = getAQI(t);
-	    t['day']= t.time.getDay();
-	    t['month']= t.time.getMonth();
-	    t['year']= t.time.getFullYear();
-	})	
-	drawCharts();
-    }
+    drawCharts();
 
     function drawCharts(){
 	
@@ -673,14 +718,14 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
-	    .x(d3.time.scale().domain([new Date("2015-07-01"), maxDate]))
+	    .x(d3.time.scale().domain([new Date("2015-07-15"), maxDate]))
 	    .elasticY(true)
 	    .centerBar(true)
 	    .gap(4)
 	    .renderHorizontalGridLines(true)
 	    .xAxisLabel("Time");
-	    timeChart.yAxis().ticks(4);
-	    timeChart.xUnits(d3.time.days); 
+	    timeChart.yAxis().ticks(2);
+	    timeChart.xUnits(d3.time.days);
 	
 	/*
 	yearRingChart
