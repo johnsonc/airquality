@@ -4,8 +4,7 @@ function p(name){
 function toPositiveRadian(r){ return r > 0 ? r : r + Math.PI*2; }
 function toDegree(r){ return r*180/Math.PI; }
 
-
-var Width = $(window).width() 
+var Width = $(window).width()
 var Height = $(window).height() 
 
 var mapwidth = Math.round(Width*0.3);
@@ -134,6 +133,8 @@ var OpenMapSurfer_AdminBounds = L.tileLayer('http://openmapsurfer.uni-hd.de/tile
     attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 });
 
+
+
 var map = L.map('mappa', {
     center: [20,72],
     zoom: 7,
@@ -257,35 +258,39 @@ var numberFormat = d3.format('.2f');
 
 var getpm10AQI = function(d){    
     scale = [
-	d3.scale.linear().domain([0, 30]).range([0,50]),
-	d3.scale.linear().domain([30, 60]).range([51,100]),
-	d3.scale.linear().domain([60, 100]).range([101,150]),
-	d3.scale.linear().domain([100, 200]).range([150,200]),
-	d3.scale.linear().domain([200, 300]).range([200,300]),
+	d3.scale.linear().domain([0, 50]).range([0,50]),
+	d3.scale.linear().domain([51, 100]).range([51,100]),
+	d3.scale.linear().domain([101, 250]).range([101,200]),
+	d3.scale.linear().domain([251, 350]).range([201,300]),
+	d3.scale.linear().domain([351, 430]).range([301,400]),
+	d3.scale.linear().domain([430, 500]).range([401,500]),
     ];
 
-    if(d < 31) { return scale[0](d); }
-    if(d < 61) { return scale[1](d); }			    
-    if(d < 101){ return scale[2](d); }			    
-    if(d < 201){return scale[3](d);  }			    
-    if(d > 200){ return scale[4](d); }			    
+    if(d < 51) { return scale[0](d); }
+    if(d < 101) { return scale[1](d); }			    
+    if(d < 251){ return scale[2](d); }			    
+    if(d < 351){return scale[3](d);  }			    
+    if(d < 431){ return scale[4](d); }			    
+    if(d >= 431){ return scale[5](d); }			    
 }
 
 
 var getpm25AQI = function(d){    
     scale = [
-	d3.scale.linear().domain([0, 20]).range([0,50]),
-	d3.scale.linear().domain([20, 40]).range([51,100]),
-	d3.scale.linear().domain([40, 60]).range([101,150]),
-	d3.scale.linear().domain([60, 100]).range([150,200]),
-	d3.scale.linear().domain([100, 200]).range([200,300]),
+	d3.scale.linear().domain([0, 30]).range([0,50]),
+	d3.scale.linear().domain([31, 60]).range([51,100]),
+	d3.scale.linear().domain([61, 90]).range([101,200]),
+	d3.scale.linear().domain([91, 120]).range([201,300]),
+	d3.scale.linear().domain([121, 250]).range([301,400]),
+	d3.scale.linear().domain([250, 350]).range([401,500]),
     ];
 
-    if(d < 21) { return scale[0](d); }
-    if(d < 41) { return scale[1](d); }			    
-    if(d < 61){ return scale[2](d); }			    
-    if(d < 101){return scale[3](d);  }			    
-    if(d > 100){ return scale[4](d); }			    
+    if(d < 31) { return scale[0](d); } 
+    if(d < 61) { return scale[1](d); }			    
+    if(d < 91){ return scale[2](d);  }			    
+    if(d < 121){return scale[3](d);  }			    
+    if(d < 251){return scale[3](d);  }			    
+    if(d >= 251){ return scale[4](d); }			    
 }
 
 function getAQI(t){
@@ -479,11 +484,11 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		    // guard against dividing by zero
 		}
 		else if (_.isNumber(p.attr)){	
-		    // smoothen out NaN/ values by replacing them with previous values.. 
+		    // smoothen out NaN/ zero values by replacing them with previous values.. 
 		     v[attr] = p.attr 
 		}
 		else
-		{ // initial p is itself NaN
+		{ // if initial p is itself NaN
 		    v[attr]= 0
 		}
 
@@ -502,7 +507,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    };
 	}
 	function reduceInitAvg() {
-	    return {count:0, sum:0, avg:0, imei:0, attr:0}; 
+	    return { count:0, sum:0, avg:0, imei:0, attr:0}; 
 	}
 	
 	pm10AvgGroup = pm10.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
@@ -735,7 +740,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .data(cCharts)
 	    .each(function(chart){ chart.on("brush", renderAll).on("brushend", renderAll) });
 	    */
-	renderAll();
+	//renderAll();
 
 	//remove extra width ticks (there is a better way of doing this!)
 	
@@ -791,6 +796,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	var humidityChart = dc.barChart('#hum-chart');
 	var clChart = dc.barChart('#cl-chart');
 	var csChart = dc.barChart('#cs-chart');
+	var pm10Stats = dc.barChart('#pm10-stats');
+
 
 	var dimwidth = chartWidthDim+20;
 	var dimheight=chartHeightDim +20;
@@ -843,13 +850,16 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .alwaysUseRounding(true)
 	    .colors(function (a) {
 		// AQI Color Standards
-		var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];	
+		//  var c = ['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];
+		a = Math.round(a);
+		var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
 		if(a < 50 ){ return c[0];}
 		else if(a < 101){ return c[1];}			    
 		else if(a < 201){ return c[2];}			    
 		else if(a < 301){ return c[3] ;}			    
 		else if(a < 401){ return c[4] ;}			    
 		else if(a > 400){ return c[5] ;}			    
+
 	    })
 	    .colorAccessor(function (d) { return d.value.avg; })
 	    .group(aqiAvgGroupByDay0, 'Average AQI per Day')
@@ -977,7 +987,9 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    })
 	    .colors(function (a) {
 		// AQI Color Standards
-		var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];	
+		//var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];
+		a = Math.round(a);
+		var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
 		if(a < 50 ){ return c[0];}
 		else if(a < 101){ return c[1];}			    
 		else if(a < 201){ return c[2];}			    
@@ -998,6 +1010,9 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	pm10Chart.yAxis().ticks(4);
 	pm10Chart.xUnits(d3.time.hours);	
 	
+
+	
+
 
 	/*pm10Chart2
 	    .width(chartWidthDim).height(chartHeightDim)
@@ -1066,8 +1081,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		return p.value.avg;
 	    })
 	    .colors(function (a) {
+		//var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];
 		// AQI Color Standards
-		var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];	
+		a = Math.round(a);
+		var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
 		if(a < 50 ){ return c[0];}
 		else if(a < 101){ return c[1];}			    
 		else if(a < 201){ return c[2];}			    
@@ -1165,14 +1182,14 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
     d3.select('#devicePicker').on('change', function(){ 	
 	imei.filterAll();
 	imei.filter(this.value);
-	//pm10AvgGroupByHour.filter(this.value); 
-	//pm25AvgGroupByHour.filter(this.value); 
-	//tempAvgGroupByHour.filter(this.value);
-	//humidityAvgGroupByHour.filter(this.value);
 	dc.redrawAll(); 
     })
 
+
+	
+
     }
+
 }
 
 
