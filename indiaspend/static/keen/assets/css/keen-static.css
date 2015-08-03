@@ -3,7 +3,7 @@ a, a:focus, a:hover, a:active {
 }
 
 h1, h2, h3 {
-  font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  //font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin: 12px 0;
 }
 h1 {
@@ -115,12 +115,12 @@ h3 {
 .hero a.hero-btn {
   border: 2px solid #fff;
   display: block;
-  font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 24px;
-  font-weight: 200;
+  //font-family: "Raleway", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  //font-size: 24px;
+  //font-weight: 200;
   margin: 0 auto 12px;
   padding: 12px 0 6px;
-  width: 320px;
+  //width: 320px;
 }
 .hero a.hero-btn:focus,
 .hero a.hero-btn:hover {
