@@ -523,6 +523,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	hourtempDim = datapointCF.dimension(function(d) {return d3.time.hour(d.time)});
 	hourhumDim = datapointCF.dimension(function(d) {return d3.time.hour(d.time)});
 
+	aqiAvgGroupByHour = hourDim.group().reduce(reduceAddAvg('aqi'), reduceRemoveAvg('aqi'), reduceInitAvg);
 	pm10AvgGroupByHour = hourDim.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
 	pm10AvgGroupByTime =  dateDim.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
 	pm10AvgGroupByDay =  dayDim.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
@@ -535,7 +536,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	var count_smallGroup = dateDim.group().reduceSum(function(d) {return d.count_small;}); 
 	var count_largeGroup = dateDim.group().reduceSum(function(d) {return d.count_large;}); 
 
-        aqiAvgGroupByDay  = dayDim.group().reduce(
+        aqiAvgGroupByHour2  = hourDim.group(function(d) {return d3.time.day(d);} ).reduce(
         //add
             function(p,v){
 		++p.count;
@@ -762,6 +763,22 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    }
 	    dc.redrawAll();}; */
 	
+	function rangesEqual(range1, range2) {
+            if (!range1 && !range2) {
+		return true;
+            }
+            else if (!range1 || !range2) {
+		return false;
+            }
+            else if (range1.length === 0 && range2.length === 0) {
+		return true;
+            }
+            else if (range1[0].valueOf() === range2[0].valueOf() &&
+		     range1[1].valueOf() === range2[1].valueOf()) {
+		return true;
+            }
+            return false;
+	}
 	
 	// Charts
 	var dataCount  = dc.dataCount("#data-count");
@@ -785,15 +802,40 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 	//var yearRingChart   = dc.pieChart("#chart-ring-year");
 	
+
+	timeChart.focusCharts = function (chartlist) {
+		if (!arguments.length) {
+		    return this._focusCharts;
+		}
+		this._focusCharts = chartlist; // only needed to support the getter above
+		this.on('filtered', function (range_chart) {
+		    if (!range_chart.filter()) {
+			dc.events.trigger(function () {
+			    chartlist.forEach(function(focus_chart) {
+				focus_chart.x().domain(focus_chart.xOriginalDomain());
+			    });
+			});
+		    } else chartlist.forEach(function(focus_chart) {
+			if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
+			    dc.events.trigger(function () {
+				focus_chart.focus(range_chart.filter());
+			    });
+			}
+		    });
+		});
+		return this;
+	    };
+	
+
 	timeChart
 	    .width(Width*0.95)
 	    .height(80)
-	    .dimension(dayDim)
+	    .dimension(hourDim)
 	    .margins({top: 10, right: 50, bottom: 30, left: 50})
 	    .transitionDuration(500)
 	    .y(d3.scale.linear().domain([0, 600]))
 	    .elasticY(true)
-	    .x(d3.time.scale().domain([new Date("2015-07-15"), maxDate]))
+	    .x(d3.time.scale().domain([new Date("2015-07-20"), maxDate]))
 	    .centerBar(true)
 	    .gap(4)
 	    .renderHorizontalGridLines(true)
@@ -809,7 +851,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		else if(a > 400){ return c[5] ;}			    
 	    })
 	    .colorAccessor(function (d) { return d.value.avg; })
-	    .group(aqiAvgGroupByDay, 'Average AQI per day')
+	    .group(aqiAvgGroupByHour, 'Average AQI per Hour')
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
@@ -822,8 +864,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
             })
 	    .xAxisLabel("Time");
 	    timeChart.yAxis().ticks(3);
-	    timeChart.xUnits(d3.time.days);
+	timeChart.xUnits(d3.time.hours);
 	
+	timeChart.focusCharts([pm10Chart, pm25Chart, tempChart, humidityChart]);
+
 	/*
 	yearRingChart
 	    .width(chartWidthDim).height(chartHeightDim)
@@ -850,9 +894,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 
 	clChart
-	    .width(chartWidthDim).height(chartHeightDim)
+	    .width(Math.round(Width*0.3)).height(chartHeightDim)
 	    .dimension(dateDim)
 	    .group(count_largeGroup)
+	    .margins({top: 10, right: 50, bottom: 30, left: 50})
 	    .barPadding(0.5)
             .elasticY(true)
 	    .outerPadding(0.1)
@@ -867,7 +912,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 
 	csChart
-	    .width(Math.round(Width*0.5)).height(chartHeightDim)
+	    .width(Math.round(Width*0.3)).height(chartHeightDim)
 	    .dimension(dateDim)
 	    .group(count_smallGroup)
 	    .barPadding(0.5)
@@ -882,13 +927,14 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .x(d3.time.scale().domain([minDate,maxDate])); 
 
 
+
+	/*
 	pm10Chart
 	    .width(Math.round(Width*0.5)).height(chartHeightDim)
 	    .dimension(hourDim)
 	    .group(pm10AvgGroupByHour)
 	    .brushOn(false)
 	    .y(d3.scale.linear().domain([0, 500]))
-            .elasticY(true)
 	    .colors(function (a) {
 		// AQI Color Standards
 		var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];	
@@ -903,18 +949,51 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .x(d3.time.scale().domain([minDate,maxDate]))
             .elasticX(true)
 	    .centerBar(true)
+            .elasticY(true)
 	    .gap(1)
 	    .renderHorizontalGridLines(true)
 	    .alwaysUseRounding(true)
-	    .rangeChart(timeChart)
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
 	    .transitionDuration(500);
+	    */
+	pm10Chart
+	    .width(Math.round(Width*0.5)).height(chartHeightDim)
+	    .dimension(hourDim)
+	    .group(pm10AvgGroupByHour)
+	    .margins({top: 10, right: 50, bottom: 30, left: 50})
+	    .transitionDuration(500)
+	    .y(d3.scale.linear().domain([0, 600]))
+	    .x(d3.time.scale().domain([minDate,maxDate]))
+	    .round(dc.round.floor)
+            .alwaysUseRounding(true)
+	    .valueAccessor(function(p) {
+		return p.value.avg;
+	    })
+	    .colors(function (a) {
+		// AQI Color Standards
+		var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];	
+		if(a < 50 ){ return c[0];}
+		else if(a < 101){ return c[1];}			    
+		else if(a < 201){ return c[2];}			    
+		else if(a < 301){ return c[3] ;}			    
+		else if(a < 401){ return c[4] ;}			    
+		else if(a > 400){ return c[5] ;}			    
+	    })
+	    .colorAccessor(function (d) { return getpm10AQI(d.value.avg); })
+	    .brushOn(false)
+	    .label(function (d) {
+		return d.value.avg;
+            }) 
+            .title(function (d) {
+		return d3.time.day(d.key);
+            })
+	    .renderLabel(true)
+	    .yAxisLabel("PM 10");
 	pm10Chart.yAxis().ticks(4);
-     	pm10Chart.xAxis().ticks(8);    
+	pm10Chart.xUnits(d3.time.hours);	
 	
-
 
 	/*pm10Chart2
 	    .width(chartWidthDim).height(chartHeightDim)
@@ -937,8 +1016,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .yAxisLabel("PM 10");
 	pm10Chart2.yAxis().ticks(4);
 	*/
-	
-	pm25Chart
+	/*
+	pm25Chart	
 	    .width(Math.round(Width*0.5)).height(chartHeightDim)
 	    .dimension(hourDim)
 	    .group(pm25AvgGroupByHour)
@@ -966,16 +1045,54 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    })
 	    .colorAccessor(function (d) { return getpm25AQI(d.value.avg); })
      	    .xAxis().ticks(8);
-	pm25Chart.yAxis().ticks(4);
+	    */
 
+	pm25Chart
+	    .width(Math.round(Width*0.5)).height(chartHeightDim)
+	    .dimension(hourDim)
+	    .group(pm25AvgGroupByHour)
+	    .margins({top: 10, right: 50, bottom: 30, left: 50})
+	    .transitionDuration(500)
+	    .y(d3.scale.linear().domain([0, 1000]))
+	    .x(d3.time.scale().domain([minDate,maxDate]))
+	    .round(dc.round.floor)
+            .alwaysUseRounding(true)
+	    .valueAccessor(function(p) {
+		return p.value.avg;
+	    })
+	    .colors(function (a) {
+		// AQI Color Standards
+		var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];	
+		if(a < 50 ){ return c[0];}
+		else if(a < 101){ return c[1];}			    
+		else if(a < 201){ return c[2];}			    
+		else if(a < 301){ return c[3] ;}			    
+		else if(a < 401){ return c[4] ;}			    
+		else if(a > 400){ return c[5] ;}			    
+	    })
+	    .colorAccessor(function (d) { return getpm25AQI(d.value.avg); })
+	    .brushOn(false)
+	    .label(function (d) {
+		return d.value.avg;
+            }) 
+            .title(function (d) {
+		return d3.time.day(d.key);
+            })
+	    .renderLabel(true)
+	    .yAxisLabel("PM 25");
+	pm25Chart.yAxis().ticks(4);
+	pm25Chart.xUnits(d3.time.hours);
 
 	tempChart
 	    .width(Math.round(Width*0.5)).height(chartHeightDim)
 	    .dimension(hourDim)
 	    .group(tempAvgGroupByHour)
+	    .margins({top: 10, right: 50, bottom: 30, left: 50})
 	    .transitionDuration(500)
 	    .y(d3.scale.linear().domain([0, 60]))
 	    .x(d3.time.scale().domain([minDate,maxDate]))
+	    .round(dc.round.floor)
+            .alwaysUseRounding(true)
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
@@ -993,28 +1110,31 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		return d3.time.day(d.key);
             })
 	    .renderLabel(true)
-     	    .xAxis().ticks(8);
+	    .yAxisLabel("Temp")
 	tempChart.yAxis().ticks(4);
-
+	tempChart.xUnits(d3.time.hours);
 
 	humidityChart
 	    .width(Math.round(Width*0.5)).height(chartHeightDim)
 	    .dimension(hourDim)
 	    .group(humidityAvgGroupByHour)
+	    .margins({top: 10, right: 50, bottom: 30, left: 50})
 	    .transitionDuration(500)
 	    .y(d3.scale.linear().domain([0, 100]))
 	    .x(d3.time.scale().domain([minDate,maxDate]))
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
+	    .brushOn(false)
 	    .colorAccessor(function (d,i) {
 		if(d.value.avg < 20) { return "yellow";}			    
 		if(d.value.avg < 40) { return "blue";}			    
 		if(d.value.avg < 50 ){ return "green";}			    
 		if(d.value.avg < 100){ return "red";}			    
 	    })
-     	    .xAxis().ticks(8);
+	    .yAxisLabel("Humidity");
 	humidityChart.yAxis().ticks(4);
+	humidityChart.xUnits(d3.time.hours);
 
 	dataCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */
             .dimension(datapointCF)
