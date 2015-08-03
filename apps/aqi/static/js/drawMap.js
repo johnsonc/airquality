@@ -851,7 +851,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		else if(a > 400){ return c[5] ;}			    
 	    })
 	    .colorAccessor(function (d) { return d.value.avg; })
-	    .group(aqiAvgGroupByHour, 'Average AQI per Hour')
+	    .group(aqiAvgGroupByDay0, 'Average AQI per Day')
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
@@ -864,7 +864,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
             })
 	    .xAxisLabel("Time");
 	    timeChart.yAxis().ticks(3);
-	timeChart.xUnits(d3.time.hours);
+	timeChart.xUnits(d3.time.days);
 	
 	timeChart.focusCharts([pm10Chart, pm25Chart, tempChart, humidityChart]);
 
@@ -964,7 +964,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .group(pm10AvgGroupByHour)
 	    .margins({top: 10, right: 50, bottom: 30, left: 50})
 	    .transitionDuration(500)
-	    .y(d3.scale.linear().domain([0, 600]))
+	    .y(d3.scale.linear().domain([0, 300]))
 	    .x(d3.time.scale().domain([minDate,maxDate]))
 	    .round(dc.round.floor)
             .alwaysUseRounding(true)
@@ -1073,10 +1073,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .colorAccessor(function (d) { return getpm25AQI(d.value.avg); })
 	    .brushOn(false)
 	    .label(function (d) {
-		return d.value.avg;
+		return d3.time.day(d.key);
             }) 
             .title(function (d) {
-		return d3.time.day(d.key);
+		return d.value.avg;
             })
 	    .renderLabel(true)
 	    .yAxisLabel("PM 25");
