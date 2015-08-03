@@ -382,6 +382,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	*/
 	var minDate = dateDim.bottom(1)[0].time;
 	var maxDate = dateDim.top(1)[0].time;
+	var prevDate =  new Date(maxDate - 180000000)
 
 	datapointIndex = datapointCF.dimension(function(d){ return d.index; });
 	datapointIndexs = datapointIndex.group();
@@ -852,6 +853,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    })
 	    .colorAccessor(function (d) { return d.value.avg; })
 	    .group(aqiAvgGroupByDay0, 'Average AQI per Day')
+	    //.filter([prevDate, maxDate])
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
@@ -860,13 +862,15 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		if (isNaN(value)) {
                     value = 0;
 		}
-		return numberFormat(value) + '\n on \n' + dateFormat(d.key) ;
-            })
+		return numberFormat(value) + '\n on \n' + dateFormat(d.key);
+            })	   
 	    .xAxisLabel("Time");
-	    timeChart.yAxis().ticks(3);
+	timeChart.yAxis().ticks(3);
 	timeChart.xUnits(d3.time.days);
 	
 	timeChart.focusCharts([pm10Chart, pm25Chart, tempChart, humidityChart]);
+
+	
 
 	/*
 	yearRingChart
@@ -984,10 +988,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .colorAccessor(function (d) { return getpm10AQI(d.value.avg); })
 	    .brushOn(false)
 	    .label(function (d) {
-		return d.value.avg;
+		return d3.time.day(d.key).substr(0,12);
             }) 
             .title(function (d) {
-		return d3.time.day(d.key);
+		return d.value.avg.toString().substr(0,5);
             })
 	    .renderLabel(true)
 	    .yAxisLabel("PM 10");
@@ -1073,10 +1077,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .colorAccessor(function (d) { return getpm25AQI(d.value.avg); })
 	    .brushOn(false)
 	    .label(function (d) {
-		return d3.time.day(d.key);
+		return d3.time.day(d.key).substr(0,12);
             }) 
             .title(function (d) {
-		return d.value.avg;
+		return d.value.avg.toString().substr(0,5);
             })
 	    .renderLabel(true)
 	    .yAxisLabel("PM 25");
@@ -1104,10 +1108,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    })
 	    .brushOn(false)
 	    .label(function (d) {
-		return d.value.avg;
+		return d3.time.day(d.key).substr(0,12);
             }) 
             .title(function (d) {
-		return d3.time.day(d.key);
+		return d.value.avg.toString().substr(0,5);
             })
 	    .renderLabel(true)
 	    .yAxisLabel("Temp")
@@ -1126,6 +1130,12 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		return p.value.avg;
 	    })
 	    .brushOn(false)
+	    .label(function (d) {
+		return d3.time.day(d.key).substr(0,12);
+            }) 
+            .title(function (d) {
+		return d.value.avg.toString().substr(0,5);
+            })
 	    .colorAccessor(function (d,i) {
 		if(d.value.avg < 20) { return "yellow";}			    
 		if(d.value.avg < 40) { return "blue";}			    
@@ -1136,6 +1146,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	humidityChart.yAxis().ticks(4);
 	humidityChart.xUnits(d3.time.hours);
 
+
+	
 	dataCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */
             .dimension(datapointCF)
             .group(all)	   
@@ -1145,7 +1157,6 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		all:'All records selected. Please click on the graph to apply filters.'
             });
 	
-
 	dc.renderAll();
 
     d3.select('#devicePicker').on('change', function(){ 	
