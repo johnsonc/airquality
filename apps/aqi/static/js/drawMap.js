@@ -240,7 +240,7 @@ function dataUpdate(error, newdatapoints){
 
 
 var begin = setTimeout(function(){
-   //streamStart();
+   streamStart();
 }, 10000);
 
 
@@ -382,7 +382,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	*/
 	var minDate = dateDim.bottom(1)[0].time;
 	var maxDate = dateDim.top(1)[0].time;
-	var prevDate =  new Date(maxDate - 180000000)
+	var prevDate = d3.time.day.offset(new Date(), -1);
+	var prevWeekDate = d3.time.day.offset(new Date(), -7);
 
 	datapointIndex = datapointCF.dimension(function(d){ return d.index; });
 	datapointIndexs = datapointIndex.group();
@@ -794,7 +795,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	var dimwidth = chartWidthDim+20;
 	var dimheight=chartHeightDim +20;
 	totalDim = datapointCF.dimension(function(d) { return d.count_large; });   
-
+	
 
 	//var pm10Chart2  = dc.barChart("#pm10-chart2"); 
 	//var pm25Chart2 = dc.barChart('#pm25-chart2');
@@ -836,8 +837,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .transitionDuration(500)
 	    .y(d3.scale.linear().domain([0, 600]))
 	    .elasticY(true)
-	    .x(d3.time.scale().domain([new Date("2015-07-20"), maxDate]))
-	    .centerBar(true)
+	    .x(d3.time.scale().domain([prevWeekDate, maxDate]))
 	    .gap(4)
 	    .renderHorizontalGridLines(true)
 	    .alwaysUseRounding(true)
@@ -853,7 +853,6 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    })
 	    .colorAccessor(function (d) { return d.value.avg; })
 	    .group(aqiAvgGroupByDay0, 'Average AQI per Day')
-	    //.filter([prevDate, maxDate])
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
@@ -972,6 +971,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .x(d3.time.scale().domain([minDate,maxDate]))
 	    .round(dc.round.floor)
             .alwaysUseRounding(true)
+	    .renderHorizontalGridLines(true)
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
@@ -1060,6 +1060,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .y(d3.scale.linear().domain([0, 1000]))
 	    .x(d3.time.scale().domain([minDate,maxDate]))
 	    .round(dc.round.floor)
+	    .renderHorizontalGridLines(true)
             .alwaysUseRounding(true)
 	    .valueAccessor(function(p) {
 		return p.value.avg;
@@ -1095,6 +1096,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .transitionDuration(500)
 	    .y(d3.scale.linear().domain([0, 60]))
 	    .x(d3.time.scale().domain([minDate,maxDate]))
+	    .renderHorizontalGridLines(true)
 	    .round(dc.round.floor)
             .alwaysUseRounding(true)
 	    .valueAccessor(function(p) {
@@ -1124,6 +1126,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .group(humidityAvgGroupByHour)
 	    .margins({top: 10, right: 50, bottom: 30, left: 50})
 	    .transitionDuration(500)
+	    .renderHorizontalGridLines(true)
 	    .y(d3.scale.linear().domain([0, 100]))
 	    .x(d3.time.scale().domain([minDate,maxDate]))
 	    .valueAccessor(function(p) {
