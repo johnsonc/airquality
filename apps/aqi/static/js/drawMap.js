@@ -4,13 +4,21 @@ function p(name){
 function toPositiveRadian(r){ return r > 0 ? r : r + Math.PI*2; }
 function toDegree(r){ return r*180/Math.PI; }
 
-var width = 960,
-height = 600,
-centered;
+
+var Width = $(window).width() 
+var Height = $(window).height() 
+
+var mapwidth = Math.round(Width*0.3);
+mapheight = 600,
+centered = true;
 zoomRender = false;
 
+var varWidth = Math.round(Width*0.5);
+var varHeight = Math.round(Width*0.3);
+
+
 var proj = d3.geo.azimuthalEqualArea()
-    .scale(width)
+    .scale(mapwidth)
     .translate([33.5, 262.5])
     .rotate([100, -45])
     .center([-17.6076, -4.7913]) // rotated [-122.4183, 37.7750]
@@ -20,15 +28,13 @@ var path = d3.geo.path().projection(proj);
 
 
 var svg = d3.select("#map").append("svg")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("width", mapwidth)
+    .attr("height", mapheight)
 
 var g = svg.append("g");
 //d3=d3;
 
 // Leaflet
-
-
 var OpenWeatherMap_Clouds = L.tileLayer('http://{s}.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
@@ -142,7 +148,7 @@ var baseMaps = {
 };
 
 var overlayMaps = {
-    "DefaultOverlay": OpenMapSurfer_AdminBounds,
+    "OverlayBoundaries": OpenMapSurfer_AdminBounds,
     "Temperature":OpenWeatherMap_Temperature,
     "Wind":  OpenWeatherMap_Wind,
     "Air Pressure": OpenWeatherMap_PressureContour,
@@ -189,8 +195,6 @@ function clicked(d) {
     zoomRender = true;
 }
 
-var stateNameToAbv = {"Alabama":"AL","Alaska":"AK","American Samoa":"AS","Arizona":"AZ","Arkansas":"AR","California":"CA","Colorado":"CO","Connecticut":"CT","Delaware":"DE","District Of Columbia":"DC","Federated States Of Micronesia":"FM","Florida":"FL","Georgia":"GA","Guam":"GU","Hawaii":"HI","Idaho":"ID","Illinois":"IL","Indiana":"IN","Iowa":"IA","Kansas":"KS","Kentucky":"KY","Louisiana":"LA","Maine":"ME","Marshall Islands":"MH","Maryland":"MD","Massachusetts":"MA","Michigan":"MI","Minnesota":"MN","Mississippi":"MS","Missouri":"MO","Montana":"MT","Nebraska":"NE","Nevada":"NV","New Hampshire":"NH","New Jersey":"NJ","New Mexico":"NM","New York":"NY","North Carolina":"NC","North Dakota":"ND","Northern Mariana Islands":"MP","Ohio":"OH","Oklahoma":"OK","Oregon":"OR","Palau":"PW","Pennsylvania":"PA","Puerto Rico":"PR","Rhode Island":"RI","South Carolina":"SC","South Dakota":"SD","Tennessee":"TN","Texas":"TX","Utah":"UT","Vermont":"VT","Virgin Islands":"VI","Virginia":"VA","Washington":"WA","West Virginia":"WV","Wisconsin":"WI","Wyoming":"WY"};
-
 
 var stateNametoAbv1 = {'Andaman and Nicobar': 'AN', 'Andhra Pradesh': 'AP', 'Arunachal Pradesh': 'AR', 'Assam': 'AS', 'Bihar': 'BR', 'Chandigarh': 'CH', 'Chhattisgarh': 'CT', 'Dadra and Nagar Haveli': 'DN', 'Daman and Diu': 'DD', 'Delhi': 'DL', 'Goa': 'GA', 'Gujarat': 'GJ', 'Haryana': 'HR', 'Himachal Pradesh': 'HP', 'Jammu and Kashmir': 'JK', 'Jharkhand': 'JH', 'Karnataka': 'KA', 'Kerala': 'KL', 'Lakshadweep': 'LD', 'Madhya Pradesh': 'MP', 'Maharashtra': 'MH', 'Manipur': 'MN', 'Meghalaya': 'ML', 'Mizoram': 'MZ', 'Nagaland': 'NL', 'Orissa': 'OR', 'Puducherry': 'PY', 'Punjab': 'PB', 'Rajasthan': 'RJ', 'Sikkim': 'SK', 'Tamil Nadu': 'TN', 'Telengana': 'TS', 'Tripura': 'TR', 'Uttar Pradesh': 'UP', 'Uttarakhand': 'UT', 'West Bengal': 'WB'}
 
@@ -199,41 +203,45 @@ var timerId; // current timer if started
 function streamStart(){
     if (timerId) return;
     timerId = setInterval( streamUpdate, 30000);
-    streamUpdate();
+    //streamUpdate();
+    console.log('Stream started');
 }
 
 function streamStop() {
     clearInterval(timerId);
     timerId = null;
+    console.log('Stream stopped');
 }
 
 function streamUpdate()
 {
+    if (!lastStreamTimeStamp) { return };
     now = new Date();
     queue()
 	.defer(d3.json, "/airquality/api/aqfeed/"+lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
 	.await(dataUpdate);        
-    
-    function dataUpdate(error, newdatapoints){    
-	if(newdatapoints.length != 0){
-	    processdata(newdatapoints);
-	    console.log(newdatapoints);	
-	    console.log('Stream updated');
-	    datapointCF.add(newdatapoints);
-	    dc.renderAll();
-	    console.log('Charts updated from stream');
-	}
-	else{
-	    console.log('Nothing to add from stream ');
-	}   
-	lastStreamTimeStamp = new Date();
-    }
 }
 
+
+function dataUpdate(error, newdatapoints){    
+    if(newdatapoints.length != 0){
+	processdata(newdatapoints);
+	console.log(newdatapoints);	
+	console.log('Stream updated');
+	datapointCF.add(newdatapoints);
+	dc.renderAll();
+	console.log('Charts updated from stream');
+    }
+    else{
+	console.log('Nothing to add from stream ');
+    }   
+    lastStreamTimeStamp = new Date();
+}
+
+
 var begin = setTimeout(function(){
-    streamStart();
-    console.log('Stream started');
-}, 15000);
+   //streamStart();
+}, 10000);
 
 
 var widthScale = d3.scale.pow().exponent(.5);
@@ -244,7 +252,8 @@ var parseDate = d3.time.format("%x %H:%M").parse;
 aqparseDate = d3.time.format("%Y-%m-%dT%H:%M").parse;
 var datapoint;
 var datapointCF;
-
+var dateFormat = d3.time.format('%m/%d/%Y');
+var numberFormat = d3.format('.2f');
 
 var getpm10AQI = function(d){    
     scale = [
@@ -282,22 +291,22 @@ var getpm25AQI = function(d){
 function getAQI(t){
     pm25aqi = getpm25AQI(t.pm25);
     pm10aqi = getpm10AQI(t.pm10);
-    if (pm10aqi <= pm25aqi){ return pm25aqi;} 
-    else { return pm10aqi; }
+    if (pm10aqi <= pm25aqi){ return {'aqi': pm10aqi, 'pollutant':'pm10'  }; } 
+    else { return {'aqi': pm25aqi, 'pollutant':'pm25' };} 
 }
-
- //'aqi': pm10aqi, 'pollutant':'pm10'  }; }
- //return {'aqi': pm25aqi, 'pollutant':'pm25' };}
 
 //    .defer(d3.json, "/static/data/india-topo.json")
 //    .defer(d3.json, "/static/data/in-states-topo.json")
 //    .defer(d3.json, "/static/data/india-states-gramener.json")
 
 function processdata(datapoints){
+    console.log(datapoints.length);
     datapoints.forEach(function(t,i){
 	t['time'] = aqparseDate(t['created_on'].substr(0,16));
 	t['index'] = i;
-	t['aqi'] = getAQI(t);
+	a = getAQI(t);
+	t['aqi'] = a.aqi;
+	t['pollutant'] = a.pollutant;
 	t['day']= t.time.getDay();
 	t['month']= t.time.getMonth();
 	t['year']= t.time.getFullYear();
@@ -352,11 +361,12 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
     function drawCharts(){
 	
+	
 	datapointCF = crossfilter(datapoints);
 	all = datapointCF.groupAll();
 
 	dateDim = datapointCF.dimension(function(d) { return d.time;})
-
+	    /*
 	hourdateDimG = dateDim.group(d3.time.hour);
 	daydateDimG = dateDim.group(d3.time.day);
 	monthdateDimG = dateDim.group(d3.time.month);
@@ -369,10 +379,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	months = month.group();
 	year = datapointCF.dimension(function(d){ return Math.floor(d.time.getFullYear()/1)*1; });
 	years = year.group();
-	
-
-
-	
+	*/
 	var minDate = dateDim.bottom(1)[0].time;
 	var maxDate = dateDim.top(1)[0].time;
 
@@ -396,16 +403,46 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 	small_particle_count = datapointCF.dimension(function(d){ return d.count_small; });
 	small_particle_counts = small_particle_count.group(Math.floor);
+
         large_particle_count = datapointCF.dimension(function(d){ return d.count_large; });
 	large_particle_counts = large_particle_count.group(Math.floor);	
 
 
+
+	/*
+	var quarter = ndx.dimension(function (d) {
+            var month = d.dd.getMonth();
+            if (month <= 2) {
+		return 'Q1';
+            } else if (month > 2 && month <= 5) {
+		return 'Q2';
+            } else if (month > 5 && month <= 8) {
+		return 'Q3';
+            } else {
+		return 'Q4';
+            }
+	});
+	var quarterGroup = quarter.group().reduceSum(function (d) {
+            return d.volume;
+	}); 
+
+
+	var dayOfWeek = ndx.dimension(function (d) {
+        var day = d.dd.getDay();
+        var name = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        return day + '.' + name[day];
+	});
+	var dayOfWeekGroup = dayOfWeek.group();
+
+	*/
 
 	var chartDim = Math.min(document.getElementById('mappa').clientWidth, window.innerHeight) - 20;	    
 	var chartWidthDim = 320; //Math.min(document.getElementById('mappa').clientWidth, window.innerHeight ) - 20;
 	var chartHeightDim = 96; //(window.innerHeight)/6;
 
 	//ndx = crossfilter(datapoints);
+
+	    /*
 	function reduceAddAvg(attr) {
 	    return function(p,v) {
 		++p.count
@@ -428,11 +465,47 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    return {count:0, sum:0, avg:0, imei:0};
 	}
 
-	
+	*/
+        function reduceAddAvg(attr) {
+	    return function(p,v) {		
+		if (_.isNumber(v[attr])) {
+		    ++p.count;
+		    p.sum += v[attr];
+		    p.avg = (p.count === 0) ? 0 : p.sum/p.count; 
+		    p.imei= v['imei'];
+		    p.attr = v[attr]
+		    // guard against dividing by zero
+		}
+		else if (_.isNumber(p.attr)){	
+		    // smoothen out NaN/ values by replacing them with previous values.. 
+		     v[attr] = p.attr 
+		}
+		else
+		{ // initial p is itself NaN
+		    v[attr]= 0
+		}
 
+		return p;
+	    };
+	}
+	function reduceRemoveAvg(attr) {
+	    return function(p,v) {
+		--p.count;
+		if (_.isNumber(v[attr])) {
+		    p.sum -= v[attr];
+		    p.avg = (p.count === 0) ? 0 : p.sum/p.count;
+		    p.imei= v['imei'];
+		}
+		return p;
+	    };
+	}
+	function reduceInitAvg() {
+	    return {count:0, sum:0, avg:0, imei:0, attr:0}; 
+	}
+	
 	pm10AvgGroup = pm10.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
 
-
+	    /*
 	var deviceDim = datapointCF.dimension(function(d) { return d.imei; });   
 	var csDim = datapointCF.dimension(function(d) { return d.count_small; });   
 	var clDim  = datapointCF.dimension(function(d) { return d.count_large; });   
@@ -440,6 +513,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	var tempDim = datapointCF.dimension(function(d) { return d.temperature; });   
 	var pm25Dim = datapointCF.dimension(function(d) { return d.pm25; });   
 	var pm10Dim = datapointCF.dimension(function(d) { return d.pm10; });   
+	*/
 
 	// jdims 
 	dayDim = datapointCF.dimension(function(d) {return d3.time.day(d.time)});
@@ -449,7 +523,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	hourtempDim = datapointCF.dimension(function(d) {return d3.time.hour(d.time)});
 	hourhumDim = datapointCF.dimension(function(d) {return d3.time.hour(d.time)});
 
-	pm10AvgGroupByHour = hourpm10Dim.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
+	pm10AvgGroupByHour = hourDim.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
+	pm10AvgGroupByTime =  dateDim.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
+	pm10AvgGroupByDay =  dayDim.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
+
 	pm25AvgGroupByHour = hourpm25Dim.group().reduce(reduceAddAvg('pm25'), reduceRemoveAvg('pm25'), reduceInitAvg);
 	tempAvgGroupByHour = hourtempDim.group().reduce(reduceAddAvg('temperature'), reduceRemoveAvg('temperature'), reduceInitAvg);
 	humidityAvgGroupByHour = hourhumDim.group().reduce(reduceAddAvg('humidity'), reduceRemoveAvg('humidity'), reduceInitAvg);
@@ -687,7 +764,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	
 	
 	// Charts
-	var timeChart  = dc.barChart("#time-chart"); 
+	var dataCount  = dc.dataCount("#data-count");
+	var timeChart  = dc.barChart("#time-chart");
 	var pm10Chart  = dc.barChart("#pm10-chart"); 
 	var pm25Chart = dc.barChart('#pm25-chart');
 	var tempChart = dc.barChart('#temp-chart');
@@ -705,26 +783,45 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	//var tempChart2 = dc.barChart('#temp-chart2');
 	//var humidityChart2 = dc.barChart('#hum-chart2');
 
-
 	//var yearRingChart   = dc.pieChart("#chart-ring-year");
 	
 	timeChart
-	    .dimension(dayDim)
-	    .group(aqiAvgGroupByDay)
-	    .width(900)
+	    .width(Width*0.95)
 	    .height(80)
+	    .dimension(dayDim)
 	    .margins({top: 10, right: 50, bottom: 30, left: 50})
-	    .transitionDuration(100)
-	    .valueAccessor(function(p) {
-		return p.value.avg;
-	    })
-	    .x(d3.time.scale().domain([new Date("2015-07-15"), maxDate]))
+	    .transitionDuration(500)
+	    .y(d3.scale.linear().domain([0, 600]))
 	    .elasticY(true)
+	    .x(d3.time.scale().domain([new Date("2015-07-15"), maxDate]))
 	    .centerBar(true)
 	    .gap(4)
 	    .renderHorizontalGridLines(true)
+	    .alwaysUseRounding(true)
+	    .colors(function (a) {
+		// AQI Color Standards
+		var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];	
+		if(a < 50 ){ return c[0];}
+		else if(a < 101){ return c[1];}			    
+		else if(a < 201){ return c[2];}			    
+		else if(a < 301){ return c[3] ;}			    
+		else if(a < 401){ return c[4] ;}			    
+		else if(a > 400){ return c[5] ;}			    
+	    })
+	    .colorAccessor(function (d) { return d.value.avg; })
+	    .group(aqiAvgGroupByDay, 'Average AQI per day')
+	    .valueAccessor(function(p) {
+		return p.value.avg;
+	    })
+	    .title(function (d) {
+		var value = d.value.avg ? d.value.avg : d.value;
+		if (isNaN(value)) {
+                    value = 0;
+		}
+		return numberFormat(value) + '\n on \n' + dateFormat(d.key) ;
+            })
 	    .xAxisLabel("Time");
-	    timeChart.yAxis().ticks(2);
+	    timeChart.yAxis().ticks(3);
 	    timeChart.xUnits(d3.time.days);
 	
 	/*
@@ -770,7 +867,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 
 	csChart
-	    .width(chartWidthDim).height(chartHeightDim)
+	    .width(Math.round(Width*0.5)).height(chartHeightDim)
 	    .dimension(dateDim)
 	    .group(count_smallGroup)
 	    .barPadding(0.5)
@@ -786,31 +883,37 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 
 	pm10Chart
-	    .width(chartWidthDim).height(chartHeightDim)
+	    .width(Math.round(Width*0.5)).height(chartHeightDim)
 	    .dimension(hourDim)
 	    .group(pm10AvgGroupByHour)
-	    .barPadding(0.5)
+	    .brushOn(false)
 	    .y(d3.scale.linear().domain([0, 500]))
-            //.elasticY(true)
-	    .outerPadding(0.1)
-	    .colorAccessor(function (d,i) {
-		var a = getpm10AQI(d.value.avg)
-		if(a < 50 ){ return d3.rgb(0, 228, 0);  }
-		if(a < 101){ return d3.rgb(255, 255, 0);}			    
-		if(a < 201){ return d3.rgb(255, 126, 0);}			    
-		if(a < 301){ return d3.rgb(255, 0, 0)  ;}			    
-		if(a < 401){ return d3.rgb(153, 0, 76) ;}			    
-		if(a > 400){ return d3.rgb(126, 0, 35) ;}			    
-	    })	
+            .elasticY(true)
+	    .colors(function (a) {
+		// AQI Color Standards
+		var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];	
+		if(a < 50 ){ return c[0];}
+		else if(a < 101){ return c[1];}			    
+		else if(a < 201){ return c[2];}			    
+		else if(a < 301){ return c[3] ;}			    
+		else if(a < 401){ return c[4] ;}			    
+		else if(a > 400){ return c[5] ;}			    
+	    })
+	    .colorAccessor(function (d) { return getpm10AQI(d.value.avg); })
 	    .x(d3.time.scale().domain([minDate,maxDate]))
+            .elasticX(true)
+	    .centerBar(true)
+	    .gap(1)
+	    .renderHorizontalGridLines(true)
+	    .alwaysUseRounding(true)
+	    .rangeChart(timeChart)
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
-	    .transitionDuration(500)
-	    .yAxisLabel("PM 10");	    
+	    .transitionDuration(500);
 	pm10Chart.yAxis().ticks(4);
      	pm10Chart.xAxis().ticks(8);    
-
+	
 
 
 	/*pm10Chart2
@@ -836,32 +939,38 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	*/
 	
 	pm25Chart
-	    .width(chartWidthDim).height(chartHeightDim)
+	    .width(Math.round(Width*0.5)).height(chartHeightDim)
 	    .dimension(hourDim)
 	    .group(pm25AvgGroupByHour)
 	    .transitionDuration(500)
 	    .y(d3.scale.linear().domain([0, 1000]))
-            //.elasticY(true)
+            .elasticY(true)
 	    .x(d3.time.scale().domain([minDate,maxDate]))
+	    .elasticX(true)
+	    .centerBar(true)
+	    .gap(1)
+	    .renderHorizontalGridLines(true)
+	    .alwaysUseRounding(true)
 	    .valueAccessor(function(p) {
 		return p.value.avg;
 	    })
-	    .colorAccessor(function (d,i) {
-		var a = getpm25AQI(d.value.avg)
-		if(a < 50 ){ return d3.rgb(0, 228, 0);  }
-		if(a < 101){ return d3.rgb(255, 255, 0);}			    
-		if(a < 201){ return d3.rgb(255, 126, 0);}			    
-		if(a < 301){ return d3.rgb(255, 0, 0)  ;}			    
-		if(a < 401){ return d3.rgb(153, 0, 76) ;}			    
-		if(a > 400){ return d3.rgb(126, 0, 35) ;}			    
+	    .colors(function (a) {
+		// AQI Color Standards
+		var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];	
+		if(a < 50 ){ return c[0];}
+		else if(a < 101){ return c[1];}			    
+		else if(a < 201){ return c[2];}			    
+		else if(a < 301){ return c[3] ;}			    
+		else if(a < 401){ return c[4] ;}			    
+		else if(a > 400){ return c[5] ;}			    
 	    })
-	    .yAxisLabel("PM 25")
+	    .colorAccessor(function (d) { return getpm25AQI(d.value.avg); })
      	    .xAxis().ticks(8);
 	pm25Chart.yAxis().ticks(4);
 
 
 	tempChart
-	    .width(chartWidthDim).height(chartHeightDim)
+	    .width(Math.round(Width*0.5)).height(chartHeightDim)
 	    .dimension(hourDim)
 	    .group(tempAvgGroupByHour)
 	    .transitionDuration(500)
@@ -876,13 +985,20 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		if(d.value.avg < 32 ){ return "orange";}			    
 		if(d.value.avg > 31){ return "red";}			    
 	    })
-	    .yAxisLabel("Temp")
+	    .brushOn(false)
+	    .label(function (d) {
+		return d.value.avg;
+            }) 
+            .title(function (d) {
+		return d3.time.day(d.key);
+            })
+	    .renderLabel(true)
      	    .xAxis().ticks(8);
 	tempChart.yAxis().ticks(4);
 
 
 	humidityChart
-	    .width(chartWidthDim).height(chartHeightDim)
+	    .width(Math.round(Width*0.5)).height(chartHeightDim)
 	    .dimension(hourDim)
 	    .group(humidityAvgGroupByHour)
 	    .transitionDuration(500)
@@ -897,11 +1013,17 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		if(d.value.avg < 50 ){ return "green";}			    
 		if(d.value.avg < 100){ return "red";}			    
 	    })
-	    .yAxisLabel("Humidity")
      	    .xAxis().ticks(8);
 	humidityChart.yAxis().ticks(4);
 
-
+	dataCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */
+            .dimension(datapointCF)
+            .group(all)	   
+            .html({
+		some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
+                    ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
+		all:'All records selected. Please click on the graph to apply filters.'
+            });
 	
 
 	dc.renderAll();

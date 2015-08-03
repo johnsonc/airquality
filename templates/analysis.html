@@ -8,7 +8,12 @@
   <link rel="stylesheet" href={% static "/airquality/static/leaflet/leaflet.css" %} />
   <link rel="stylesheet" href={% static "/airquality/static/chosen/chosen.min.css" %} /> 
   <link rel="stylesheet" type="text/css" href="/airquality/static/keen/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" type="text/css" href="/airquality/static/keen/assets/css/keen-dashboards.css" />
+  <link rel="stylesheet" type="text/css" href="/airquality/static/keen/assets/css/keen-dashboards.css" /> 
+    <style>
+      @import url("http://fonts.googleapis.com/css?family=Lato:400,700,900,400italic");
+    </style>
+    <!--<link rel="stylesheet" type="text/css" href="/static/css/flat-ui.css" /> -->
+    <link rel="stylesheet" href="/airquality/static/css/flat-ui-drum.css" type="text/css">
 
 </head>
 <body class="application">
@@ -42,11 +47,21 @@
       <div class="fullrow">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Total: <div class="total"> </div> readings.
+            Air Quality Dashboard 
+	    <div id="data-count" style="float:right">
+
+	      <a href="javascript:dc.filterAll(); dc.renderAll();">Reset Filters</a>
+	      </div>
+	    
+
           </div>
           <div class="chart-stage">
 	    <div id=""> Time line</div> 
-	    <div id="time-chart"></div> 
+	    <div id="time-chart">
+	      <span class='reset' style='display: none;'>  
+		Current filter: <span class='filter'></span>
+	    </div> 
+
           </div>
           <div class="chart-notes">
             AQI over time
@@ -57,18 +72,15 @@
     </div>
 
     <div class="row">
-      <div class="col-sm-8">
+      <div class="col-sm-5">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Air Quality Dashboard &nbsp; &nbsp; | 
 	    
-	    <div id="banner">
-	      Select a device:
+	    <div id="banner" style="text-align:right">
+	      Select a device to filter:
 	      <select id="devicePicker">
 	      </select>
-	    </div>
-	    
-	    <a href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>
+	    </div>	    
 
           </div>
           <div class="chart-stage">
@@ -82,7 +94,7 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-7">
         <div class="chart-wrapper">
           <div class="chart-title">
             Sensor data
@@ -90,12 +102,24 @@
           <div class="chart-stage">
             <div id="dashboard">
 	      <div class="max"> </div>
-	      <div id="pm10-chart"></div> <br/>
-	      <div id="pm25-chart"></div> <br/>
-	      <div id="temp-chart"></div> <br/>
-	      <div id="hum-chart"></div> <br/>
-	    </div>
-	            
+	      <div id="pm10-chart"> 
+		<span class='reset' style='display: none;'>  
+		  Current filter: <span class='filter'></span>		  
+	      </div> <br/>
+	      <div id="pm25-chart">
+		<span class='reset' style='display: none;'>  
+		  Current filter: <span class='filter'></span>
+		  
+	      </div> <br/>
+	      <div id="temp-chart">
+		<span class='reset' style='display: none;'>  
+		  Current filter: <span class='filter'></span>
+	      </div> <br/>
+	      <div id="hum-chart"> 
+		<span class='reset' style='display: none;'>  
+		  Current filter: <span class='filter'></span>
+	      </div> <br/>
+	    </div>	            
           </div>
           <div class="chart-notes">
             Notes about this chart
@@ -243,6 +267,8 @@
   <script src={% static "/airquality/static/js/lib/d3.js" %}></script>
   <script src={% static "/airquality/static/js/lib/crossfilter.js"%}></script>
   <script src={% static "/airquality/static/js/lib/dc.js" %}></script>
+  <script src={% static "/airquality/static/js/lib/reductio.min.js" %}></script>
+  <script src={% static "/airquality/static/js/lib/underscore-min.js" %}></script>
 
   <script src={% static "/airquality/static/js/lib/topojson.v1.js" %}></script>
   <script src={% static "/airquality/static/js/lib/queue.js" %}></script>
