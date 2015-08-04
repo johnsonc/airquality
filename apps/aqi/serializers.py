@@ -40,4 +40,4 @@ class AQDeviceSerializer(serializers.Serializer):
 class AQFeedSerializer(serializers.ModelSerializer):
      class Meta:
          model = AQFeed
-         fields = ('name','imei','created_on', 'humidity', 'temperature', 'pm10', 'pm25', 'count_large', 'count_small', 'lat', 'lon')
+         fields = ('name','imei','created_on', 'humidity', 'temperature', 'pm10', 'pm25', 'count_large', 'count_small', 'lat', 'lon', 'ip')
