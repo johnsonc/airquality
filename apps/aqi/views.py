@@ -123,13 +123,22 @@ def aqfeed_detail(request, pk):
         aqfeed.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
 @api_view(['GET'])
 def aqdatapoint(request):
     """
     Add a AQ data point via GET
     """
-    f = open('/tmp/aqrequest.log', 'w')
-    f.write(str(request.__dict__))
+    deviceip = get_client_ip(request)
+    f = open('/tmp/aqrequest.log', 'a')
+    f.write(deviceip)
     f.close()
     if request.method == "GET":        
         #import pdb; pdb.set_trace()
@@ -142,7 +151,7 @@ def aqdatapoint(request):
         d['count_large'] = request.GET['l']
         d['count_small'] = request.GET['s']        
         try:
-            d['ip'] = request.GET['ip']
+            d['ip'] = deviceip
         except:
             pass
         d['created_on'] = datetime.datetime.now()
