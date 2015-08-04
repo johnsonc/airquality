@@ -1,3 +1,4 @@
+
 # Create your views here.
 
 import json
@@ -78,7 +79,7 @@ def aqfeed_list(request):
     """
     if request.method == 'GET':
         ed = datetime.datetime.now()
-        sd = ed - datetime.timedelta(days=5)         
+        sd = ed - datetime.timedelta(days=2)         
         aqfeeds = AQFeed.objects.filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
         serializer = AQFeedSerializer(aqfeeds, many=True)
         return Response(serializer.data)
@@ -127,16 +128,19 @@ def aqdatapoint(request):
     """
     Add a AQ data point via GET
     """
+    f = open('/tmp/aqrequest.log', 'w')
+    f.write(str(request.__dict__))
+    f.close()
     if request.method == "GET":        
         #import pdb; pdb.set_trace()
         d={}
-        d['imei'] = request.GET['imei']
+        d['imei'] = request.GET['i']
         d['humidity'] = request.GET['h']
         d['temperature'] = request.GET['t']
-        d['pm10'] = request.GET['pm10']
-        d['pm25'] = request.GET['pm25']
-        d['count_large'] = request.GET['cl']
-        d['count_small'] = request.GET['cs']        
+        d['pm10'] = request.GET['10']
+        d['pm25'] = request.GET['25']
+        d['count_large'] = request.GET['l']
+        d['count_small'] = request.GET['s']        
         try:
             d['ip'] = request.GET['ip']
         except:
