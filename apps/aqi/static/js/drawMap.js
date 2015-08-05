@@ -1132,11 +1132,12 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	
 
 	pm10Chart2 
-	    .width(Math.round(Width*0.33)).height(chartHeightDim)
+	    .width(Math.round(Width*0.3)).height(chartHeightDim)
 	    .dimension(pm10)
 	    .group(pm10s)
+	    .margins({top: 10, right: 50, bottom: 30, left: 50})
 	    .transitionDuration(500)
-            .elasticY(true)	  
+            //.elasticY(true)	  
 	    .gap(2)
 	    .x(d3.scale.linear().domain([1, d3.min([pm10.top(1).pm10, 600])]))
             .round(dc.round.floor)
@@ -1159,11 +1160,12 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	}); 	
 
 	pm25Chart2 
-	    .width(Math.round(Width*0.33)).height(chartHeightDim)
+	    .width(Math.round(Width*0.3)).height(chartHeightDim)
 	    .dimension(pm25)
 	    .group(pm25s)
+	    .margins({top: 10, right: 50, bottom: 30, left: 50})
 	    .transitionDuration(500)
-            .elasticY(true)	  
+            //.elasticY(true)	  
 	    .gap(2)
 	    .x(d3.scale.linear().domain([1, d3.min([pm25.top(1).pm25, 1500])]))
             .round(dc.round.floor)
