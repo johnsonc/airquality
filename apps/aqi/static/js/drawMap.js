@@ -1402,7 +1402,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .yAxisLabel("Humidity");
 	humidityChart.yAxis().ticks(4);
 	humidityChart.xUnits(d3.time.hours);
-	
+	/*
 	pm10Stats
 	    .dimension(dayDim)
             .group(aqiAvgGroupByDay0)
@@ -1420,7 +1420,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		all:'All records selected. Please click on the graph to apply filters.'
             });	
 
-
+	    */
 	dataCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */
             .dimension(datapointCF)
             .group(all)	   
