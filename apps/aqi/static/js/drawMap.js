@@ -874,10 +874,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	
 
 	timeChart
-	    .width(Width*0.95)
+	    .width(Width*0.70)
 	    .height(80)
 	    .dimension(hourDim)
-	    .margins({top: 10, right: 50, bottom: 30, left: 50})
+	    .margins({top: 10, right: 100, bottom: 30, left: 50})
 	    .transitionDuration(500)
 	    .y(d3.scale.linear().domain([0, 600]))
 	    .elasticY(true)
@@ -1431,12 +1431,60 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
             });	
 
 
-	d3.select('#aqi-display')	   
+	var radius = 50;
+	var svg = d3.select('#aqi-display').append('svg')
+	    .attr('width', radius*2)
+	    .attr('height', radius*2);
+
+	var todaysAQI;
+
+	aqiAvgGroupByDay0.all().forEach(function(d){ 
+	    if( d.key.toISOString()=== d3.time.day(new Date()).toISOString())
+	    {  todaysAQI = numberFormat(d.value.avg); }  
+	});    
+
+	var g = svg.append("g")
+	    .attr("class", "bubble")	    
+
+	g.selectAll("circle")
+	    .data([todaysAQI]) 
+	    .enter().append("circle")
+	    .attr("r", radius)
+	    .attr("cx", radius)
+	    .attr("cy", radius)
+	    .attr("fill",  function (d) {
+		// AQI Color Standards
+		//var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];
+		a = Math.round(d);
+		var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
+		if(a < 50 ){ return c[0];}
+		else if(a < 101){ return c[1];}
+		else if(a < 201){ return c[2];}		    
+		else if(a < 301){ return c[3];}			    
+		else if(a < 401){ return c[4];}			    
+		else if(a > 400){ return c[5];}			    
+	    }
+		  
+		 );
+	
+	g.append("text")
+	    .attr("x", radius)
+	    .attr("y", radius+8)
+	    .data([todaysAQI]) 
+	    .attr("text-anchor", "middle")
+	    .text(function(d){ 
+		return d;
+	    })
+	    .attr("font-family", "'Aladin', cursive")
+	    .attr("font-size", "40px")
+	    .attr("font-style", "bold")
+	    .attr("fill", "#f0fcfc");	
+	/*
 	    on('change', function(){ 	
 	    imei.filterAll();
 	    imei.filter(this.value);
 	    dc.redrawAll(); 
-	})
+	})*/
 
 
 	dc.renderAll();
