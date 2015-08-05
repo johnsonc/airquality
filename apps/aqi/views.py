@@ -79,7 +79,7 @@ def aqfeed_list(request):
     """
     if request.method == 'GET':
         ed = datetime.datetime.now()
-        sd = ed - datetime.timedelta(days=2)         
+        sd = ed - datetime.timedelta(days=1)         
         aqfeeds = AQFeed.objects.filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
         serializer = AQFeedSerializer(aqfeeds, many=True)
         return Response(serializer.data)
