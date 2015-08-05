@@ -219,7 +219,7 @@ function streamUpdate()
     if (!lastStreamTimeStamp) { return };
     now = new Date();
     queue()
-	.defer(d3.json, "/airquality/api/aqfeed/"+lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
+	.defer(d3.json, "/aq/api/aqfeed/"+lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
 	.await(dataUpdate);        
 }
 
@@ -296,7 +296,7 @@ var getpm25AQI = function(d){
 function getAQI(t){
     pm25aqi = getpm25AQI(t.pm25);
     pm10aqi = getpm10AQI(t.pm10);
-    if (pm10aqi <= pm25aqi){ return {'aqi': pm10aqi, 'pollutant':'pm10'  }; } 
+    if (pm10aqi <= pm25aqi) { return {'aqi': pm10aqi, 'pollutant':'pm10'  }; } 
     else { return {'aqi': pm25aqi, 'pollutant':'pm25' };} 
 }
 
@@ -320,8 +320,8 @@ function processdata(datapoints){
 
 
 queue()
-    .defer(d3.json, "/airquality/api/aqfeed/?format=json")
-    .defer(d3.json, "/airquality/api/devices/?format=json")
+    .defer(d3.json, "/aq/api/aqfeed/?format=json")
+    .defer(d3.json, "/aq/api/devices/?format=json")
     .await(intialLoad);
 
 
@@ -337,7 +337,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
         .text(function (d) { return d['title'];}) ;
        
         //.onclick( d3.json('/api/aqfeed/'imei+'?format=json', function(data) {...}; )
-
+    
     aqdevices.forEach(function(d,i){
 	marker = L.marker([d.lat,d.lon],{
 	    'imei':d.imei
@@ -361,7 +361,6 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
     // datapoints;    
     processdata(datapoints);   
-
     drawCharts();
 
     function drawCharts(){
@@ -478,9 +477,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		if (_.isNumber(v[attr])) {
 		    ++p.count;
 		    p.sum += v[attr];
-		    p.avg = (p.count === 0) ? 0 : p.sum/p.count; 
-		    p.imei= v['imei'];
-		    p.attr = v[attr]
+		    p.avg = (p.count === 0) ? 0 : p.sum/p.count; 		   
+		    p.attr = v[attr]		    
+		    //p.min = (p.min > v[attr])? v[attr]: p.min
+		   // p.max = (p.max > v[attr])? p.max : v[attr]		    
 		    // guard against dividing by zero
 		}
 		else if (_.isNumber(p.attr)){	
@@ -498,16 +498,15 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	function reduceRemoveAvg(attr) {
 	    return function(p,v) {
 		--p.count;
-		if (_.isNumber(v[attr])) {
+		if (_.isNumber(v[attr])) {		    
 		    p.sum -= v[attr];
 		    p.avg = (p.count === 0) ? 0 : p.sum/p.count;
-		    p.imei= v['imei'];
 		}
 		return p;
 	    };
 	}
 	function reduceInitAvg() {
-	    return { count:0, sum:0, avg:0, imei:0, attr:0}; 
+	    return { count:0, sum:0, avg:0, imei:0, attr:0/*, min:500, max:0*/}; 
 	}
 	
 	pm10AvgGroup = pm10.group().reduce(reduceAddAvg('pm10'), reduceRemoveAvg('pm10'), reduceInitAvg);
@@ -538,6 +537,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	pm25AvgGroupByHour = hourpm25Dim.group().reduce(reduceAddAvg('pm25'), reduceRemoveAvg('pm25'), reduceInitAvg);
 	tempAvgGroupByHour = hourtempDim.group().reduce(reduceAddAvg('temperature'), reduceRemoveAvg('temperature'), reduceInitAvg);
 	humidityAvgGroupByHour = hourhumDim.group().reduce(reduceAddAvg('humidity'), reduceRemoveAvg('humidity'), reduceInitAvg);
+	csAvgGroupByHour = hourDim.group().reduce(reduceAddAvg('count_small'), reduceRemoveAvg('count_small'), reduceInitAvg);
+	clAvgGroupByHour = hourDim.group().reduce(reduceAddAvg('count_large'), reduceRemoveAvg('count_large'), reduceInitAvg);
 
 	aqiAvgGroupByDay0 = dayDim.group().reduce(reduceAddAvg('aqi'), reduceRemoveAvg('aqi'), reduceInitAvg);
 	var count_smallGroup = dateDim.group().reduceSum(function(d) {return d.count_small;}); 
@@ -666,9 +667,6 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	];
 	*/
 
-	d3.selectAll("#total")
-	    .text(datapointCF.size());
-
 	function render(method){
 	    d3.select(this).call(method);
 	}
@@ -789,23 +787,49 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	
 	// Charts
 	var dataCount  = dc.dataCount("#data-count");
-	var timeChart  = dc.barChart("#time-chart");
+	timeChart  = dc.barChart("#time-chart");
 	var pm10Chart  = dc.barChart("#pm10-chart"); 
 	var pm25Chart = dc.barChart('#pm25-chart');
 	var tempChart = dc.barChart('#temp-chart');
 	var humidityChart = dc.barChart('#hum-chart');
 	var clChart = dc.barChart('#cl-chart');
 	var csChart = dc.barChart('#cs-chart');
-	var pm10Stats = dc.barChart('#pm10-stats');
 
+	//var pm10Stats = dc.numberDisplay('#pm10-stats');
+	/*
+	var pm10Max = dc.numberDisplay('#pm10-max');
+	var pm10Min = dc.numberDisplay('#pm10-min');
+	var pm10Avg = dc.numberDisplay('#pm10-avg');
 
+	
+	pm10Min
+	    .valueAccessor(function(d){ console.log(d);   return d.value.min; })
+	    .group(pm10AvgGroupByHour)
+	    .dimension(pm10);
+
+	pm10Max
+	    .valueAccessor(function(d){  return d.value.max; })
+	    .group(pm10AvgGroupByHour)
+	    .dimension(pm10)
+	;
+
+	pm10Avg
+	    .valueAccessor(function(d){  return d.value.avg; })
+	    .group(pm10AvgGroupByHour)
+	    .dimension(pm10)
+	;
+	*/
+
+	
+
+	
 	var dimwidth = chartWidthDim+20;
 	var dimheight=chartHeightDim +20;
 	totalDim = datapointCF.dimension(function(d) { return d.count_large; });   
 	
 
-	//var pm10Chart2  = dc.barChart("#pm10-chart2"); 
-	//var pm25Chart2 = dc.barChart('#pm25-chart2');
+	var pm10Chart2  = dc.barChart("#pm10-chart2"); 
+	var pm25Chart2 = dc.barChart('#pm25-chart2');
 	//var tempChart2 = dc.barChart('#temp-chart2');
 	//var humidityChart2 = dc.barChart('#hum-chart2');
 
@@ -828,6 +852,18 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 			if (!rangesEqual(range_chart.filter(), focus_chart.filter())) {
 			    dc.events.trigger(function () {
 				focus_chart.focus(range_chart.filter());
+
+				/*
+				d3.selectAll("#pm10-max")
+				    .text(pm10.top(1)[0].value.avg);
+
+				d3.selectAll("#pm10-min")
+				    .text(pm10.bottom(1)[0].value.avg);
+
+				d3.selectAll("#pm10-avg")
+				    .text(pm10AvgGroupByDay.top(1)[0].value.avg);
+				*/
+
 			    });
 			}
 		    });
@@ -845,7 +881,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .y(d3.scale.linear().domain([0, 600]))
 	    .elasticY(true)
 	    .x(d3.time.scale().domain([prevWeekDate, maxDate]))
-	    .gap(4)
+	    .brushOn(false)
+	    .gap(25)
 	    .renderHorizontalGridLines(true)
 	    .alwaysUseRounding(true)
 	    .colors(function (a) {
@@ -871,12 +908,13 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		if (isNaN(value)) {
                     value = 0;
 		}
-		return numberFormat(value) + '\n on \n' + dateFormat(d.key);
+		a = numberFormat(value) + '\n on \n' + dateFormat(d.key);
+		//console.log(a);
+		return numberFormat(value);
             })	   
 	    .xAxisLabel("Time");
 	timeChart.yAxis().ticks(3);
 	timeChart.xUnits(d3.time.days);
-	
 	timeChart.focusCharts([pm10Chart, pm25Chart, tempChart, humidityChart]);
 
 	
@@ -904,12 +942,12 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .x(d3.time.scale().domain([minDate,maxDate]))
 	    .yAxisLabel("Just checking");
 	    */
-
-
+	
+	/*
 	clChart
 	    .width(Math.round(Width*0.3)).height(chartHeightDim)
-	    .dimension(dateDim)
-	    .group(count_largeGroup)
+	    .dimension(hourDim)
+	    .group(clAvgGroupByHour)
 	    .margins({top: 10, right: 50, bottom: 30, left: 50})
 	    .barPadding(0.5)
             .elasticY(true)
@@ -922,8 +960,50 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		if(d.value < 1000){ return "red";}			    
 	    })
 	    .x(d3.time.scale().domain([minDate,maxDate])); 
+	
+	    */
+
+	clChart
+	    .width(Math.round(Width*0.3)).height(chartHeightDim)
+	    .dimension(hourDim)
+	    .group(clAvgGroupByHour)
+	    .margins({top: 10, right: 50, bottom: 30, left: 50})
+	    .transitionDuration(500)
+	    .x(d3.time.scale().domain([minDate,maxDate]))
+	    .round(dc.round.floor)
+            .alwaysUseRounding(true)
+	    .renderHorizontalGridLines(true)
+	    .valueAccessor(function(p) {
+		return p.value.avg;
+	    })
+	    .colors(function (a) {
+		// AQI Color Standards
+		//var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];
+		a = Math.round(a);
+		var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
+		if(a < 50 ){ return c[0];}
+		else if(a < 101){ return c[1];}
+		else if(a < 201){ return c[2];}		    
+		else if(a < 301){ return c[3];}			    
+		else if(a < 401){ return c[4];}			    
+		else if(a > 400){ return c[5];}			    
+	    })
+	    .colorAccessor(function (d) { return getpm10AQI(d.value.avg); })
+	    .brushOn(false)
+	    .label(function (d) {
+		return d3.time.day(d.key).substr(0,12);
+            }) 
+            .title(function (d) {
+		return d.value.avg.toString().substr(0,5);
+            })
+	    .renderLabel(true)
+	    .yAxisLabel("PM 10");
+	clChart.yAxis().ticks(4);
+	clChart.xAxis().ticks(8);
+	clChart.xUnits(d3.time.hours);	
 
 
+	/*
 	csChart
 	    .width(Math.round(Width*0.3)).height(chartHeightDim)
 	    .dimension(dateDim)
@@ -939,7 +1019,47 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    })
 	    .x(d3.time.scale().domain([minDate,maxDate])); 
 
+	    */
 
+
+	csChart
+	    .width(Math.round(Width*0.3)).height(chartHeightDim)
+	    .dimension(hourDim)
+	    .group(csAvgGroupByHour)
+	    .margins({top: 10, right: 50, bottom: 30, left: 50})
+	    .transitionDuration(500)
+	    .x(d3.time.scale().domain([minDate,maxDate]))
+	    .round(dc.round.floor)
+            .alwaysUseRounding(true)
+	    .renderHorizontalGridLines(true)
+	    .valueAccessor(function(p) {
+		return p.value.avg;
+	    })
+	    .colors(function (a) {
+		// AQI Color Standards
+		//var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];
+		a = Math.round(a);
+		var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
+		if(a < 50 ){ return c[0];}
+		else if(a < 101){ return c[1];}
+		else if(a < 201){ return c[2];}		    
+		else if(a < 301){ return c[3];}			    
+		else if(a < 401){ return c[4];}			    
+		else if(a > 400){ return c[5];}			    
+	    })
+	    .colorAccessor(function (d) { return getpm25AQI(d.value.avg); })
+	    .brushOn(false)
+	    .label(function (d) {
+		return d3.time.day(d.key).substr(0,12);
+            }) 
+            .title(function (d) {
+		return d.value.avg.toString().substr(0,5);
+            })
+	    .renderLabel(true)
+	    .yAxisLabel("PM 2.5");
+	csChart.yAxis().ticks(4);
+	csChart.xAxis().ticks(8);
+	csChart.xUnits(d3.time.hours);	
 
 	/*
 	pm10Chart
@@ -1011,30 +1131,61 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	pm10Chart.xUnits(d3.time.hours);	
 	
 
-	
-
-
-	/*pm10Chart2
-	    .width(chartWidthDim).height(chartHeightDim)
+	pm10Chart2 
+	    .width(Math.round(Width*0.33)).height(chartHeightDim)
 	    .dimension(pm10)
-	    .group(pm10AvgGroupByHour)
+	    .group(pm10s)
 	    .transitionDuration(500)
-            .elasticY(true)
-	//	    .x(d3.linear.scale().domain([pm10AvgGroupByHour.top(1),pm10AvgGroupByHour.bottom(1)]))
-	    .elasticX(true)
-	    .x(d3.scale.linear().domain([0, 1000]))
-	   .valueAccessor(function(p) {
-		return p.value.avg;
-	    })
-	    .colorAccessor(function (d,i) {
-		if(d.value.avg < 200) { return "yellow";}			    
-		if(d.value.avg < 400) { return "blue";}			    
-		if(d.value.avg < 500 ){ return "green";}			    
-		if(d.value.avg < 1000){ return "red";}			    
-	    })
+            .elasticY(true)	  
+	    .gap(2)
+	    .x(d3.scale.linear().domain([1, d3.min([pm10.top(1).pm10, 600])]))
+            .round(dc.round.floor)
+            .alwaysUseRounding(true)
+            .renderHorizontalGridLines(true)
 	    .yAxisLabel("PM 10");
 	pm10Chart2.yAxis().ticks(4);
-	*/
+	pm10Chart2.xUnits(function range(x0, x1, dx) {
+	    var x = Math.ceil(x0), xs = [];
+	    if (dx > 1) {
+		while (x < x1) {
+		    if (!(number(x) % dx)) xs.push(x);
+		    step(x, 1);
+		}
+	    } else {
+		while (x < x1) xs.push(x), x+=10;
+	    }
+	    return xs;
+	    
+	}); 	
+
+	pm25Chart2 
+	    .width(Math.round(Width*0.33)).height(chartHeightDim)
+	    .dimension(pm25)
+	    .group(pm25s)
+	    .transitionDuration(500)
+            .elasticY(true)	  
+	    .gap(2)
+	    .x(d3.scale.linear().domain([1, d3.min([pm25.top(1).pm25, 1500])]))
+            .round(dc.round.floor)
+            .alwaysUseRounding(true)
+            .renderHorizontalGridLines(true)
+	    .yAxisLabel("PM 2.5");
+	pm25Chart2.yAxis().ticks(4);
+	pm25Chart2.xUnits(function range(x0, x1, dx) {
+	    var x = Math.ceil(x0), xs = [];
+	    if (dx > 1) {
+		while (x < x1) {
+		    if (!(number(x) % dx)) xs.push(x);
+		    step(x, 1);
+		}
+	    } else {
+		while (x < x1) xs.push(x), x+=10;
+	    }
+	    return xs;	    
+	}); 	
+
+
+
 	/*
 	pm25Chart	
 	    .width(Math.round(Width*0.5)).height(chartHeightDim)
@@ -1165,8 +1316,6 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .yAxisLabel("Humidity");
 	humidityChart.yAxis().ticks(4);
 	humidityChart.xUnits(d3.time.hours);
-
-
 	
 	dataCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */
             .dimension(datapointCF)
@@ -1175,8 +1324,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
                     ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
 		all:'All records selected. Please click on the graph to apply filters.'
-            });
-	
+            });	
 	dc.renderAll();
 
     d3.select('#devicePicker').on('change', function(){ 	
@@ -1184,16 +1332,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	imei.filter(this.value);
 	dc.redrawAll(); 
     })
-
-
-	
-
     }
-
 }
-
-
-
 
 
 function print_filter(filter){
