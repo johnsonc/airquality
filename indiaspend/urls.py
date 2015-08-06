@@ -5,6 +5,8 @@ from apps.aqi.models import AQDevice
 from apps.aqi import views as aqviews
 #import apps.aqi
 from apps.aqi import urls as aqurls 
+#from django.views.generic.simple import redirect_to
+from django.views.generic import RedirectView
 #from apps.aqi import views
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -32,4 +34,9 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^aq/static/(?P<path>.*)$', RedirectView.as_view(url='/static/%(path)s')),    
+    url(r'^aq/api/(?P<path>.*)$', RedirectView.as_view(url='/api/%(path)s')),    
+    url(r'^aq/(?P<path>.*)$', RedirectView.as_view(url='/%(path)s')),    
+    url(r'^static/(?P<path>.*)$', RedirectView.as_view(url='/staticaaa/%(path)s')),    
 )

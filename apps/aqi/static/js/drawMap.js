@@ -219,7 +219,7 @@ function streamUpdate()
     if (!lastStreamTimeStamp) { return };
     now = new Date();
     queue()
-	.defer(d3.json, "/aq/api/aqfeed/"+lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
+	.defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/"+lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
 	.await(dataUpdate);        
 }
 
@@ -320,8 +320,8 @@ function processdata(datapoints){
 
 
 queue()
-    .defer(d3.json, "/aq/api/aqfeed/?format=json")
-    .defer(d3.json, "/aq/api/devices/?format=json")
+    .defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/?format=json")
+    .defer(d3.json, "http://aqi.indiaspend.org/aq/api/devices/?format=json")
     .await(intialLoad);
 
 
@@ -786,7 +786,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	}
 	
 	// Charts
-	var dataCount  = dc.dataCount("#data-count");
+	//var dataCount  = dc.dataCount("#data-count");
 	timeChart  = dc.barChart("#time-chart");
 	var pm10Chart  = dc.barChart("#pm10-chart"); 
 	var pm25Chart = dc.barChart('#pm25-chart');
@@ -795,7 +795,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	var clChart = dc.barChart('#cl-chart');
 	var csChart = dc.barChart('#cs-chart');
 
-	var pm10Stats = dc.numberDisplay('#pm10-stats');
+	//var pm10Stats = dc.numberDisplay('#pm10-stats');
 	
 	/*
 	var pm10Max = dc.numberDisplay('#pm10-max');
@@ -820,15 +820,11 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .dimension(pm10)
 	;
 	*/
-
-	
-
 	
 	var dimwidth = chartWidthDim+20;
 	var dimheight=chartHeightDim +20;
 	totalDim = datapointCF.dimension(function(d) { return d.count_large; });   
 	
-
 	var pm10Chart2  = dc.barChart("#pm10-chart2"); 
 	var pm25Chart2 = dc.barChart('#pm25-chart2');
 	//var tempChart2 = dc.barChart('#temp-chart2');
@@ -836,7 +832,6 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 	//var yearRingChart   = dc.pieChart("#chart-ring-year");
 	
-
 	timeChart.focusCharts = function (chartlist) {
 		if (!arguments.length) {
 		    return this._focusCharts;
@@ -1407,7 +1402,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .dimension(dayDim)
             .group(aqiAvgGroupByDay0)
 	    .valueAccessor(function(d) {
-		a = d3.time.day(d.value.key.toISOString());
+		var a = "test";
+		//a = d3.time.day(d.value.key.toISOString());
 		b = d3.time.day(new Date().toISOString());
 		console.log("value returned!!" + d.value.toString());
 		if( a === b ){ 
@@ -1421,7 +1417,9 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
             });	
 
 	    */
-	dataCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */
+	
+	//dataCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */
+	/*
             .dimension(datapointCF)
             .group(all)	   
             .html({
@@ -1430,7 +1428,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		all:'All records selected. Please click on the graph to apply filters.'
             });	
 
-
+	*/
 	var radius = 50;
 	var svg = d3.select('#aqi-display').append('svg')
 	    .attr('width', radius*2)
