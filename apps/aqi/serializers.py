@@ -11,6 +11,10 @@ class AQDeviceSerializer(serializers.Serializer):
     desc = serializers.CharField(required=False, allow_blank=True)
     lat =  serializers.CharField(max_length=24, required=False, allow_blank=True)
     lon =  serializers.CharField(max_length=24, required=False, allow_blank=True)
+    ip =  serializers.CharField(max_length=28, required=False, allow_blank=True)
+    city =  serializers.CharField(max_length=512, required=False, allow_blank=True)
+    state =  serializers.CharField(max_length=128, required=False, allow_blank=True)
+
     #geom = serializers.PointField()
     created_on = serializers.DateTimeField(required=False)        
 
@@ -31,7 +35,10 @@ class AQDeviceSerializer(serializers.Serializer):
         instance.desc = validated_data.get('desc', instance.desc)
         instance.lat = validated_data.get('lat', instance.lat)
         instance.lon = validated_data.get('lon', instance.lon)
-       #instance.geom = validated_data.get('geom', instance.geom)
+        instance.ip = validated_data.get('ip', instance.ip)
+        instance.city = validated_data.get('city', instance.city)
+        instance.state = validated_data.get('state', instance.state)
+        #instance.geom = validated_data.get('geom', instance.geom)
         instance.created_on = validated_data.get('created_on', instance.created_on)
         instance.save()
         return instance

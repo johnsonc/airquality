@@ -12,6 +12,9 @@ class AQDevice(models.Model):
     lat =  models.CharField(max_length=24,  null=True, blank=True )
     lon =  models.CharField(max_length=24, null=True, blank=True )
     geom = PointField()
+    ip =  models.CharField(max_length=28, null=True, blank=True) # include IPv6
+    city =  models.CharField(max_length=512, null=True, blank=True )
+    state =  models.CharField(max_length=128, null=True, blank=True )
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     notes =  models.CharField(max_length=512, null=True, blank=True )
     

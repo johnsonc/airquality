@@ -1,9 +1,11 @@
 from django.conf.urls import patterns, include, url
 import views as aqviews
 
-urlpatterns = patterns('',
+urlpatterns = patterns("",
     url(r'devices/$', aqviews.aqdevice_list),
-    url(r'devices/(?P<pk>[a-z\d]+)/$', aqviews.aqdevice_detail),
+    url(r'devices/pk/(?P<pk>[a-z\d]+)/$', aqviews.aqdevice_detail),
+    url(r'devices/city/(?P<city>[A-Za-z\d]+)', aqviews.aqdevice_city),
+    url(r'devices/state/(?P<state>[A-Za-z\d]+)', aqviews.aqdevice_state),
     url(r'aqfeed/$', aqviews.aqfeed_list),
     url(r'aqfeed/(?P<pk>[a-z\d]+)/$', aqviews.aqfeed_detail),
     url(r'aqfeed/(?P<start_time>[:T\-\d]+)/(?P<end_time>[:T\-\d]+)/$', aqviews.aqdatapointintime),

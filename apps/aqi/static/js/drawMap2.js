@@ -210,15 +210,16 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 
         large_particle_count = datapointCF.dimension(function(d){ return d.count_large; });
 	large_particle_counts = large_particle_count.group();
-
+       /*
 	hour = datapointCF.dimension(function(d){ return d.time.getHours(); });
 	hours = hour.group();
-
+    
 	month = datapointCF.dimension(function(d){ return d.time.getMonth(); });
 	months = month.group();
-
+	
 	year = datapointCF.dimension(function(d){ return Math.floor(d.time.getFullYear()/1)*1; });
 	years = year.group();
+	*/
 
 	var bCharts = [
 		barChart()
@@ -270,7 +271,7 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 			   .domain([0, 100])
 		           .rangeRound([0, 130]))
 			.barWidth(10),
-
+	       /*
 		barChart()
 			.dimension(year)
 			.group(years)
@@ -278,7 +279,7 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 			.x(d3.scale.linear()
 				.domain([2014, 2020])
 			   .rangeRound([0,210]))
-			   .barWidth(5),			   
+			   .barWidth(5),			   */
 	];
 
 	cCharts = [
@@ -296,6 +297,18 @@ function intialLoad(error, topology, tornados, usGrey, intopo, instatestopo, ins
 
 	d3.selectAll("#total")
 			.text(datapointCF.size());
+
+    d3.select("#testd3").selectAll("svg")
+        .width(500)
+        .height(500)
+	.data([1,2,3,4])
+        .enter()
+        .append('circle')
+        .attr('x', function(d){return d; })
+        .attr('y', function(d){return d; })
+        .attr('r', function(d){return d*d; })
+        .text(function(d){return d*d; });
+
 
 	function render(method){
 		d3.select(this).call(method);
