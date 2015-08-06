@@ -74,12 +74,12 @@ def aqdevice_state(request, state):
 
 @csrf_exempt
 @api_view(['GET', 'PUT'])
-def aqdevice_detail(request, pk):
+def aqdevice_detail(request, imei):
     """
     Retrieve, update or delete an AQDevice
     """
     try:
-        aqdevice = AQDevice.objects.get(pk=pk)
+        aqdevice = AQDevice.objects.get(imei=imei)
     except AQDevice.DoesNotExist:
         return Response(status=404)
 
@@ -121,21 +121,22 @@ def aqfeed_list(request):
 
 @csrf_exempt
 @api_view(['GET', 'PUT'])
-def aqfeed_detail(request, pk):
+def aqfeed_detail(request, imei):
     """
     Retrieve, update or delete a feed instance.
     """
     try:
-        aqfeed = AQFeed.objects.get(pk=pk)
+        aqfeed = AQFeed.objects.filter(imei=imei)
     except AQFeed.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = AQFeedSerializer(aqfeed, data=request.data)
+        serializer = AQFeedSerializer(aqfeed, data=request.data, many=True)
         if serializer.is_valid():
-            serializer.save()
+            #serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         #serializer = AQFeedSerializer(aqfeed)
         #return Response(serializer.data)
@@ -151,6 +152,24 @@ def aqfeed_detail(request, pk):
         aqfeed.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+@csrf_exempt
+@api_view(['GET'])
+def aqfeed_latest(request, imei):
+    """
+    Retrieve, the latest feed instance.
+    """
+    try:
+        aqfeed = AQFeed.objects.filter(imei=imei).latest('created_on')        
+    except AQFeed.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        serializer = AQFeedSerializer(aqfeed)
+        return Response(serializer.data)    
+
+
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -165,9 +184,9 @@ def aqdatapoint(request):
     Add a AQ data point via GET
     """
     deviceip = get_client_ip(request)
-    f = open('/tmp/aqrequest.log', 'a')
-    f.write(deviceip)
-    f.close()
+    #f = open('/tmp/aqrequest.log', 'a')
+    #f.write("\n" + str(deviceip))
+    #f.close()
     if request.method == "GET":        
         #import pdb; pdb.set_trace()
         d={}
@@ -186,19 +205,20 @@ def aqdatapoint(request):
                 # if not matching , ask for new geo loc, 
                 #even if call fails, fail silently since device streams every 5 min.
                 ipdetails = requests.get("http://ip-api.com/json/"+ deviceip ).json()
+                aqd.ip = deviceip
                 aqd.lat = ipdetails['lat']
                 aqd.lon = ipdetails['lon']            
                 aqd.geom = {u'type': u'Point', u'coordinates': [aqd.lon, aqd.lat]}
                 aqd.city = ipdetails['city']            
-                aqd.state = ipdetails['state']            
+                aqd.state = ipdetails['regionName']            
                 aqd.save()
 
             d['lat'] = aqd.lat
             d['lon'] = aqd.lon            
         except:
             pass
-        d['created_on'] = datetime.datetime.now()
 
+        d['created_on'] = datetime.datetime.now()
         serializer = AQFeedSerializer(data=d)
         if serializer.is_valid():
             serializer.save()
