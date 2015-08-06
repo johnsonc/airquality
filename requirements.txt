@@ -11,3 +11,4 @@ ox
 jsonfield
 django-leaflet
 djgeojson
+django-cors-headers
