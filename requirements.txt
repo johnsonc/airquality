@@ -12,3 +12,4 @@ jsonfield
 django-leaflet
 djgeojson
 django-cors-headers
+python-geoip

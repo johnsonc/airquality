@@ -12,7 +12,7 @@ import datetime
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+import requests
 
 class JSONResponse(HttpResponse):
     """
@@ -42,6 +42,34 @@ def aqdevice_list(request):
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
+
+@csrf_exempt
+@api_view(['GET'])
+def aqdevice_city(request, city):
+    """
+    Retrieve  AQDevices acc. to city
+    """    
+    try:
+        if request.method == 'GET':
+            aqdevices = AQDevice.objects.filter(city=city)
+            serializer = AQDeviceSerializer(aqdevices, many=True)
+            return Response(serializer.data)        
+    except:
+        return Response(status=404)
+    
+@csrf_exempt
+@api_view(['GET'])
+def aqdevice_state(request, state):
+    """
+    Retrieve  AQDevices acc. to state
+    """    
+    try:
+        if request.method == 'GET':
+            aqdevices = AQDevice.objects.filter(state=state)
+            serializer = AQDeviceSerializer(aqdevices, many=True)
+            return Response(serializer.data)        
+    except:
+        return Response(status=404)    
 
 
 @csrf_exempt
@@ -151,7 +179,22 @@ def aqdatapoint(request):
         d['count_large'] = request.GET['l']
         d['count_small'] = request.GET['s']        
         try:
-            d['ip'] = deviceip
+            d['ip'] = deviceip            
+            #check the device IP and load lat, lon from there.
+            aqd = AQDevice.objects.get(imei=d['imei'])   
+            if aqd.ip != deviceip:
+                # if not matching , ask for new geo loc, 
+                #even if call fails, fail silently since device streams every 5 min.
+                ipdetails = requests.get("http://ip-api.com/json/"+ deviceip ).json()
+                aqd.lat = ipdetails['lat']
+                aqd.lon = ipdetails['lon']            
+                aqd.geom = {u'type': u'Point', u'coordinates': [aqd.lon, aqd.lat]}
+                aqd.city = ipdetails['city']            
+                aqd.state = ipdetails['state']            
+                aqd.save()
+
+            d['lat'] = aqd.lat
+            d['lon'] = aqd.lon            
         except:
             pass
         d['created_on'] = datetime.datetime.now()
