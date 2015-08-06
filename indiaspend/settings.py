@@ -68,7 +68,7 @@ MEDIA_URL = ''
 STATIC_ROOT = join(PROJECT_ROOT, 'static')
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/airquality/static/'
+STATIC_URL = '/aq/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -76,7 +76,6 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 	os.path.join(PROJECT_ROOT, '../apps/aqi/static'),
-	os.path.join(PROJECT_ROOT, './indiaspend/static'),
 
 )
 
@@ -145,7 +144,6 @@ INSTALLED_APPS = (
     #'pinax_theme_bootstrap',
     #'bootstrapform',
     'rest_framework',
-    'apps.aqi',
     #'account',
     'djgeojson',
     'leaflet',
@@ -164,6 +162,7 @@ LEAFLET_CONFIG = {
     # conf here
 }
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
