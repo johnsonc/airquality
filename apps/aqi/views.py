@@ -73,6 +73,60 @@ def aqdevice_state(request, state):
 
 @csrf_exempt
 @api_view(['GET'])
+def displayConfig(request):
+    """
+    Get display config
+    """    
+    try:
+        if request.method == 'GET':
+            
+            config  = {
+                "breakpoints":[{"id":1,
+                                "remark":"Good",
+                                "color":"#00B050",
+                                "uplimit":50,
+                                "description":"Minimal impact"},
+                               {"id":2,
+                                "remark":"Satisfactory",
+                                "color":"#92D050",
+                                "uplimit":100,
+                                "description":"Minor breathing discomfort to sensitive people"},
+                               {"id":3,
+                                "remark":"Moderate",
+                                "color":"#FFFF00",
+                                "uplimit":200,
+                                "description":"Breathing discomfort to the people with lungs, asthma and heart diseases"},
+                               {"id":4,
+                                "remark":"Poor",
+                                "color":"#FF9900",
+                                "uplimit":300,
+                                "description":"Breathing discomfort to most people on prolonged exposure"},
+                               {"id":5,
+                                "remark":"Very Poor",
+                                "color":"#FF0000",
+                                "uplimit":400,
+                                "description":"Respiratory illness on prolonged exposure"},
+                               {"id":6,
+                                "remark":"Severe",
+                                "color":"#C00000",
+                                "uplimit":500,
+                                "description":"Affects healthy people and seriously impacts those with existing diseases"}],
+                "mapCenterLat":"21.15",
+                "mapCenterLng":"79.09",
+                "mapZoom":"4",
+                "mapStateZoom":"6",
+                "mapCityZoom":"8",
+                "mapStationZoom":"11",
+                "interval":"24"
+                }
+                        
+            return Response(config)     
+    except:
+        return Response(status=404)    
+
+
+@csrf_exempt
+@api_view(['GET'])
 def aqdevice_locations(request):
     """
     Retrieve  AQDevices acc. to city and state
@@ -89,8 +143,8 @@ def aqdevice_locations(request):
         
         serializer = StateSerializer(states, many=True)
         data['states']=serializer.data
+
         cityD = []
-        
         for s in states:
             d = {'stateID':s.id}
             d['citiesInState']= []
@@ -103,10 +157,26 @@ def aqdevice_locations(request):
                             'lat':c.lat,
                             'lon':c.lon,
                             'live':c.live
-                            })
+                            })                
+                
             cityD.append(d)
-                    
+
+
+        deviceD = []
+        for s in states:
+            for c in cities:
+                if c.stateID== s.id:
+                    dd={}
+                    dd['stateID']=s.id
+                    dd['cityID']=c.id
+                    dd['devicesInCity']= []
+                    aqds = AQDevice.objects.filter(city=c.name)
+                    aqserializer = AQDeviceSerializer(aqds, many=True)
+                    dd['devicesInCity'].append(aqserializer.data)
+                    deviceD.append(dd)
+                                
         data['cities']=cityD
+        data['stations']=deviceD
     return Response(data)        
     #except:
     #    return Response(status=404)
