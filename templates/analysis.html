@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html>
-<head>
-{% load static from staticfiles %}
-  <title>IndiaSpend Air Quality Initiative</title>
-  <link rel="stylesheet" href={% static "/aq/static/css/filter.css" %} />
-  <link rel="stylesheet" href={% static "/aq/static/css/dc.css" %} /> 
-  <link rel="stylesheet" href={% static "/aq/static/leaflet/leaflet.css" %} />
-  <link rel="stylesheet" href={% static "/aq/static/chosen/chosen.min.css" %} /> 
-  <link rel="stylesheet" type="text/css" href="/aq/static/keen/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" type="text/css" href="/aq/static/keen/assets/css/keen-dashboards.css" /> 
+<html lang="en">
+  <head>
+    {% load static from staticfiles %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <title>IndiaSpend Air Quality Initiative</title>
+    <link rel="stylesheet" href={% static "/aq/static/css/filter.css" %} />
+    <link rel="stylesheet" href={% static "/aq/static/css/dc.css" %} /> 
+    <link rel="stylesheet" href={% static "/aq/static/leaflet/leaflet.css" %} />
+    <link rel="stylesheet" href={% static "/aq/static/chosen/chosen.min.css" %} /> 
+    <link rel="stylesheet" type="text/css" href="/aq/static/keen/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="/aq/static/keen/assets/css/keen-dashboards.css" /> 
     <style>
       @import url("http://fonts.googleapis.com/css?family=Lato:400,700,900,400italic");
       @import url("http://fonts.googleapis.com/css?family=Aladin");
@@ -16,6 +20,10 @@
     <!--<link rel="stylesheet" type="text/css" href="/static/css/flat-ui.css" /> -->
     <link rel="stylesheet" href="/aq/static/css/flat-ui-drum.css" type="text/css">
 
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
 </head>
 <body class="application">
 
@@ -43,6 +51,43 @@
     </div>
   </div>
 
+
+    <div  class="container-x row-x col-md-12">
+      <div id="station-aqi" class="container-x">
+        <!--h2 class="text-center">Station AQI</h2-->
+        <div class="row">
+          <div class="col-md-3 form-group nullable">
+            <div class="input-group">
+              <div class="input-group-addon">State</div>
+              <select id="statePicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="__Select State__" >
+              </select>              
+            </div>
+          </div>
+          <div class="col-md-3 form-group">
+            <div class="input-group">
+              <div class="input-group-addon">City</div>
+              <select id="cityPicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="__Select City__">
+              </select>              
+            </div>            
+          </div>
+          <div class="col-md-3 form-group">
+            <div class="input-group">
+              <div class="input-group-addon">Device</div>
+              <select id="devicePicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="__Select Device__">
+              </select>              
+            </div>                        
+          </div>
+          <div class="col-md-3 form-group">
+            <div id="datePicker" class="input-group date">
+              <input type="text" class="form-control" required>
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-th"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+
+
   <div class="container-fluid">
     <div class="row">
       <div class="fullrow">
@@ -50,11 +95,8 @@
           <div class="chart-title">
             Air Quality Dashboard 
 	    <div id="data-count" style="float:right">
-
 	      <a href="javascript:dc.filterAll(); dc.renderAll();">Reset Filters</a>
-	      </div>
-	    
-
+	      </div>	    
           </div>
           <div class="chart-stage">
 	    <div id=""> Time line</div> 
@@ -80,13 +122,13 @@
       <div class="col-sm-5">
         <div class="chart-wrapper">
           <div class="chart-title">
-	    
+	    <!--
 	    <div id="banner" style="text-align:right">
 	      Select a device to filter:
 	      <select id="devicePicker">
 	      </select>
 	    </div>	    
-
+	    -->
           </div>
           <div class="chart-stage">
             <div id="grid-1-1">
@@ -358,6 +400,7 @@
   <script src={% static "/aq/static/leaflet/leaflet.js" %}></script>
  <!--  <script src={% static "/aq/static/jquery/js/jquery-2.1.4.min.js" %}></script> -->
   <script src={% static "/aq/static/chosen/chosen.jquery.min.js" %}></script>
+  <script src={% static "/aq/static/js/map.js" %}></script>
   <script src={% static "/aq/static/js/drawMap.js" %}></script>
 
 </body>
