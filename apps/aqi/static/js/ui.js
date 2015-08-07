@@ -1,10 +1,26 @@
-var Loader = function() {
+/*
+Parts of this code have been taken from Sagar Parihar and Swapnil Mahajan's work 
+for the National Air Quality website. 
+
+*/
+
+var Loader = function() {           
+      function configure(config) {
+	  // Required fields in configuration object 
+	  var requiredFields = [];
+	  // Check if all required fields are present in config   
+	  _.each(requiredFields, function(field){
+	      if ( !_.has(config, field) ) return null;
+	  });
+	  self.config = config;
+      }
+    
 
   function loadStations() {
-    $.getJSON("/aq/api/aqdevices/", function(data) {
-      if ( !data ) return null;
-      self.data = data;
-      self.emit('stationsLoaded');
+    $.getJSON("/aq/api/devices/locations/?format=json", function(data) {
+	if ( !data ) return null;
+	self.data = data;
+	self.emit('stationsLoaded');
     });
   }
 
@@ -14,19 +30,6 @@ var Loader = function() {
     getAllStates();
     self.emit('ready');
   }
-
-
-  function configure(config) {
-    /* Required fields in configuration object */
-    var requiredFields = [];
-    /* Check if all required fields are present in config */  
-    _.each(requiredFields, function(field){
-      if ( !_.has(config, field) ) return null;
-    });
-    self.config = config;
-  }
-
-
 
   function getStationMetrics(id, date, hours) {
     return $.getJSON(
@@ -56,21 +59,21 @@ var Loader = function() {
   }
 
   function getCurrentStation() {
-
   }
 
   function getAllStations() {
-    if ( self.data.allStations ) return self.data.allStations;
-    self.data.allStations = [];
-    for(i in self.data.stations) {
-      self.data.allStations = self.data.allStations.concat(self.data.stations[i].stationsInCity);
-    }
-    self.data.allStations = self.data.allStations.sort(comparator);
-    return self.data.allStations;
+      if ( self.data.allStations ) return self.data.allStations;
+      self.data.allStations = [];
+      for(i in self.data.stations) {
+	  self.data.allStations = self.data.allStations.concat(self.data.stations[i].stationsInCity);
+      }
+      self.data.allStations = self.data.allStations.sort(comparator);
+      return self.data.allStations;
   }
 
   function getStationsByCity(cityID) {
     for(i in self.data.stations) {
+	console.log(i);
       if ( cityID == self.data.stations[i].cityID )
         return self.data.stations[i].stationsInCity;
     }
@@ -109,7 +112,7 @@ var Loader = function() {
   }
 
   function getCitiesByState(stateID) {
-    for(i in self.data.cities) {
+    for(i in self.data.cities) {	
       if ( stateID == self.data.cities[i].stateID )
         return self.data.cities[i].citiesInState;
     }
@@ -164,15 +167,15 @@ var Loader = function() {
   this.currentState = null;
   this.getStationMetrics = getStationMetrics;
   this.getCityMetrics = getCityMetrics;
-  this.getCityRankings = getCityRankings;    
+ // this.getCityRankings = getCityRankings;    
 
   /* For context issues */
   var self = this;
 };
 
-var air = new Loader();
-
-var ui = function(){
+var ui = function(configObj){
+    if ( !configObj ) return null;
+    var air = configObj;
     var states, cities, stations;
 
     var datepickerOptions =  {
@@ -187,29 +190,48 @@ var ui = function(){
 	orientation: "top auto"
     };
 
+
+    function configure(config) {
+	/* Required fields in configuration object */
+	var requiredFields = [];
+	/* Check if all required fields are present in config */
+	_.each(requiredFields, function(field){
+	    if ( !_.has(config, field) ) {
+		console.log("Field" + field + " not found in config");
+		return null;
+	    }
+	});
+	self.config = config;
+	//map.configure(config);
+    }
+
     function initChoices() {
 	$states = $("#statePicker");
 	$cities = $("#cityPicker");
 	$stations = $("#devicePicker");
 	$date = $("#datePicker");
+	console.log($date);	
+	console.log(datepickerOptions);	
+	//$date.datepicker(datepickerOptions);	
+	//$date.date('setDate', d3.time.format("%Y-%m-%dT%H:%M").parse);
 	initializeDatepicker(datepickerOptions);
 	//map.initialize();
-	//map.pinStations(loader.getAllStations());
+	//map.pinStations(air.getAllStations());
 	resetDropdowns();
 	//drawCharts();
 	//populateAQIDescTable(self.config.breakpoints);
-	//bindEvents();
+	bindEvents();
     }
 
     function initializeDatepicker(options) {
 	$date.datepicker(options);
-	$date.datepicker('setDate', moment().format('DD/MM/YYYY'));
+	$date.datepicker('setDate', dateFormat(new Date()));
     }
 
     /*
     function stationClicked(id) {
 	//window.quickfix(id);
-	var station = loader.getStation(id);
+	var station = air.getStation(id);
 	setDropdowns(station.stateID, station.cityID, station.id);
     }
     */
@@ -224,7 +246,7 @@ var ui = function(){
 	clearStations();
 	populateStations();
 	$stations.val(stationID);
-	map.showStation(loader.getStation(stationID));    
+	//map.showStation(air.getStation(stationID));    
 	stationSet(stationID);
     }
 
@@ -232,14 +254,15 @@ var ui = function(){
        to the dropdown element
     */
     function stateSelected() {
-	map.showState(loader.getState($(this).val()));
+	//map.showState(air.getState($(this).val()));
+	//console.log("state selected")
 	clearCities();
 	clearStations();
 	populateCities();
     }
     
     function citySelected() {
-	map.showCity(loader.getCity($(this).val()));
+	//map.showCity(air.getCity($(this).val()));
 	clearStations();
 	populateStations();
     }
@@ -247,7 +270,7 @@ var ui = function(){
     function stationSelected() {
 	var id = $(this).val();
 	if ( "0" != id ) {
-	    map.showStation(loader.getStation(id));
+	    //map.showStation(air.getStation(id));
 	}
 	window.quickfix(id);
 	stationSet(id);
@@ -270,12 +293,12 @@ var ui = function(){
 	var hours = 23;
 	var date = $date.find("input").val();
 	if ( "0" != id ) {
-	    loader.getStationMetrics(id, date, hours)
+	    air.getStationMetrics(id, date, hours)
 		.done(drawPanel) 
 		.fail(onJSONFail)
 		.always(afterStationSet);
 	} else {
-	    loader.getCityMetrics($cities.find(":selected").val(), date, hours) 
+	    air.getCityMetrics($cities.find(":selected").val(), date, hours) 
 		.done(drawPanel)
 		.fail(onJSONFail)
 		.always(afterStationSet);
@@ -291,7 +314,7 @@ var ui = function(){
 
     function bindEvents() {
 	/* Map event binding */
-	map.on('stationClick', stationClicked);
+	//map.on('stationClick', stationClicked);
 	/* Dropdown event binding */
 	$states.change(stateSelected);
 	$cities.change(citySelected);
@@ -301,7 +324,7 @@ var ui = function(){
 
     function resetDropdowns() {
 	clearStates();
-	populateStates(loader.getAllStates());
+	populateStates(air.getAllStates());
 	clearCities();
 	clearStations();
     }
@@ -318,9 +341,9 @@ var ui = function(){
 
     function populateStates() {
 	_.each(
-	    loader.getAllStates(),
+	    air.getAllStates(),
 	    function(state) {
-		if(state.live) $states.append($("<option />", {
+		if(state.live != "false") $states.append($("<option />", {
 		    value: state.id,
 		    text: state.name
 		}));
@@ -340,9 +363,9 @@ var ui = function(){
 
     function populateCities() {
 	_.each(
-	    loader.getCitiesByState($states.find(":selected").val()),
+	    air.getCitiesByState($states.find(":selected").val()),
 	    function(city) {
-		if(city.live) $cities.append($("<option />", {
+		if(city.live !="false") $cities.append($("<option />", {
 		    value: city.id,
 		    text: city.name
 		}));
@@ -368,10 +391,10 @@ var ui = function(){
 	  }));
     	*/
 	_.each(
-	    loader.getStationsByCity($cities.find(":selected").val()),
+	    air.getStationsByCity($cities.find(":selected").val()),
 	    function(station) {
-		if(station.live) $stations.append($("<option />", {
-		    value: station.id,
+		if(!station.live) $stations.append($("<option />", {
+		    value: station.imei,
 		    text: station.name
 		}));
 	    }
@@ -384,7 +407,7 @@ var ui = function(){
     }
 
     function run() {
-	loader.on('ready', initialize)
+	air.on('ready', initChoices)
     }
 
     function on(event, callback) {
@@ -394,25 +417,41 @@ var ui = function(){
     function emit(event, arg) {
 	signal.emit(event, arg);
     }
+
+    function getConfig() {
+	return $.getJSON("/aq/api/config");
+    }
+
     
     /* All accessible properties of airui will go below this line */
     /* Inheriting from EventEmitter2 to be able to emit and listen to events*/
     //EventEmitter2.call(this);
-    var signal = new EventEmitter2();
-    this.initChoices = initChoices;
-    this.on = on;
-    this.emit = emit;    
-    this.run = run;
     this.configure = configure;
+    this.initChoices = initChoices;
+    this.initializeDatepicker = initializeDatepicker;
+    this.getConfig = getConfig;
+    var signal = new EventEmitter2();
+    this.on = on;
+    this.emit = emit;
+    this.run = run;
+    //this.configure = configure;
     this.onJSONFail = onJSONFail;
-    this.drawPanel = drawPanel;
-    this.afterStationSet = afterStationSet;
-    this.stationClicked = stationClicked;    
+    //this.drawPanel = drawPanel;
+    //this.afterStationSet = afterStationSet;
+    //this.stationClicked = stationClicked;    
     /* For context issues */
     var self = this;
 };
 
-
-
-
-
+$(function() {
+   // $("body").removeClass("vjs-loading-spinner");
+    var air = new Loader();
+    var airui = new ui(air);
+    $.getJSON("/api/config", function(config) {
+	air.configure(config);
+	airui.configure(config);
+	air.run();
+	airui.run();
+	//air.on('stationsLoaded', function() {airui.stationClicked(798)});
+    });
+});

@@ -5537,6 +5537,7 @@ fieldset[disabled] .navbar-inverse .navbar-btn.active {
 .vjs-menu-button {
   display: none !important;
   }
+
 .vjs-loading-spinner {
   position: absolute;
   top: 50%;
@@ -5545,7 +5546,7 @@ fieldset[disabled] .navbar-inverse .navbar-btn.active {
   width: 16px;
   height: 16px;
   margin: -8px 0 0 -8px;
-  background: #ebedee;
+  background: #5555ee;
   border-radius: 10px;
   -webkit-animation: sharp 2s ease infinite;
           animation: sharp 2s ease infinite;

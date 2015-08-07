@@ -157,9 +157,6 @@ var Map = function() {
 	devices.forEach(this.pinDevice)
     }
 
-    function mockFunc(){
-	console.log('A');
-    }
     
 };
     
