@@ -3,6 +3,7 @@ import views as aqviews
 
 urlpatterns = patterns("",
     url(r'devices/$', aqviews.aqdevice_list),
+    url(r'devices/locations/$', aqviews.aqdevice_locations),
     url(r'devices/imei/(?P<pk>[a-z\d]+)/$', aqviews.aqdevice_detail),
     url(r'devices/city/(?P<city>[A-Za-z\d]+)', aqviews.aqdevice_city),
     url(r'devices/state/(?P<state>[A-Za-z\d]+)', aqviews.aqdevice_state),

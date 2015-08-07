@@ -1,7 +1,7 @@
 from django.forms import widgets
 from rest_framework import serializers
 from rest_framework_gis import serializers as gs
-from .models import AQDevice, AQFeed
+from .models import AQDevice, AQFeed, City, State
 
 class AQDeviceSerializer(serializers.Serializer):
     id = serializers.CharField(max_length=512)
@@ -48,3 +48,15 @@ class AQFeedSerializer(serializers.ModelSerializer):
      class Meta:
          model = AQFeed
          fields = ('name','imei','created_on', 'humidity', 'temperature', 'pm10', 'pm25', 'count_large', 'count_small', 'lat', 'lon', 'ip')
+
+class StateSerializer(serializers.ModelSerializer):
+     class Meta:
+         model = State
+         fields = ('id','name', 'lat', 'lon','live')
+
+
+class CitySerializer(serializers.ModelSerializer):
+     class Meta:
+         model = City
+         fields = ('id','name', 'lat', 'lon','live', 'stateID')
+
