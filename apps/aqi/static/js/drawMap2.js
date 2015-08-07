@@ -18,7 +18,6 @@ var proj = d3.geo.azimuthalEqualArea()
 
 var path = d3.geo.path().projection(proj);
 
-
 var svg = d3.select("#map").append("svg")
 		.attr("width", width)
 		.attr("height", height)

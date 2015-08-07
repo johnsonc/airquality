@@ -16,187 +16,6 @@ var varWidth = Math.round(Width*0.5);
 var varHeight = Math.round(Width*0.3);
 
 
-var proj = d3.geo.azimuthalEqualArea()
-    .scale(mapwidth)
-    .translate([33.5, 262.5])
-    .rotate([100, -45])
-    .center([-17.6076, -4.7913]) // rotated [-122.4183, 37.7750]
-    .scale(1297);
-
-var path = d3.geo.path().projection(proj);
-
-
-var svg = d3.select("#map").append("svg")
-    .attr("width", mapwidth)
-    .attr("height", mapheight)
-
-var g = svg.append("g");
-//d3=d3;
-
-// Leaflet
-var OpenWeatherMap_Clouds = L.tileLayer('http://{s}.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
-    opacity: 0.5
-});
-var OpenWeatherMap_Rain = L.tileLayer('http://{s}.tile.openweathermap.org/map/rain/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
-    opacity: 0.5
-});
-var OpenWeatherMap_PressureContour = L.tileLayer('http://{s}.tile.openweathermap.org/map/pressure_cntr/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
-    opacity: 0.5
-});
-
-var OpenWeatherMap_Wind = L.tileLayer('http://{s}.tile.openweathermap.org/map/wind/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
-    opacity: 0.5
-});
-
-var OpenWeatherMap_Temperature = L.tileLayer('http://{s}.tile.openweathermap.org/map/temp/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
-    opacity: 0.5
-});
-
-var OpenStreetMap_Mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-});
-
-var OpenStreetMap_Mapquest = L.tileLayer('http://oatile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg', {
-    attribution : 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency',
-    subdomains : '1234'
-});
-
-var OpenTopoMap = L.tileLayer('http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-    maxZoom: 16,
-    attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-});
-
-var NASAGIBS_ViirsEarthAtNight2012 = L.tileLayer('http://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
-    attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
-    bounds: [[-85.0511287776, -179.999999975], [85.0511287776, 179.999999975]],
-    minZoom: 1,
-    maxZoom: 8,
-    format: 'jpg',
-    time: '',
-    tilematrixset: 'GoogleMapsCompatible_Level'
-});
-// https: also suppported.
-var Stamen_TonerHybrid = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-hybrid/{z}/{x}/{y}.png', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: 'abcd',
-    minZoom: 0,
-    maxZoom: 20,
-    ext: 'png'
-});
-var MapQuestOpen_HybridOverlay = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
-    type: 'hyb',
-    ext: 'png',
-    attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: '1234',
-    opacity: 0.9
-});
-
-var Stamen_TonerLines = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-lines/{z}/{x}/{y}.png', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: 'abcd',
-    minZoom: 0,
-    maxZoom: 20,
-    ext: 'png'
-});
-// https: also suppported.
-var Stamen_TonerLabels = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}.png', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: 'abcd',
-    minZoom: 0,
-    maxZoom: 20,
-    ext: 'png'
-});
-
-var Stamen_TopOSMFeatures = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/toposm-features/{z}/{x}/{y}.png', {
-    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: 'abcd',
-    minZoom: 0,
-    maxZoom: 20,
-    ext: 'png',
-    bounds: [[22, -132], [51, -56]],
-    opacity: 0.9
-});
-
-var OpenMapSurfer_AdminBounds = L.tileLayer('http://openmapsurfer.uni-hd.de/tiles/adminb/x={x}&y={y}&z={z}', {
-    maxZoom: 19,
-    attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-});
-
-
-
-var map = L.map('mappa', {
-    center: [20,72],
-    zoom: 7,
-    layers: [OpenTopoMap, Stamen_TonerLabels]
-});
-
-var baseMaps = {
-    "Default": OpenTopoMap,
-    "Political": OpenStreetMap_Mapnik,
-    "Satellite": OpenStreetMap_Mapquest,
-    "Night": NASAGIBS_ViirsEarthAtNight2012,
-};
-
-var overlayMaps = {
-    "OverlayBoundaries": OpenMapSurfer_AdminBounds,
-    "Temperature":OpenWeatherMap_Temperature,
-    "Wind":  OpenWeatherMap_Wind,
-    "Air Pressure": OpenWeatherMap_PressureContour,
-    "Rain": OpenWeatherMap_Rain,
-    "Clouds": OpenWeatherMap_Clouds,
-    "Topography":Stamen_TopOSMFeatures,
-    "OverlayHybrid1": Stamen_TonerHybrid,
-    "OverlayHybrid2": MapQuestOpen_HybridOverlay,
-    "OverlayLines": Stamen_TonerLines,
-    "OverlayLabels": Stamen_TonerLabels,
-    
-};   
-
-L.control.layers(baseMaps, overlayMaps).addTo(map);
-
-// when map is clicked, toggle zoom in and zoom out
-function clicked(d) {
-
-    if (d && centered !== d) {
-	centroid = path.centroid(d);
-	x = centroid[0];
-	y = centroid[1] - 40;
-	k = (d.id == "48" || d.id == "06") ? 2 : 4;
-	centered = d;
-    } else {
-	x = width / 2;
-	y = height / 2;
-	k = 1;
-	centered = null;
-    }
-
-    g.selectAll("path")
-	.classed("active", centered && function(d) { return d === centered; });
-
-    g.transition().duration(500)
-  	.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")");
-
-    d3.selectAll(".border")
-	.transition().duration(500).style("stroke-width", .25 / k + "px");
-
-    g.selectAll("path")
-	.classed("active", centered && function(d) { return d === centered; });
-
-    zoomRender = true;
-}
-
-
 var stateNametoAbv1 = {'Andaman and Nicobar': 'AN', 'Andhra Pradesh': 'AP', 'Arunachal Pradesh': 'AR', 'Assam': 'AS', 'Bihar': 'BR', 'Chandigarh': 'CH', 'Chhattisgarh': 'CT', 'Dadra and Nagar Haveli': 'DN', 'Daman and Diu': 'DD', 'Delhi': 'DL', 'Goa': 'GA', 'Gujarat': 'GJ', 'Haryana': 'HR', 'Himachal Pradesh': 'HP', 'Jammu and Kashmir': 'JK', 'Jharkhand': 'JH', 'Karnataka': 'KA', 'Kerala': 'KL', 'Lakshadweep': 'LD', 'Madhya Pradesh': 'MP', 'Maharashtra': 'MH', 'Manipur': 'MN', 'Meghalaya': 'ML', 'Mizoram': 'MZ', 'Nagaland': 'NL', 'Orissa': 'OR', 'Puducherry': 'PY', 'Punjab': 'PB', 'Rajasthan': 'RJ', 'Sikkim': 'SK', 'Tamil Nadu': 'TN', 'Telengana': 'TS', 'Tripura': 'TR', 'Uttar Pradesh': 'UP', 'Uttarakhand': 'UT', 'West Bengal': 'WB'}
 
 var lastStreamTimeStamp;
@@ -228,13 +47,12 @@ function dataUpdate(error, newdatapoints){
     if(newdatapoints.length != 0){
 	processdata(newdatapoints);
 	console.log(newdatapoints);	
-	console.log('Stream updated');
+	console.log('Data stream updated');
 	datapointCF.add(newdatapoints);
-	dc.renderAll();
-	console.log('Charts updated from stream');
+	renderAll();
     }
     else{
-	console.log('Nothing to add from stream ');
+	//console.log('Nothing to add from stream ');
     }   
     lastStreamTimeStamp = new Date();
 }
@@ -339,24 +157,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
         //.onclick( d3.json('/api/aqfeed/'imei+'?format=json', function(data) {...}; )
     
     aqdevices.forEach(function(d,i){
-	marker = L.marker([d.lat,d.lon],{
-	    'imei':d.imei
-	}).addTo(map);
-
-	marker.on('mouseout', function(e) {
-	    //open popup;
-	    var popup = L.popup()
-		.setLatLng(e.latlng) 
-		.setContent("<b>" + d.title + "</b><hr/>"+ d.desc + "")
-		.openOn(map);
-	});
-
-	//marker.bindPopup("<b>" + d.title + "</b><hr/><br>"+ d.desc + "");
-	marker.on('click', function(d){ 
-	    imei.filterAll();
-	    imei.filter(this.options.imei);
-	    console.log(this.options.imei);
-	});	
+	map.pinDevice(d);
     })
 
     // datapoints;    
@@ -442,7 +243,9 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 	*/
 
-	var chartDim = Math.min(document.getElementById('mappa').clientWidth, window.innerHeight) - 20;	    
+	//var chartDim = Math.min(document.getElementById('mappa').clientWidth, window.innerHeight) - 20;
+
+	    
 	var chartWidthDim = 320; //Math.min(document.getElementById('mappa').clientWidth, window.innerHeight ) - 20;
 	var chartHeightDim = 96; //(window.innerHeight)/6;
 
@@ -667,55 +470,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	];
 	*/
 
-	function render(method){
-	    d3.select(this).call(method);
-	}
-	
-	var oldFilterObject = {};
-	datapointIndexs.all().forEach(function(d){ oldFilterObject[d.key] = d.value; });
-	
-	renderAll = function(){
-	    //bChart.each(render);
-	    //cChart.each(render);
-	    zoomRender = false;
-	    newFilterObject = {};
-	    datapointIndexs.all().forEach(function(d){ newFilterObject[d.key] = d.value; });
 
-	    //exit animation
-	    /*lines.filter(function(d){ return oldFilterObject[d.index] > newFilterObject[d.index]; })
-	      .transition().duration(1400)
-	      .attr("x1", function(d){ return d.x2; })
-	      .attr("y1", function(d){ return d.y2; })
-	      .transition().delay(1450).duration(0)
-	      .attr('opacity', 0)
-	      .attr("x1", function(d){ return d.x1; })
-	      .attr("y1", function(d){ return d.y1; })
-	      .attr("x2", function(d){ return d.x1; })
-	      .attr("y2", function(d){ return d.y1; });
-
-	      //enter animation
-	      lines.filter(function(d){ return oldFilterObject[d.index] < newFilterObject[d.index]; })
-	      .attr('opacity', function(d, i){ return opacityScale(d.fscale); })
-	      .transition().duration(1400)
-	      .attr("x2", function(d){ return d.x2; })
-	      .attr("y2", function(d){ return d.y2; })
-	    */
-
-	    oldFilterObject = newFilterObject;
-	    
-	    // update humidity/temp, etc
-	    visible = datapoints.filter(function(d){ return newFilterObject[d.index] == 1; });
-	    // Cumulative numbers
-	    
-	    d3.select("#total").text(
-		d3.format(',')(all.value()));
-	  //  d3.select("#avg").text(
-	//	d3.format(',')(d3.avg(visible.map(function(d, i){ return d.pm10; })))); 
-	 //   d3.select("#min").text(
-	//	d3.format(',.0f')(d3.min(visible.map(function(d, i){ return d.pm10; }))));
-	    d3.select("#max").text(
-		d3.format(',')(d3.max(visible.map(function(d, i){ return d.pm10; }))));	
-	}
 
 	/*
 	window.breset = function(i){
@@ -741,7 +496,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	//renderAll();
 
 	//remove extra width ticks (there is a better way of doing this!)
-	
+	/*
 	d3.select('#width-chart').selectAll('.major')
 	    .filter(function(d, i){ return i % 2; })
 	    .selectAll('text')
@@ -751,7 +506,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .filter(function(d, i){ return !(i % 2); })
 	    .selectAll('text')
 	    .remove(); 
-	
+	    */
 	/* document.getElementById('devicePicker').onchange = function() {
 	    console.log("Changed AQDevice :" );
             // Get the values as an array
@@ -786,7 +541,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	}
 	
 	// Charts
-	//var dataCount  = dc.dataCount("#data-count");
+	var dataCount  = dc.dataCount("#data-count");
 	timeChart  = dc.barChart("#time-chart");
 	var pm10Chart  = dc.barChart("#pm10-chart"); 
 	var pm25Chart = dc.barChart('#pm25-chart');
@@ -1418,19 +1173,18 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 	    */
 	
-	//dataCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */
-	/*
+	dataCount /* dc.dataCount('.dc-data-count', 'chartGroup'); */	
             .dimension(datapointCF)
             .group(all)	   
             .html({
-		some:'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
-                    ' | <a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
+		//'<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
+		some: '<a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
 		all:'All records selected. Please click on the graph to apply filters.'
             });	
-
-	*/
+	
+	
 	var radius = 50;
-	var svg = d3.select('#aqi-display').append('svg')
+	var aqiDisplay = d3.select('#aqi-display').append('svg')
 	    .attr('width', radius*2)
 	    .attr('height', radius*2);
 
@@ -1441,10 +1195,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    {  todaysAQI = numberFormat(d.value.avg); }  
 	});    
 
-	var g = svg.append("g")
+	var g = aqiDisplay.append("g")
 	    .attr("class", "bubble")	    
 
-	g.selectAll("circle")
+	var aqiCircle = g.selectAll("circle")
 	    .data([todaysAQI]) 
 	    .enter().append("circle")
 	    .attr("r", radius)
@@ -1465,10 +1219,10 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		  
 		 );
 	
-	g.append("text")
+	var aqiText = g.append("text")
+	    .data([todaysAQI]) 
 	    .attr("x", radius)
 	    .attr("y", radius+8)
-	    .data([todaysAQI]) 
 	    .attr("text-anchor", "middle")
 	    .text(function(d){ 
 		return d;
@@ -1477,21 +1231,62 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .attr("font-size", "40px")
 	    .attr("font-style", "bold")
 	    .attr("fill", "#f0fcfc");	
-	/*
-	    on('change', function(){ 	
+
+
+
+	function render(method){
+	    d3.select(this).call(method);
+	}
+	
+	var oldFilterObject = {};
+	datapointIndexs.all().forEach(function(d){ oldFilterObject[d.key] = d.value; });
+	
+	renderAll = function(){
+	    //bChart.each(render);
+	    //cChart.each(render);
+	    newFilterObject = {};
+	    datapointIndexs.all().forEach(function(d){ newFilterObject[d.key] = d.value; });
+
+
+	    oldFilterObject = newFilterObject;
+	    
+	    // update humidity/temp, etc
+	    visible = datapoints.filter(function(d){ return newFilterObject[d.index] == 1; });
+	    // Cumulative numbers
+	    
+	    d3.select("#total").text(
+		d3.format(',')(all.value()));
+	  //  d3.select("#avg").text(
+	//	d3.format(',')(d3.avg(visible.map(function(d, i){ return d.pm10; })))); 
+	 //   d3.select("#min").text(
+	//	d3.format(',.0f')(d3.min(visible.map(function(d, i){ return d.pm10; }))));
+	    d3.select("#max").text(
+		d3.format(',')(d3.max(visible.map(function(d, i){ return d.pm10; }))));	
+
+	    aqiAvgGroupByDay0.all().forEach(function(d){ 
+		if( d.key.toISOString()=== d3.time.day(new Date()).toISOString())
+		{  todaysAQI = numberFormat(d.value.avg); }  
+	    });    
+	    
+	    aqiText.data([todaysAQI]);
+	    
+	    dc.redrawAll();
+	}
+
+
+	/*  on('change', function(){ 	
 	    imei.filterAll();
 	    imei.filter(this.value);
 	    dc.redrawAll(); 
 	})*/
 
-
 	dc.renderAll();
 
-    d3.select('#devicePicker').on('change', function(){ 	
-	imei.filterAll();
-	imei.filter(this.value);
-	dc.redrawAll(); 
-    })
+	d3.select('#devicePicker').on('change', function(){ 	
+	    imei.filterAll();
+	    imei.filter(this.value);
+	    dc.redrawAll(); 
+	})
     }
 }
 
