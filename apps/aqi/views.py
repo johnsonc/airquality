@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from models import AQDevice, AQFeed
-from serializers import AQDeviceSerializer, AQFeedSerializer
+from models import AQDevice, AQFeed, State, City
+from serializers import AQDeviceSerializer, AQFeedSerializer, StateSerializer, CitySerializer
 import datetime
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -70,6 +70,47 @@ def aqdevice_state(request, state):
             return Response(serializer.data)        
     except:
         return Response(status=404)    
+
+@csrf_exempt
+@api_view(['GET'])
+def aqdevice_locations(request):
+    """
+    Retrieve  AQDevices acc. to city and state
+    """    
+    #try:
+    if request.method == 'GET':
+        data = {}
+        states = State.objects.all()
+        cities = City.objects.all()
+
+        aqdevices = AQDevice.objects.all()
+        aqserializer = AQDeviceSerializer(aqdevices, many=True)
+        data['devices']=aqserializer.data
+        
+        serializer = StateSerializer(states, many=True)
+        data['states']=serializer.data
+        cityD = []
+        
+        for s in states:
+            d = {'stateID':s.id}
+            d['citiesInState']= []
+            for c in cities:
+                if c.stateID == s.id:
+                    d['citiesInState'].append({
+                            'id':c.id,
+                            'name':c.name,
+                            'stateID':c.stateID,
+                            'lat':c.lat,
+                            'lon':c.lon,
+                            'live':c.live
+                            })
+            cityD.append(d)
+                    
+        data['cities']=cityD
+    return Response(data)        
+    #except:
+    #    return Response(status=404)
+
 
 
 @csrf_exempt
@@ -212,6 +253,26 @@ def aqdatapoint(request):
                 aqd.city = ipdetails['city']            
                 aqd.state = ipdetails['regionName']            
                 aqd.save()
+                try:
+                    s = State.objects.get(name=aqd.state)
+                    c = City.objects.get(name=aqd.city)
+                    s.live = "true"
+                    s.save()
+                    c.live = "true"
+                    c.save()
+                except City.DoesNotExist:                    
+                    lastCity = City.objects.latest('created_on')
+                    c = City()
+                    try:
+                        c.id = lastCity.id +1
+                    except:
+                        c.id = 1
+
+                    c.name=aqd.city
+                    c.lat=aqd.lat
+                    c.lon=aqd.lon
+                    c.live="true"
+                    c.save()                    
 
             d['lat'] = aqd.lat
             d['lon'] = aqd.lon            

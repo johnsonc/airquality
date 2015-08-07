@@ -38,3 +38,34 @@ class AQFeed(models.Model):
 
     class Meta:
         ordering = ('created_on',)
+
+
+class State(models.Model):
+    auto = models.AutoField(primary_key=True, blank=True )   
+    id = models.IntegerField(null=True, blank=True)   
+    name = models.CharField(max_length=128, null=True, blank=True )   
+    lat =  models.CharField(max_length=24,  null=True, blank=True)
+    lon =  models.CharField(max_length=24, null=True, blank=True)
+    live =  models.CharField(max_length=8, null=True, blank=True, default='false')
+    stateID = models.IntegerField(null=True, blank=True )   
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
+    
+    class Meta:
+        ordering = ('created_on',)
+
+
+
+
+class City(models.Model):
+    id = models.IntegerField(null=True,  blank=True )   
+    name = models.CharField(max_length=128, null=True, blank=True )   
+    lat =  models.CharField(max_length=24,  null=True, blank=True)
+    lon =  models.CharField(max_length=24, null=True, blank=True)
+    live =  models.CharField(max_length=8, null=True, blank=True, default='false')
+    stateID = models.IntegerField(null=True, blank=True)   
+    auto = models.AutoField(primary_key=True, blank=True )   
+    created_on = models.DateTimeField(auto_now_add=True, null=True)
+    
+    class Meta:
+        ordering = ('created_on',)
+
