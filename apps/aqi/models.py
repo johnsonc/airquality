@@ -21,6 +21,10 @@ class AQDevice(models.Model):
     class Meta:
         ordering = ('created_on',)
 
+    def __unicode__(self):
+        return self.imei
+
+
 
 class AQFeed(models.Model):
     name = models.CharField(max_length=128, null=True, blank=True )   
@@ -37,7 +41,10 @@ class AQFeed(models.Model):
     created_on = models.DateTimeField(blank=True, null=True)    
 
     class Meta:
-        ordering = ('created_on',)
+        ordering = ('-created_on',)
+
+    def __unicode__(self):
+        return self.imei
 
 
 class State(models.Model):
@@ -49,10 +56,14 @@ class State(models.Model):
     live =  models.CharField(max_length=8, null=True, blank=True, default='false')
     stateID = models.IntegerField(null=True, blank=True )   
     created_on = models.DateTimeField(auto_now_add=True, null=True)
-    
+    #alternative_names = ListField(null=True, blank=True)    
+    #region_code = models.CharField(max_length=24, null=True, blank=True)
+
     class Meta:
         ordering = ('created_on',)
 
+    def __unicode__(self):
+        return self.name
 
 
 
@@ -68,4 +79,8 @@ class City(models.Model):
     
     class Meta:
         ordering = ('created_on',)
+        
+    def __unicode__(self):
+        return self.name
+
 

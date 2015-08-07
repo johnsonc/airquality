@@ -71,7 +71,7 @@ var parseDate = d3.time.format("%x %H:%M").parse;
 aqparseDate = d3.time.format("%Y-%m-%dT%H:%M").parse;
 var datapoint;
 var datapointCF;
-var dateFormat = d3.time.format('%m/%d/%Y');
+dateFormat = d3.time.format('%m/%d/%Y');
 var numberFormat = d3.format('.2f');
 
 var getpm10AQI = function(d){    
