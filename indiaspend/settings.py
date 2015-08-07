@@ -98,6 +98,7 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -145,6 +146,7 @@ INSTALLED_APPS = (
     #'bootstrapform',
     'rest_framework',
     #'account',
+    'corsheaders',
     'djgeojson',
     'leaflet',
     'indiaspend',
