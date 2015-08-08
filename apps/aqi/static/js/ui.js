@@ -219,10 +219,6 @@ var ui = function(configObj){
 	$cities = $("#cityPicker");
 	$stations = $("#devicePicker");
 	$date = $("#datePicker");
-	//console.log($date);	
-	//console.log(datepickerOptions);	
-	//$date.datepicker(datepickerOptions);	
-	//$date.date('setDate', d3.time.format("%Y-%m-%dT%H:%M").parse);
 	initializeDatepicker(datepickerOptions);
 	//map.initialize();
 	//map.pinStations(air.getAllStations());
@@ -263,25 +259,27 @@ var ui = function(configObj){
        to the dropdown element
     */
     function stateSelected() {
-	//map.showState(air.getState($(this).val()));
-	//console.log("state selected")
+	map.showState(air.getState($(this).val()));
 	clearCities();
 	clearStations();
 	populateCities();
     }
     
     function citySelected() {
-	//map.showCity(air.getCity($(this).val()));
+	map.showCity(air.getCity($(this).val()));
 	clearStations();
 	populateStations();
     }
     
-    function stationSelected() {
+    function stationSelected() {	
 	var id = $(this).val();
 	if ( "0" != id ) {
-	    //map.showStation(air.getStation(id));
-	}
-	window.quickfix(id);
+	    map.showStation(air.getStation(id));
+	    console.log("StationSelected!");
+	    imei.filterAll();
+	    imei.filter(this.value);
+	    dc.redrawAll(); 
+	}	
 	stationSet(id);
     }
     
@@ -323,11 +321,11 @@ var ui = function(configObj){
 
     function bindEvents() {
 	/* Map event binding */
-	//map.on('stationClick', stationClicked);
+	// map.on('stationClick', stationClicked);
 	/* Dropdown event binding */
 	$states.change(stateSelected);
 	$cities.change(citySelected);
-	//$stations.change(stationSelected);
+	$stations.change(stationSelected);
 	$date.datepicker().on('changeDate', dateChanged);
     }
 
@@ -341,7 +339,7 @@ var ui = function(configObj){
     function clearStates() {
 	$states.empty();
 	$states.append($("<option>", {
-	    text: "__Select State__",
+	    text: "Select State",
 	    value: -1,
 	    disabled: "disabled",
 	    selected: "selected"
@@ -363,7 +361,7 @@ var ui = function(configObj){
     function clearCities() {
 	$cities.empty();
 	$cities.append($("<option>", {
-	    text: "__Select City__",
+	    text: "Select City",
 	    value: -1,
 	    disabled: "disabled",
 	    selected: "selected"
@@ -385,7 +383,7 @@ var ui = function(configObj){
     function clearStations() {
 	$stations.empty();
 	$stations.append($("<option>", {
-	    text: "__Select Device__",
+	    text: "Select Device",
 	    value: -1,
 	    disabled: "disabled",
 	    selected: "selected"
@@ -461,11 +459,11 @@ var ui = function(configObj){
     //$("pulsar").removeClass("vjs-loading-spinner");
     var air = new Loader();
     var airui = new ui(air);
-    //var map = new Map();
+    var map = new Map();
     $.getJSON("/api/config", function(config) {
 	air.configure(config);
 	airui.configure(config);
-	//map.configure(config);
+	map.configure(config);
 	air.run();
 	airui.run();
 	//air.on('stationsLoaded', function() {airui.stationClicked(798)});

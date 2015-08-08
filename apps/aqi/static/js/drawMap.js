@@ -59,7 +59,7 @@ function dataUpdate(error, newdatapoints){
 
 
 var begin = setTimeout(function(){
-   streamStart();
+   //streamStart();
 }, 10000);
 
 
@@ -123,7 +123,6 @@ function getAQI(t){
 //    .defer(d3.json, "/static/data/india-states-gramener.json")
 
 function processdata(datapoints){
-    console.log(datapoints.length);
     datapoints.forEach(function(t,i){
 	t['time'] = aqparseDate(t['created_on'].substr(0,16));
 	t['index'] = i;
@@ -1281,6 +1280,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	})*/
 
 	dc.renderAll();
+	
 
 	d3.select('#devicePicker').on('change', function(){ 	
 	    imei.filterAll();

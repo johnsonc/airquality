@@ -122,10 +122,13 @@ var Map = function() {
 	"OverlayLabels": Stamen_TonerLabels,    
     };   
 
-    thismap =  L.map('mappa', {
+    var thismap =  L.map('mappa', {
 	center: [20,72],
 	zoom: 7,
-	layers: [OpenStreetMap_Mapnik, Stamen_TonerLabels]
+	layers: [OpenStreetMap_Mapnik, Stamen_TonerLabels],
+	touchZoom:false,
+	tap:false,
+	dragging:false
     });
 
     L.control.layers(baseMaps, overlayMaps).addTo(thismap);
@@ -169,36 +172,42 @@ var Map = function() {
     }
 
     function showState(state) {
-	map.panTo(latLng(state.latitude, state.longitude));
+	
+	map.panTo(L.latLng(state.lat, state.lon));
+	console.log(self.config.mapStateZoom);
 	map.setZoom(self.config.mapStateZoom);
     }
 
     function showCity(city) {
-	map.panTo(latLng(city.latitude, city.longitude));
+	map.panTo(L.latLng(city.lat, city.lon));
 	map.setZoom(self.config.mapCityZoom);
     }
 
-    function showStation(station) {
-	map.panTo(latLng(station.latitude, station.longitude));
+    function showStation(station) {	
+	map.panTo(L.latLng(station.lat, station.lon));
 	map.setZoom(self.config.mapStationZoom);
     }
 
     function panTo(lat, lon){
-	
-	
-    }    
+	thismap.panTo(L.latLng(lat, lon));		      
+    } 
 
+    function setZoom(zoomlevel){
+	thismap.setZoom(zoomlevel)
+    }       
 
     function configure(config) {
-	if( !isVisible() ) {
+	/*if( !isVisible() ) {
 	    makeHollow();
 	    return;
-	}
+	}*/
     /* Check if all required fields are present in config */  
 	self.config = config;
 	self.config.mapStationZoom =  parseInt(self.config.mapStationZoom);
  	self.config.mapStateZoom =  parseInt(self.config.mapStateZoom);
 	self.config.mapCityZoom =  parseInt(self.config.mapCityZoom);
+	self.config.mapZoom =  parseInt(self.config.mapZoom);
+
 	/*
 	 
                 "mapCenterLat":"21.15",
@@ -207,17 +216,19 @@ var Map = function() {
                 "mapMumCenterLng":"72.00",
  
 	 */
-
-
-
     }
             
     var requiredFields = ['mapCenterLat', 'mapCenterLng', 'mapZoom', 'mapStateZoom', 'mapCityZoom', 'mapStationZoom'];
     var loaded = false;    
     this.markDevice = markDevice;
     this.markDevices = markDevices;
+    this.configure = configure;
+    this.panTo = panTo;
+    this.setZoom = setZoom;
+    this.showStation = showStation;
+    this.showCity = showCity;
+    this.showState = showState;
     
 };
 
 
-var map = new Map();
