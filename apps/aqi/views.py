@@ -339,7 +339,7 @@ def aqdatapoint(request):
                         #region lookup is more robust than regionName for State. But just in case, fallback to Maharastra :)
                         s = State.objects.get(id=10)                            
                     
-                    c = create_or_getCity(ipdetails['city'], aqd.lat, aqd.lon)
+                    c = create_or_getCity(ipdetails['city'], s.id, aqd.lat, aqd.lon)
 
                     # update status as live. 
                     s.live="true"
@@ -373,15 +373,15 @@ def aqdatapoint(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def create_or_getCity(cityName, lat,lon):
+def create_or_getCity(cityName, stateID, lat,lon):
     try:
         c = City.objects.get(name=cityName)
     except City.DoesNotExist:                    
         lastCity = City.objects.latest('created_on')
         c = City()
         c.id = lastCity.id +1
-        c.name=cityName
-        c.stateID=s.id
+        c.name=cityName        
+        c.stateID=stateID
         c.lat=lat
         c.lon=lon    
         c.live="true"
