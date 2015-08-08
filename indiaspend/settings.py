@@ -145,6 +145,8 @@ INSTALLED_APPS = (
     #'pinax_theme_bootstrap',
     #'bootstrapform',
     'rest_framework',
+    'djangotoolbox',
+    'django_mongodb_engine',
     #'account',
     'corsheaders',
     'djgeojson',
