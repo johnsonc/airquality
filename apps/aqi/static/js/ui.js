@@ -460,7 +460,7 @@ var ui = function(configObj){
     var air = new Loader();
     var airui = new ui(air);
     var map = new Map();
-    $.getJSON("/api/config", function(config) {
+    $.getJSON("/aq/api/config", function(config) {
 	air.configure(config);
 	airui.configure(config);
 	map.configure(config);
