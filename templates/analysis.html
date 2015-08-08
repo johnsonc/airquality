@@ -12,9 +12,8 @@
     <link rel="stylesheet" href={% static "/aq/static/css/filter.css" %} />
     <link rel="stylesheet" href={% static "/aq/static/css/dc.css" %} /> 
     <link rel="stylesheet" href={% static "/aq/static/css/app.css" %} /> 
-    <link rel="stylesheet" href={% static "/aq/static/css/loader.css" %} /> 
 
-	<link rel="stylesheet" href={% static "/aq/static/leaflet/leaflet.css" %} />
+    <link rel="stylesheet" href={% static "/aq/static/leaflet/leaflet.css" %} />
  <!--   <link rel="stylesheet" href={% static "/aq/static/chosen/chosen.min.css" %} />  -->
    <link rel="stylesheet" type="text/css" href="/aq/static/css/bootstrap-select.min.css" />
    <link rel="stylesheet" type="text/css" href="/aq/static/keen/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -110,7 +109,7 @@
           </div>
           <div class="chart-stage">
 	    <div style="width:100%;text-align:center">
-	    <div id="svg-loader" class="svg-loader">
+	    <div id="svg-loader" class="svg-loader" style="display:none">
 	      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svgloader" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 213.235 241.176" enable-background="new 0 0 213.235 241.176" xml:space="preserve" fill="#0057B8">
 		<path d="M108.581,64.968V14.124l44.007,25.422L108.581,64.968"/>
 		<path fill-opacity="0.9" d="M153.591,92.101V41.258L109.582,66.68L153.591,92.101"/><path d="M155.586,92.062V41.221l44.009,25.42L155.586,92.062"/><path fill-opacity="0.7" d="M200.299,119.14V68.297l-44.004,25.421L200.299,119.14"/><path fill-opacity="0.85" d="M155.586,146.255V95.412l44.009,25.422L155.586,146.255"/><path fill-opacity="0.7" d="M200.299,173.35v-50.844l-44.004,25.422L200.299,173.35"/><path fill-opacity="0.6" d="M155.586,200.482v-50.84l44.009,25.417L155.586,200.482"/><path fill-opacity="0.5" d="M153.591,200.521v-50.84l-44.009,25.418L153.591,200.521"/><path fill-opacity="0.6" d="M108.581,227.696v-50.844l44.007,25.421L108.581,227.696"/><path fill-opacity="0.5" d="M106.62,227.696v-50.844l-44.005,25.421L106.62,227.696"/><path fill-opacity="0.7" d="M61.562,200.553V149.71l44.007,25.423L61.562,200.553"/><path fill-opacity="0.7" d="M59.709,200.56v-50.843l-44.008,25.422L59.709,200.56"/><path fill-opacity="0.7" d="M14.699,173.467v-50.843l44.01,25.42L14.699,173.467"/><path fill-opacity="0.5" d="M59.709,146.235V95.392l-44.008,25.42L59.709,146.235"/><path fill-opacity="0.7" d="M14.699,119.141V68.297l44.01,25.421L14.699,119.141"/><path fill-opacity="0.6" d="M59.709,92.101V41.258L15.701,66.68L59.709,92.101"/><path fill-opacity="0.85" d="M61.562,92.092V41.249l44.007,25.419L61.562,92.092"/>
@@ -422,7 +421,7 @@
 
  <!--  <script type="text/javascript" src="/aq/static/keen/assets/lib/keen-js/dist/keen.min.js"></script> 
   <script type="text/javascript" src="/aq/static/keen/assets/js/meta.js"></script> -->
-
+ <!-- -->
   <script src={% static "/aq/static/js/lib/colorbrewer.js" %}></script>
   <script src={% static "/aq/static/js/lib/d3.js" %}></script>
   <script src={% static "/aq/static/js/lib/crossfilter.js"%}></script>
@@ -432,17 +431,12 @@
   <script src={% static "/aq/static/js/lib/eventemitter2.js" %}></script>
   <script src={% static "/aq/static/js/bootstrap-datepicker.min.js" %}></script>
   <script src={% static "/aq/static/js/bootstrap-sortable.js" %}></script>
-  <script src={% static "/aq/static/js/moment.min.js" %}></script>
   <script src={% static "/aq/static/js/lib/eventemitter2.js" %}></script>
-
   <script src={% static "/aq/static/js/lib/topojson.v1.js" %}></script>
   <script src={% static "/aq/static/js/lib/queue.js" %}></script>
   <script src={% static "/aq/static/js/elems/barChart.js"%}></script>
   <script src={% static "/aq/static/js/elems/circleChart.js"%}></script>
   <script src={% static "/aq/static/leaflet/leaflet.js" %}></script>
-  <script src={% static "/aq/static/js/loaders.css.js" %}></script>
- <!--  <script src={% static "/aq/static/jquery/js/jquery-2.1.4.min.js" %}></script> -->
-  <script src={% static "/aq/static/chosen/chosen.jquery.min.js" %}></script>
   <script src={% static "/aq/static/js/map.js" %}></script>
   <script src={% static "/aq/static/js/drawMap.js" %}></script>
   <script src={% static "/aq/static/js/ui.js" %}></script>
