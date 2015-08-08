@@ -56,8 +56,8 @@ class State(models.Model):
     live =  models.CharField(max_length=8, null=True, blank=True, default='false')
     stateID = models.IntegerField(null=True, blank=True )   
     created_on = models.DateTimeField(auto_now_add=True, null=True)
+    region_code = models.CharField(max_length=8, null=True, blank=True)
     #alternative_names = ListField(null=True, blank=True)    
-    #region_code = models.CharField(max_length=24, null=True, blank=True)
 
     class Meta:
         ordering = ('created_on',)
