@@ -27,7 +27,7 @@ body.application hr {
 
 
 .navbar-inverse {
-  background-color: #3d4a57;
+  background-color: #333333; //#3d4a57;
   border-color: #333;
 }
 .navbar-inverse .navbar-nav > li > a,
