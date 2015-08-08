@@ -298,9 +298,9 @@ def aqdatapoint(request):
     """
     
     deviceip = get_client_ip(request)
-    #f = open('/tmp/aqrequest.log', 'a')
-    #f.write("\n" + str(deviceip))
-    #f.close()
+    f = open('/tmp/aqrequest.log', 'a')
+    f.write("\n" + str(deviceip))
+    
     if request.method == "GET":        
         d={}
         d['imei'] = request.GET['i']
@@ -313,8 +313,11 @@ def aqdatapoint(request):
 
         try:
             #import pdb; pdb.set_trace()        
-            if request.GET['ip']:
+            try:            
                 deviceip = request.GET['ip']
+            except:
+                pass
+
             #1. check the device IP and load lat, lon from there, if changed, update location
             aqd = AQDevice.objects.get(imei=d['imei'])   
             if aqd.ip != deviceip:
@@ -325,19 +328,15 @@ def aqdatapoint(request):
                 aqd.lat = ipdetails['lat']
                 aqd.lon = ipdetails['lon']            
                 aqd.geom = {u'type': u'Point', u'coordinates': [aqd.lon, aqd.lat]}
-                aqd.city = ipdetails['city']
-                aqd.state = ipdetails['regionName']            
-                aqd.save()
-                
                 # 3. Update state, city details if device changes locations
                 try:
                     # 4. Check and get state in incoming IP
                     try:
-                        s = State.objects.get(name=ipdetails['regionName'])
+                        s = State.objects.get(region_code=ipdetails['region'])
                     except State.DoesNotExist:     
-                        # temp workaround. regionName is not always matching in geoIP lookup.
-                        # need to get IP and test regionName for all states OR 
-                        # use another field as a regional qualifier. 
+                        import sys
+                        f.write("\nERROR: " + str(sys.exc_info()))
+                        #region lookup is more robust than regionName for State. But just in case, fallback to Maharastra :)
                         s = State.objects.get(id=10)                            
                     
                     c = create_or_getCity(ipdetails['city'], aqd.lat, aqd.lon)
@@ -348,16 +347,25 @@ def aqdatapoint(request):
                     c.live="true"
                     c.save()
                 except:
-                    pass
-                    #import sys, f.write()
+                    import sys
+                    f.write("\nERROR: " + str(sys.exc_info()))
+                #after ascertaining city and state objects, save aqd 
+                aqd.city = c.name
+                aqd.state = s.name
+                aqd.save()
+                f.write("\nAQD:" + str(aqd.__dict__))
+                #write to log if loc of AQD changed.
+
             d['ip'] = deviceip            
             d['lat'] = aqd.lat
             d['lon'] = aqd.lon            
-        except:
-            pass
-        # Save input even if  AQDevice, State/City is not updateable. 
+        except:       
+            import sys
+            f.write("\nERROR: " + str(sys.exc_info()))
 
         d['created_on'] = datetime.datetime.now()
+        f.write("\nAQFeed:" + str(d))
+        f.close()        
         serializer = AQFeedSerializer(data=d)
         if serializer.is_valid():
             serializer.save()
