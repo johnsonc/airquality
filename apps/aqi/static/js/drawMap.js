@@ -157,7 +157,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
         //.onclick( d3.json('/api/aqfeed/'imei+'?format=json', function(data) {...}; )
     
     aqdevices.forEach(function(d,i){
-	map.pinDevice(d);
+	map.markDevice(d);
     })
 
     // datapoints;    
@@ -678,7 +678,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		    .text(function(d){
 			return numberFormat(d3.select(d).data()[0].data.value.avg);
 		    })
-		    .attr('x', function(d){ console.log(d);
+		    .attr('x', function(d){
 				return +d.getAttribute('x') + 20; //+ (d.getAttribute('width')/2); 
 		    })
 		    .attr('y', function(d){ 
@@ -1269,8 +1269,8 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    });    
 	    
 	    aqiText.data([todaysAQI]);
-	    
-	    dc.redrawAll();
+	    dc.renderAll();
+	    //dc.redrawAll();
 	}
 
 

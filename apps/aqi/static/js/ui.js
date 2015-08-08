@@ -31,11 +31,17 @@ var Loader = function() {
     self.emit('ready');
   }
 
-  function getStationMetrics(id, date, hours) {
-    return $.getJSON(
-      "/aq/api/device/"+id,
-      { d: date , h: hours}
-    );
+  function getStationMetrics(imei, startdate, enddate) {
+
+      if (startdate && enddate == null){
+	  return $.getJSON(
+	      "/aq/api/aqfeed/"+imei 	      
+	  );
+      }
+      return $.getJSON(
+	  "/aq/api/aqfeed/"+imei +"/" + startdate + "/" + enddate
+	  //{ d: date , h: hours}
+      );
   }
 
   function getCityMetrics(id, date, hours) {
@@ -52,7 +58,7 @@ var Loader = function() {
 
   function getStation(id) {
     for ( i in self.data.allStations ) {
-      if ( id == self.data.allStations[i].id )
+      if ( id == self.data.allStations[i].imei )
         return self.data.allStations[i];
     }
     return null;
@@ -63,20 +69,24 @@ var Loader = function() {
 
   function getAllStations() {
       if ( self.data.allStations ) return self.data.allStations;
-      self.data.allStations = [];
+      //console.log("Stations:");
+      //console.log(self.data.stations);
+
+      self.data.allStations = [];      
       for(i in self.data.stations) {
-	  self.data.allStations = self.data.allStations.concat(self.data.stations[i].stationsInCity);
+	  self.data.allStations = self.data.allStations.concat(self.data.stations[i].devicesInCity);
       }
       self.data.allStations = self.data.allStations.sort(comparator);
+      //console.log("getAllStations:");
+      //console.log(self.data.allStations);
       return self.data.allStations;
   }
-
+    
   function getStationsByCity(cityID) {
-    for(i in self.data.stations) {
-	console.log(i);
-      if ( cityID == self.data.stations[i].cityID )
-        return self.data.stations[i].stationsInCity;
-    }
+      for(i in self.data.stations) {
+	  if ( cityID == self.data.stations[i].cityID )	  
+              return self.data.stations[i].devicesInCity[0];
+      }
     return [];
   }
 
@@ -93,7 +103,6 @@ var Loader = function() {
   }
 
   function getCurrentCity() {
-
   }
 
   function getAllCities() {
@@ -210,8 +219,8 @@ var ui = function(configObj){
 	$cities = $("#cityPicker");
 	$stations = $("#devicePicker");
 	$date = $("#datePicker");
-	console.log($date);	
-	console.log(datepickerOptions);	
+	//console.log($date);	
+	//console.log(datepickerOptions);	
 	//$date.datepicker(datepickerOptions);	
 	//$date.date('setDate', d3.time.format("%Y-%m-%dT%H:%M").parse);
 	initializeDatepicker(datepickerOptions);
@@ -275,7 +284,7 @@ var ui = function(configObj){
 	window.quickfix(id);
 	stationSet(id);
     }
-
+    
     function beforeStationSet() {
 	$("#aqi-info").empty();
 	$("#no-response-panel").clone().appendTo("#aqi-info");
@@ -318,7 +327,7 @@ var ui = function(configObj){
 	/* Dropdown event binding */
 	$states.change(stateSelected);
 	$cities.change(citySelected);
-	$stations.change(stationSelected);
+	//$stations.change(stationSelected);
 	$date.datepicker().on('changeDate', dateChanged);
     }
 
@@ -390,13 +399,17 @@ var ui = function(configObj){
 	  text: "CITY AVERAGE"
 	  }));
     	*/
-	_.each(
-	    air.getStationsByCity($cities.find(":selected").val()),
+	//console.log($cities.find(":selected").val());
+	console.log("Stations:");
+	console.log(air.getStationsByCity($cities.find(":selected").val()));	    	    
+	_.each(	    
+	    air.getStationsByCity($cities.find(":selected").val()),	    	    
 	    function(station) {
-		if(!station.live) $stations.append($("<option />", {
-		    value: station.imei,
-		    text: station.name
-		}));
+		if(!station.live) 
+		    $stations.append($("<option />", {
+			value: station.imei,
+			text: station.title,
+		    }));
 	    }
 	);
     }
@@ -443,15 +456,22 @@ var ui = function(configObj){
     var self = this;
 };
 
-$(function() {
-   // $("body").removeClass("vjs-loading-spinner");
+//$(function() {
+    //$(".loader-inner").removeClass("ball-grid-pulse");
+    //$("pulsar").removeClass("vjs-loading-spinner");
     var air = new Loader();
     var airui = new ui(air);
+    //var map = new Map();
     $.getJSON("/api/config", function(config) {
 	air.configure(config);
 	airui.configure(config);
+	//map.configure(config);
 	air.run();
 	airui.run();
 	//air.on('stationsLoaded', function() {airui.stationClicked(798)});
     });
-});
+//});
+
+
+
+
