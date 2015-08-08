@@ -113,6 +113,8 @@ def displayConfig(request):
                                 "description":"Affects healthy people and seriously impacts those with existing diseases"}],
                 "mapCenterLat":"21.15",
                 "mapCenterLng":"79.09",
+                "mapMumCenterLat":"20.00",
+                "mapMumCenterLng":"72.00",
                 "mapZoom":"4",
                 "mapStateZoom":"6",
                 "mapCityZoom":"8",
@@ -294,12 +296,12 @@ def aqdatapoint(request):
     """
     Add a AQ data point via GET
     """
+    
     deviceip = get_client_ip(request)
     #f = open('/tmp/aqrequest.log', 'a')
     #f.write("\n" + str(deviceip))
     #f.close()
     if request.method == "GET":        
-        #import pdb; pdb.set_trace()
         d={}
         d['imei'] = request.GET['i']
         d['humidity'] = request.GET['h']
@@ -307,47 +309,53 @@ def aqdatapoint(request):
         d['pm10'] = request.GET['10']
         d['pm25'] = request.GET['25']
         d['count_large'] = request.GET['l']
-        d['count_small'] = request.GET['s']        
+        d['count_small'] = request.GET['s'] 
+
         try:
-            d['ip'] = deviceip            
-            #check the device IP and load lat, lon from there.
+            #import pdb; pdb.set_trace()        
+            if request.GET['ip']:
+                deviceip = request.GET['ip']
+            #1. check the device IP and load lat, lon from there, if changed, update location
             aqd = AQDevice.objects.get(imei=d['imei'])   
             if aqd.ip != deviceip:
-                # if not matching , ask for new geo loc, 
+                #2.  if not matching , ask for new geo loc. 
                 #even if call fails, fail silently since device streams every 5 min.
                 ipdetails = requests.get("http://ip-api.com/json/"+ deviceip ).json()
                 aqd.ip = deviceip
                 aqd.lat = ipdetails['lat']
                 aqd.lon = ipdetails['lon']            
                 aqd.geom = {u'type': u'Point', u'coordinates': [aqd.lon, aqd.lat]}
-                aqd.city = ipdetails['city']            
+                aqd.city = ipdetails['city']
                 aqd.state = ipdetails['regionName']            
                 aqd.save()
+                
+                # 3. Update state, city details if device changes locations
                 try:
-                    s = State.objects.get(name=aqd.state)
-                    c = City.objects.get(name=aqd.city)
-                    s.live = "true"
-                    s.save()
-                    c.live = "true"
-                    c.save()
-                except City.DoesNotExist:                    
-                    lastCity = City.objects.latest('created_on')
-                    c = City()
+                    # 4. Check and get state in incoming IP
                     try:
-                        c.id = lastCity.id +1
-                    except:
-                        c.id = 1
+                        s = State.objects.get(name=ipdetails['regionName'])
+                    except State.DoesNotExist:     
+                        # temp workaround. regionName is not always matching in geoIP lookup.
+                        # need to get IP and test regionName for all states OR 
+                        # use another field as a regional qualifier. 
+                        s = State.objects.get(id=10)                            
+                    
+                    c = create_or_getCity(ipdetails['city'], aqd.lat, aqd.lon)
 
-                    c.name=aqd.city
-                    c.lat=aqd.lat
-                    c.lon=aqd.lon
+                    # update status as live. 
+                    s.live="true"
+                    s.save()
                     c.live="true"
-                    c.save()                    
-
+                    c.save()
+                except:
+                    pass
+                    #import sys, f.write()
+            d['ip'] = deviceip            
             d['lat'] = aqd.lat
             d['lon'] = aqd.lon            
         except:
             pass
+        # Save input even if  AQDevice, State/City is not updateable. 
 
         d['created_on'] = datetime.datetime.now()
         serializer = AQFeedSerializer(data=d)
@@ -357,6 +365,20 @@ def aqdatapoint(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+def create_or_getCity(cityName, lat,lon):
+    try:
+        c = City.objects.get(name=cityName)
+    except City.DoesNotExist:                    
+        lastCity = City.objects.latest('created_on')
+        c = City()
+        c.id = lastCity.id +1
+        c.name=cityName
+        c.stateID=s.id
+        c.lat=lat
+        c.lon=lon    
+        c.live="true"
+        c.save()
+    return c
 
 @api_view(['GET'])
 def aqdatapointintime(request, start_time, end_time):
