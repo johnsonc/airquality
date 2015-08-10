@@ -144,38 +144,50 @@ def aqdevice_locations(request):
         data['devices']=aqserializer.data
         
         serializer = StateSerializer(states, many=True)
-        data['states']=serializer.data
-
+        data['states']=serializer.data        
+        # Cycle through and send AQDevices according to location
         cityD = []
         for s in states:
             d = {'stateID':s.id}
             d['citiesInState']= []
-            for c in cities:
-                if c.stateID == s.id:
+            for c in City.objects.filter(stateID=s.id):
+                if AQDevice.objects.filter(city=c.name).count() > 0:
+                    c.live="true"
+                    c.save()
                     d['citiesInState'].append({
-                            'id':c.id,
-                            'name':c.name,
-                            'stateID':c.stateID,
-                            'lat':c.lat,
-                            'lon':c.lon,
-                            'live':c.live
-                            })                
-                
-            cityD.append(d)
+                                'id':c.id,
+                                'name':c.name,
+                                'stateID':c.stateID,
+                                'lat':c.lat,
+                                'lon':c.lon,
+                                'live':c.live
+                                })        
+                else:
+                    c.live="false"
+                    c.save()
 
+            if len(d['citiesInState']) > 0:                                
+                cityD.append(d)
+            else:
+                s.live="false"
+                s.save()                
 
         deviceD = []
         for s in states:
-            for c in cities:
-                if c.stateID== s.id:
-                    dd={}
-                    dd['stateID']=s.id
-                    dd['cityID']=c.id
-                    dd['devicesInCity']= []
-                    aqds = AQDevice.objects.filter(city=c.name)
-                    aqserializer = AQDeviceSerializer(aqds, many=True)
-                    dd['devicesInCity'].append(aqserializer.data)
-                    deviceD.append(dd)
+            dd={}
+            dd['stateID']=s.id
+            dd['cityID']=c.id
+            dd['devicesInCity']= []
+            for c in City.objects.filter(stateID=s.id):
+                aqds = AQDevice.objects.filter(city=c.name)
+                aqserializer = AQDeviceSerializer(aqds, many=True)
+                if len(aqds) == 1:
+                    dd['devicesInCity'].append(aqserializer.data[0])
+                elif len(aqds) > 1:
+                    dd['devicesInCity'] = aqserializer.data
+
+            if len(dd['devicesInCity']) > 0:
+                deviceD.append(dd)                
                                 
         data['cities']=cityD
         data['stations']=deviceD
@@ -220,7 +232,7 @@ def aqfeed_list(request):
     """
     if request.method == 'GET':
         ed = datetime.datetime.now()
-        sd = ed - datetime.timedelta(days=1)         
+        sd = ed - datetime.timedelta(days=2)         
         aqfeeds = AQFeed.objects.filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
         serializer = AQFeedSerializer(aqfeeds, many=True)
         return Response(serializer.data)
@@ -298,7 +310,7 @@ def aqdatapoint(request):
     """
     
     deviceip = get_client_ip(request)
-    f = open('/tmp/aqrequest.log', 'a')
+    f = open('/tmp/aqrequest.log', 'a+')
     f.write("\n" + str(deviceip))
     
     if request.method == "GET":        
