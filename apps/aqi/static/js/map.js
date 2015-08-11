@@ -171,10 +171,8 @@ var Map = function() {
 	});
     }
 
-    function showState(state) {
-	
+    function showState(state) {	
 	map.panTo(L.latLng(state.lat, state.lon));
-	console.log(self.config.mapStateZoom);
 	map.setZoom(self.config.mapStateZoom);
     }
 

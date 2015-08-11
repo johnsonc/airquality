@@ -16,7 +16,7 @@ var varWidth = Math.round(Width*0.5);
 var varHeight = Math.round(Width*0.3);
 
 
-var stateNametoAbv1 = {'Andaman and Nicobar': 'AN', 'Andhra Pradesh': 'AP', 'Arunachal Pradesh': 'AR', 'Assam': 'AS', 'Bihar': 'BR', 'Chandigarh': 'CH', 'Chhattisgarh': 'CT', 'Dadra and Nagar Haveli': 'DN', 'Daman and Diu': 'DD', 'Delhi': 'DL', 'Goa': 'GA', 'Gujarat': 'GJ', 'Haryana': 'HR', 'Himachal Pradesh': 'HP', 'Jammu and Kashmir': 'JK', 'Jharkhand': 'JH', 'Karnataka': 'KA', 'Kerala': 'KL', 'Lakshadweep': 'LD', 'Madhya Pradesh': 'MP', 'Maharashtra': 'MH', 'Manipur': 'MN', 'Meghalaya': 'ML', 'Mizoram': 'MZ', 'Nagaland': 'NL', 'Orissa': 'OR', 'Puducherry': 'PY', 'Punjab': 'PB', 'Rajasthan': 'RJ', 'Sikkim': 'SK', 'Tamil Nadu': 'TN', 'Telengana': 'TS', 'Tripura': 'TR', 'Uttar Pradesh': 'UP', 'Uttarakhand': 'UT', 'West Bengal': 'WB'}
+var stateNametoAbv1 = {'Andaman and Nicobar': 'AN', 'Andhra Pradesh': 'AP', 'Arunachal Pradesh': 'AR', 'Assam': 'AS', 'Bihar': 'BR', 'Chandigarh': 'CH', 'Chhattisgarh': 'CT', 'Dadra and Nagar Haveli': 'DN', 'Daman and Diu': 'DD', 'Delhi': 'DL', 'Goa': 'GA', 'Gujarat': 'GJ', 'Haryana': 'HR', 'Himachal Pradesh': 'HP', 'Jammu & Kashmir': 'JK', 'Jharkhand': 'JH', 'Karnataka': 'KA', 'Kerala': 'KL', 'Lakshadweep': 'LD', 'Madhya Pradesh': 'MP', 'Maharashtra': 'MH', 'Manipur': 'MN', 'Meghalaya': 'ML', 'Mizoram': 'MZ', 'Nagaland': 'NL', 'Orissa': 'OR', 'Puducherry': 'PY', 'Punjab': 'PB', 'Rajasthan': 'RJ', 'Sikkim': 'SK', 'Tamil Nadu': 'TN', 'Telengana': 'TS', 'Tripura': 'TR', 'Uttar Pradesh': 'UP', 'Uttarakhand': 'UT', 'West Bengal': 'WB'}
 
 var lastStreamTimeStamp;
 var timerId; // current timer if started                                                      
@@ -135,10 +135,10 @@ function processdata(datapoints){
     })	
 }
 
-
+//aqi.indiaspend.org/aq
 queue()
-    .defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/?format=json")
-    .defer(d3.json, "http://aqi.indiaspend.org/aq/api/devices/?format=json")
+    .defer(d3.json, "http://127.0.0.1:8000/api/aqfeed/?format=json")
+    .defer(d3.json, "http://127.0.0.1:8000/api/devices/?format=json")
     .await(intialLoad);
 
 
@@ -146,6 +146,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
     lastStreamTimeStamp = new Date();    
     datapoint = datapoints;
     picker = d3.select("#devicePicker");
+    /*
     devices = picker.selectAll("option")
         .data(aqdevices)
         .enter()
@@ -154,7 +155,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
         .text(function (d) { return d['title'];}) ;
        
         //.onclick( d3.json('/api/aqfeed/'imei+'?format=json', function(data) {...}; )
-    
+    */
     aqdevices.forEach(function(d,i){
 	map.markDevice(d);
     })
@@ -1180,15 +1181,15 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		some: '<a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
 		all:'All records selected. Please click on the graph to apply filters.'
             });	
-	
-	
+		
 	var radius = 50;
+	
 	var aqiDisplay = d3.select('#aqi-display').append('svg')
 	    .attr('width', radius*2)
 	    .attr('height', radius*2);
+	
 
 	var todaysAQI;
-
 	aqiAvgGroupByDay0.all().forEach(function(d){ 
 	    if( d.key.toISOString()=== d3.time.day(new Date()).toISOString())
 	    {  todaysAQI = numberFormat(d.value.avg); }  
@@ -1214,9 +1215,7 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 		else if(a < 301){ return c[3];}			    
 		else if(a < 401){ return c[4];}			    
 		else if(a > 400){ return c[5];}			    
-	    }
-		  
-		 );
+	    });
 	
 	var aqiText = g.append("text")
 	    .data([todaysAQI]) 
@@ -1230,7 +1229,6 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 	    .attr("font-size", "40px")
 	    .attr("font-style", "bold")
 	    .attr("fill", "#f0fcfc");	
-
 
 
 	function render(method){
@@ -1281,12 +1279,12 @@ function intialLoad(error, /*intopo, instatestopo, instategram,*/ datapoints, aq
 
 	dc.renderAll();
 	
-
+	/*
 	d3.select('#devicePicker').on('change', function(){ 	
 	    imei.filterAll();
 	    imei.filter(this.value);
 	    dc.redrawAll(); 
-	})
+	})*/
     }
 }
 

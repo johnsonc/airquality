@@ -118,7 +118,7 @@ def displayConfig(request):
                 "mapZoom":"4",
                 "mapStateZoom":"6",
                 "mapCityZoom":"8",
-                "mapStationZoom":"11",
+                "mapDeviceZoom":"11",
                 "interval":"24"
                 }
                         
@@ -141,10 +141,8 @@ def aqdevice_locations(request):
 
         aqdevices = AQDevice.objects.all()
         aqserializer = AQDeviceSerializer(aqdevices, many=True)
-        data['devices']=aqserializer.data
-        
-        serializer = StateSerializer(states, many=True)
-        data['states']=serializer.data        
+        data['alldevices']=aqserializer.data
+
         # Cycle through and send AQDevices according to location
         cityD = []
         for s in states:
@@ -174,23 +172,33 @@ def aqdevice_locations(request):
 
         deviceD = []
         for s in states:
-            dd={}
-            dd['stateID']=s.id
-            dd['cityID']=c.id
-            dd['devicesInCity']= []
             for c in City.objects.filter(stateID=s.id):
+                dd={}
+                dd['stateID']=s.id
+                dd['cityID']=c.id
+                dd['devicesInCity']= []
                 aqds = AQDevice.objects.filter(city=c.name)
-                aqserializer = AQDeviceSerializer(aqds, many=True)
-                if len(aqds) == 1:
-                    dd['devicesInCity'].append(aqserializer.data[0])
-                elif len(aqds) > 1:
-                    dd['devicesInCity'] = aqserializer.data
+                aqserializer = AQDeviceSerializer(aqds, many=True)                             
+                if len(aqds) > 0:                
+                    aqdeviced = aqserializer.data
+                    for a in aqdeviced:
+                        a['stateID']=s.id
+                        a['cityID']=c.id
+                    
+                    if len(aqds) ==1:
+                        dd['devicesInCity'] = aqserializer.data  #.append(aqserializer.data[0])
+                    if len(aqds) > 1:
+                        dd['devicesInCity'] = aqserializer.data
 
-            if len(dd['devicesInCity']) > 0:
-                deviceD.append(dd)                
+                if len(dd['devicesInCity']) > 0:
+                    deviceD.append(dd)                
                                 
         data['cities']=cityD
-        data['stations']=deviceD
+        data['devices']=deviceD
+
+        states = State.objects.all()
+        serializer = StateSerializer(states, many=True)
+        data['states']=serializer.data        
     return Response(data)        
     #except:
     #    return Response(status=404)
@@ -199,10 +207,11 @@ def aqdevice_locations(request):
 
 @csrf_exempt
 @api_view(['GET', 'PUT'])
-def aqdevice_detail(request, imei):
+def aqdevice_detail_imei(request, imei):
     """
     Retrieve, update or delete an AQDevice
     """
+    #import pdb; pdb.set_trace();
     try:
         aqdevice = AQDevice.objects.get(imei=imei)
     except AQDevice.DoesNotExist:
@@ -314,6 +323,7 @@ def aqdatapoint(request):
     f.write("\n" + str(deviceip))
     
     if request.method == "GET":        
+        
         d={}
         d['imei'] = request.GET['i']
         d['humidity'] = request.GET['h']
@@ -322,6 +332,7 @@ def aqdatapoint(request):
         d['pm25'] = request.GET['25']
         d['count_large'] = request.GET['l']
         d['count_small'] = request.GET['s'] 
+        
 
         try:
             #import pdb; pdb.set_trace()        
@@ -340,19 +351,12 @@ def aqdatapoint(request):
                 aqd.lat = ipdetails['lat']
                 aqd.lon = ipdetails['lon']            
                 aqd.geom = {u'type': u'Point', u'coordinates': [aqd.lon, aqd.lat]}
+
                 # 3. Update state, city details if device changes locations
                 try:
                     # 4. Check and get state in incoming IP
-                    try:
-                        s = State.objects.get(region_code=ipdetails['region'])
-                    except State.DoesNotExist:     
-                        import sys
-                        f.write("\nERROR: " + str(sys.exc_info()))
-                        #region lookup is more robust than regionName for State. But just in case, fallback to Maharastra :)
-                        s = State.objects.get(id=10)                            
-                    
-                    c = create_or_getCity(ipdetails['city'], s.id, aqd.lat, aqd.lon)
-
+                    s = getState(ipdetails)    
+                    c = create_or_getCity(ipdetails['city'], s, ipdetails['lat'], ipdetails['lon'])
                     # update status as live. 
                     s.live="true"
                     s.save()
@@ -385,19 +389,37 @@ def aqdatapoint(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def create_or_getCity(cityName, stateID, lat,lon):
+
+def getState(ipdetails):
+    try:
+        s = State.objects.get(region_code=ipdetails['region'])
+    except State.DoesNotExist:     
+        #region lookup is more robust than regionName for State. 
+        try:
+            s = State.objects.get(name=ipdetails['regionName'])
+        except State.DoesNotExist:    
+            #But just in case, fallback to a reverse lookup, and if fails, then raise Error
+            r = requests.get("http://photon.komoot.de/reverse?lon=" + str(ipdetails['lon']) + "&lat=" + str(ipdetails['lat'])).json()
+            s = State.objects.get(name=r['features'][0]['properties']['state'])
+
+    return s
+                
+
+def create_or_getCity(cityName, state, lat,lon):
     try:
         c = City.objects.get(name=cityName)
-    except City.DoesNotExist:                    
-        lastCity = City.objects.latest('created_on')
-        c = City()
-        c.id = lastCity.id +1
-        c.name=cityName        
-        c.stateID=stateID
-        c.lat=lat
-        c.lon=lon    
-        c.live="true"
-        c.save()
+    except City.DoesNotExist:        
+            r = requests.get("http://photon.komoot.de/api/?q={},{}&limit=1&lat={}&lon={}".format(cityName, state.name, lat,lon)).json()
+            
+            lastCity = City.objects.latest('created_on')
+            c = City()
+            c.id = lastCity.id +1
+            c.name=cityName        
+            c.stateID=state.id
+            c.lat= r['features'][0]['geometry']['coordinates'][1]
+            c.lon= r['features'][0]['geometry']['coordinates'][0]
+            c.live="true"
+            c.save()
     return c
 
 @api_view(['GET'])

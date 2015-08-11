@@ -57,11 +57,11 @@ var Loader = function() {
   }
 
   function getStation(id) {
-    for ( i in self.data.allStations ) {
-      if ( id == self.data.allStations[i].imei )
-        return self.data.allStations[i];
-    }
-    return null;
+      for ( i in self.data.allStations ) {
+	  if ( id == self.data.allStations[i].imei )
+              return self.data.allStations[i];
+      }
+      return null;
   }
 
   function getCurrentStation() {
@@ -85,10 +85,11 @@ var Loader = function() {
   function getStationsByCity(cityID) {
       for(i in self.data.stations) {
 	  if ( cityID == self.data.stations[i].cityID )	  
-              return self.data.stations[i].devicesInCity[0];
+              return self.data.stations[i].devicesInCity;
       }
     return [];
   }
+
 
   function getStationsByState(stateID) {
 
@@ -233,13 +234,16 @@ var ui = function(configObj){
 	$date.datepicker('setDate', dateFormat(new Date()));
     }
 
-    /*
+    
     function stationClicked(id) {
 	//window.quickfix(id);
 	var station = air.getStation(id);
+	console.log("clicked station:");
+	console.log(station);
+
 	setDropdowns(station.stateID, station.cityID, station.id);
     }
-    */
+    
 
     function setDropdowns(stateID, cityID, stationID) {
 	clearStates();
@@ -251,7 +255,7 @@ var ui = function(configObj){
 	clearStations();
 	populateStations();
 	$stations.val(stationID);
-	//map.showStation(air.getStation(stationID));    
+	map.showStation(air.getStation(stationID));    
 	stationSet(stationID);
     }
 
@@ -272,10 +276,10 @@ var ui = function(configObj){
     }
     
     function stationSelected() {	
+	console.log("StationSelected!");
 	var id = $(this).val();
 	if ( "0" != id ) {
 	    map.showStation(air.getStation(id));
-	    console.log("StationSelected!");
 	    imei.filterAll();
 	    imei.filter(this.value);
 	    dc.redrawAll(); 
