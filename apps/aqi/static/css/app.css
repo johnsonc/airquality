@@ -5,6 +5,31 @@
 }
 
 
+.stats 
+{  
+    display: inline-block;
+    box-sizing: border-box;
+    background: grey;    
+}
+
+.max {
+    background: red;
+    fill: red;
+    font-size:12px;
+}
+.avg {
+    background: yellow;
+    fill: red;
+    font-size:12px;
+}
+
+.min {
+    background: lightgreen;
+    fill: lightgreen;
+    font-size:12px;
+    font-color: white;
+}
+
 
 
 
