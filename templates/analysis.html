@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">       
-    <meta http-equiv="refresh" content="900">
+    <!-- <meta http-equiv="refresh" content="900"> -->
     <script src={% static "/aq/static/js/pace.min.js" %}></script>
-    <link rel="stylesheet" href={% static "/aq/static/css/pace-theme-cyan.css" %} />
+    <link rel="stylesheet" href={% static "/aq/static/css/pace-theme-barber-shop-red.css" %} />
     <link rel="stylesheet" href={% static "/aq/static/css/filter.css" %} />
     <link rel="stylesheet" href={% static "/aq/static/css/dc.css" %} /> 
     <link rel="stylesheet" href={% static "/aq/static/css/app.css" %} /> 
@@ -59,7 +59,6 @@
     </div>
   </div>
 
-
     <div  class="container-x row-x col-md-12">
       <div id="station-aqi" class="container-x">
         <!--h2 class="text-center">Station AQI</h2-->
@@ -67,25 +66,26 @@
           <div class="col-md-3 form-group nullable">
             <div class="input-group">
               <div class="input-group-addon">State</div>
-              <select id="statePicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select State" >
+              <select id="statePicker" class="form-control selectpicker" data-width="25%" data-live-search="true"  title="Select State" >
               </select>              
             </div>
           </div>
           <div class="col-md-3 form-group">
             <div class="input-group">
               <div class="input-group-addon">City</div>
-              <select id="cityPicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select City">
+              <select id="cityPicker" class="form-control selectpicker" data-width="25%" data-live-search="true"  title="Select City">
               </select>              
             </div>            
           </div>
           <div class="col-md-3 form-group">
             <div class="input-group">
               <div class="input-group-addon">Device</div>
-              <select id="devicePicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select Device">
+              <select id="devicePicker" class="form-control selectpicker" data-width="25%" data-live-search="true"  title="Select Device">
               </select>              
             </div>                        
           </div>
-          <div class="col-md-3 form-group">
+
+          <div class="col-md-2 form-group">
             <div id="datePicker" class="input-group date">
               <input type="text" class="form-control" required>
               <span class="input-group-addon">
@@ -93,6 +93,16 @@
               </span>
             </div>
           </div>
+	  <!--
+          <div class="col-md-2 form-group">
+            <div id="endDate" class="input-group date">
+              <input type="text" class="form-control" required>
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-th"></i>
+              </span>
+            </div>
+          </div>
+	  -->
         </div>
 
 
@@ -106,18 +116,30 @@
 	      <a href="javascript:dc.filterAll(); dc.renderAll();">Reset Filters</a>
 	      </div>	    
           </div>
+
           <div class="chart-stage">
 	    <div style="width:100%;text-align:center">
-	    <div id="svg-loader" class="svg-loader" style="display:none">
-	      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svgloader" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 213.235 241.176" enable-background="new 0 0 213.235 241.176" xml:space="preserve" fill="#0057B8">
-		<path d="M108.581,64.968V14.124l44.007,25.422L108.581,64.968"/>
-		<path fill-opacity="0.9" d="M153.591,92.101V41.258L109.582,66.68L153.591,92.101"/><path d="M155.586,92.062V41.221l44.009,25.42L155.586,92.062"/><path fill-opacity="0.7" d="M200.299,119.14V68.297l-44.004,25.421L200.299,119.14"/><path fill-opacity="0.85" d="M155.586,146.255V95.412l44.009,25.422L155.586,146.255"/><path fill-opacity="0.7" d="M200.299,173.35v-50.844l-44.004,25.422L200.299,173.35"/><path fill-opacity="0.6" d="M155.586,200.482v-50.84l44.009,25.417L155.586,200.482"/><path fill-opacity="0.5" d="M153.591,200.521v-50.84l-44.009,25.418L153.591,200.521"/><path fill-opacity="0.6" d="M108.581,227.696v-50.844l44.007,25.421L108.581,227.696"/><path fill-opacity="0.5" d="M106.62,227.696v-50.844l-44.005,25.421L106.62,227.696"/><path fill-opacity="0.7" d="M61.562,200.553V149.71l44.007,25.423L61.562,200.553"/><path fill-opacity="0.7" d="M59.709,200.56v-50.843l-44.008,25.422L59.709,200.56"/><path fill-opacity="0.7" d="M14.699,173.467v-50.843l44.01,25.42L14.699,173.467"/><path fill-opacity="0.5" d="M59.709,146.235V95.392l-44.008,25.42L59.709,146.235"/><path fill-opacity="0.7" d="M14.699,119.141V68.297l44.01,25.421L14.699,119.141"/><path fill-opacity="0.6" d="M59.709,92.101V41.258L15.701,66.68L59.709,92.101"/><path fill-opacity="0.85" d="M61.562,92.092V41.249l44.007,25.419L61.562,92.092"/>
-		<path fill-opacity="0.9" d="M106.62,64.968V14.124L62.614,39.546L106.62,64.968"/>	      </svg>
-	    </div>
+	      <div id="svg-loader" class="svg-loader" style="display:none">
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svgloader" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 213.235 241.176" enable-background="new 0 0 213.235 241.176" xml:space="preserve" fill="#0057B8">
+		  <path d="M108.581,64.968V14.124l44.007,25.422L108.581,64.968"/>
+		  <path fill-opacity="0.9" d="M153.591,92.101V41.258L109.582,66.68L153.591,92.101"/><path d="M155.586,92.062V41.221l44.009,25.42L155.586,92.062"/><path fill-opacity="0.7" d="M200.299,119.14V68.297l-44.004,25.421L200.299,119.14"/><path fill-opacity="0.85" d="M155.586,146.255V95.412l44.009,25.422L155.586,146.255"/><path fill-opacity="0.7" d="M200.299,173.35v-50.844l-44.004,25.422L200.299,173.35"/><path fill-opacity="0.6" d="M155.586,200.482v-50.84l44.009,25.417L155.586,200.482"/><path fill-opacity="0.5" d="M153.591,200.521v-50.84l-44.009,25.418L153.591,200.521"/><path fill-opacity="0.6" d="M108.581,227.696v-50.844l44.007,25.421L108.581,227.696"/><path fill-opacity="0.5" d="M106.62,227.696v-50.844l-44.005,25.421L106.62,227.696"/><path fill-opacity="0.7" d="M61.562,200.553V149.71l44.007,25.423L61.562,200.553"/><path fill-opacity="0.7" d="M59.709,200.56v-50.843l-44.008,25.422L59.709,200.56"/><path fill-opacity="0.7" d="M14.699,173.467v-50.843l44.01,25.42L14.699,173.467"/><path fill-opacity="0.5" d="M59.709,146.235V95.392l-44.008,25.42L59.709,146.235"/><path fill-opacity="0.7" d="M14.699,119.141V68.297l44.01,25.421L14.699,119.141"/><path fill-opacity="0.6" d="M59.709,92.101V41.258L15.701,66.68L59.709,92.101"/><path fill-opacity="0.85" d="M61.562,92.092V41.249l44.007,25.419L61.562,92.092"/>
+		  <path fill-opacity="0.9" d="M106.62,64.968V14.124L62.614,39.546L106.62,64.968"/>	      </svg>
+	      </div>
 	    </div>
 
 
 	    <div id=""> Time line</div> 
+
+            <div id="aqi-info-wrapper" class="col-md-7 col-sm-12 col-xs-12">
+              <div class="overlay">
+		<div class="loader">
+                  <span></span><span></span><span></span><span></span><span></span>
+		</div>
+              </div>                      
+              <div id="aqi-info">
+              </div>
+            </div>
+
 	    <div class="loaderoverlay">
 	      <div id='pulsar2' class="loader">
 		<div></div>
@@ -136,13 +158,10 @@
 	    </div>
 
 	    <div style="float:left" id="time-chart">
-	      <span class='reset' style='display: none;'>  
-		Current filter: <span class='filter'></span>
 	    </div> 
 
 	    <div style="float:right" id="aqi-display">
 	    </div> 
-
 	    
           </div>
           <div class="chart-notes">
@@ -157,22 +176,14 @@
       <div class="col-sm-5">
         <div class="chart-wrapper">
           <div class="chart-title">
-	    <!--
-	    <div id="banner" style="text-align:right">
-	      Select a device to filter:
-	      <select id="devicePicker">
-	      </select>
-	    </div>	    
-	    -->
           </div>
           <div class="chart-stage">
             <div id="grid-1-1">
 	      <div id="mappa" class="display" style="height: 400px"> </div> 
-              <!-- img data-src="holder.js/100%x240/white/text:#grid-1-1"> -->
             </div>
           </div>
           <div class="chart-notes">
-            Click on the map markers or choose from the menu. Click on the other map layers to add to the map view.
+            Try using the map overlay layers to add context to the map view.
           </div>
         </div>
       </div>
@@ -189,40 +200,63 @@
 		  Current filter: <span class='filter'></span>		  
 	      </div> 
 	      
-	      <div id="pm10-stats"> 		
-	      </div> 
-
-	      <div id="pm10-min"> Min 		
-	      </div> 
-
-	      <div id="pm10-max"> Max		
-	      </div> 
-
-	      <div id="pm10-avg"> Avg		
+	      <div id="pm10-stats" class="stats pm10"> 		
+		<div id="pm10-max" class="max"> Max		
+		</div> 
+		<div id="pm10-avg" class="avg"> Avg		
+		</div> 	      
+		<div id="pm10-min" class="min"> Min 		
+		</div> 		
 	      </div> 	      
-	      
-	      <div id="total"> 		
-	      </div> 
-	      
-	      
 	      <br/>
+
 	      <div id="pm25-chart">
 		<span class='reset' style='display: none;'>  
 		  Current filter: <span class='filter'></span>
-		  
-	      </div> <br/>
+		  <div id="pm25-stats" class="stats"> 		
+		    <div id="pm25-max" class="max"> Max		
+		    </div> 
+		    <div id="pm25-avg" class="avg"> Avg		
+		    </div> 	      
+		    <div id="pm25-min" class="min"> Min 		
+		    </div> 
+		  </div> 		  
+	      </div> 
+
+	      <br/>
 	      <div id="temp-chart">
 		<span class='reset' style='display: none;'>  
 		  Current filter: <span class='filter'></span>
-	      </div> <br/>
+	      </div> 
+
+	      <div id="temp-stats" class="stats"> 		
+		<div id="temp-max" class="max"> Max		
+		</div> 		
+		<div id="temp-avg" class="avg"> Avg		
+		</div> 	      
+		<div id="temp-min" class="min"> Min 		
+		</div> 		
+	      </div> 
+
+	      <br/>
 	      <div id="hum-chart"> 
 		<span class='reset' style='display: none;'>  
 		  Current filter: <span class='filter'></span>
-	      </div> <br/>
+	      </div> 
+	      <div id="humidity-stats" class="stats"> 				
+		<div id="humidity-max" class="max"> Max		
+		</div> 		
+		<div id="humidity-avg" class="avg"> Avg		
+		</div> 	      
+		<div id="humidity-min" class="min"> Min 		
+		</div> 
+	      </div> 
+
+	      <br/>
 	    </div>	            
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            These above charts show the data aggregated hour-wise.
           </div>
         </div>
       </div>
@@ -235,19 +269,17 @@
 	    Particle counts (Experimental data)
           </div>
           <div class="chart-stage">
-		<div id="cs-chart" class="">
-		  <div class="title">Small particle count</div>
-		  <span class='reset' style='display: none;'>  
-		    Current filter: <span class='filter'></span>
-		    
-		</div>
+	    <div id="cs-chart" class="">
+	      <div class="title">Small particle count</div>
+	      <span class='reset' style='display: none;'>  
+		Current filter: <span class='filter'></span>		
+	    </div>
 
-		<div id="cl-chart" class="">
-		  <div class="title">Large particle count</div>
-		  <span class='reset' style='display: none;'>  
-		    Current filter: <span class='filter'></span>
-
-		</div>
+	    <div id="cl-chart" class="">
+	      <div class="title">Large particle count</div>
+	      <span class='reset' style='display: none;'>  
+		Current filter: <span class='filter'></span>		
+	    </div>
 
           </div>
           <div class="chart-notes">
@@ -256,75 +288,75 @@
         </div>
       </div>
 
-
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
             Averages
           </div>
+
           <div class="chart-stage">
-	    <div id="pm25-chart2" class="bChart display">
+	    <div id="pm25-chart2" class="">
 	      <div class="title" class="reset" >PM 2.5
 	      </div>
 	      <span class="reset" style='display: none;'>  
-		Current filter: <span class='filter'></span>
-		
+		Current filter: <span class='filter'></span>		
 	    </div>	    
-	    <div id="pm10-chart2" class="bChart display">
+
+	    <div id="pm10-chart2" class="">
 	      <div class="title">PM 10
 	      </div>
 		<span class='reset' style='display: none;'>  
 		  Current filter: <span class='filter'></span>
 	    </div>	    
           </div>
+
           <div class="chart-notes">
             This chart shows how frequently the same values occur (histogram).
-	    As you can see PM10 and PM25 have different concentration regions. Drag on the charts to show which of these values are prominent during different times of the day.
+	    Drag on the charts to show which of these values are prominent 
+	    during different times of the day and how many points they 
+	    contribute to the daily average on the weekly chart.
           </div>
         </div>
       </div>
+
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
             Averages
           </div>
-          <div class="chart-stage">
-	    <div id="chart-ring-year" class="">
 
+          <div class="chart-stage">
+	    <div id="chart-ring-pollutant" class="">
 	    </div>		  
 
-
-		<div id="temp-chart2" class="bChart display">
-			<div class="title">Temperature</div>
-		</div>
-
-		<div id="humidity-chart2" class="bChart display">
-			<div class="title">Humidity</div>
-		</div>
-		  <br/>
-		   <p>Need more data to compute averages!</p>
-		
+	    <div id="temp-chart2" class="">
+	      <div class="title">Temperature</div>
+	    </div>
+	    
+	    <div id="humidity-chart2" class="">
+	      <div class="title">Humidity</div>
+	    </div>
+	    <br/>	    
           </div>
-          <div class="chart-notes">
-            Notes about this chart
+          <div class="chart-notes">            
           </div>
         </div>
       </div>
 <!-- end of three -->
     <hr>
-
 <div>
 
-  <table class="table panel panel-default table-hover">
-    <thead>
-      <tr class="active">
-        <th class="col-md-1 text-center">AQI</th>
-        <th class="col-md-2 text-center">Remark</th>
-        <th class="col-md-1">Color Code</th>
-        <th class="col-md-8">Possible Health Impacts</th>                  
-      </tr>
-    </thead>
-    <tbody class="aqi-desc-container">
+  <div class="col-sm-6 col-md-4">
+    <table class="table panel panel-default table-hover">
+      <thead>
+	<tr class="active">
+          <th class="col-md-1 text-center">AQI</th>
+          <th class="col-md-2 text-center">Remark</th>
+          <th class="col-md-1">Color Code</th>
+          <th class="col-md-8">Possible Health Impacts</th>                  
+	</tr>
+      </thead>
+      <tbody class="aqi-desc-container">
       <tr class="" style="">
         <td class="col-md-1 aqi-value text-center text-middle">0-50</td>
         <td class="col-md-2 remark text-center text-middle">Good</td>
@@ -357,53 +389,6 @@
         <td class="col-md-8 desc">Affects healthy people and seriously impacts those with existing diseases</td>     
     </tr></tbody>
   </table>
-
-
-  <!--
-  <table class="table panel panel-default table-hover">
-    <thead>
-      <tr class="active">
-        <th class="col-md-1 text-center">AQI</th>
-        <th class="col-md-2 text-center">Remark</th>
-        <th class="col-md-1">Color Code</th>
-        <th class="col-md-8">Possible Health Impacts</th>                  
-      </tr>
-    </thead>
-    <tbody class="aqi-desc-container">
-      <tr class="" style="">
-        <td class="col-md-1 aqi-value text-center text-middle">0-50</td>
-        <td class="col-md-2 remark text-center text-middle">Good</td>
-        <td class="col-md-1 color-code" style="background-color: rgb(0, 228, 0);"></td>          
-        <td class="col-md-8 desc">Minimal impact</td>     
-      </tr><tr class="" style="">
-        <td class="col-md-1 aqi-value text-center text-middle">51-100</td>
-        <td class="col-md-2 remark text-center text-middle">Satisfactory</td>
-        <td class="col-md-1 color-code" style="background-color: rgb(255, 255, 0);"></td>          
-        <td class="col-md-8 desc">Minor breathing discomfort to sensitive people</td>     
-      </tr><tr class="" style="">
-        <td class="col-md-1 aqi-value text-center text-middle">101-200</td>
-        <td class="col-md-2 remark text-center text-middle">Moderate</td>
-        <td class="col-md-1 color-code" style="background-color: rgb(255, 126, 0);"></td>          
-        <td class="col-md-8 desc">Breathing discomfort to the people with lungs, asthma and heart diseases</td>     
-      </tr><tr class="" style="">
-        <td class="col-md-1 aqi-value text-center text-middle">201-300</td>
-        <td class="col-md-2 remark text-center text-middle">Poor</td>
-        <td class="col-md-1 color-code" style="background-color: rgb(255, 0, 0);"></td>          
-        <td class="col-md-8 desc">Breathing discomfort to most people on prolonged exposure</td>     
-      </tr><tr class="" style="">
-	<td class="col-md-1 aqi-value text-center text-middle">301-400</td>
-        <td class="col-md-2 remark text-center text-middle">Very Poor</td>
-        <td class="col-md-1 color-code" style="background-color: rgb(153, 0, 76);"></td>          
-        <td class="col-md-8 desc">Respiratory illness on prolonged exposure</td>     
-      </tr><tr class="" style="">
-	<td class="col-md-1 aqi-value text-center text-middle">401 and above</td>
-        <td class="col-md-2 remark text-center text-middle">Severe</td>
-        <td class="col-md-1 color-code" style="background-color: rgb(126, 0, 35);"></td>          
-        <td class="col-md-8 desc">Affects even healthy people and seriously impacts those with existing diseases</td>     
-    </tr></tbody>
-</table>  -->
-
-
 </div>
 
     <p class="small text-muted">By IndiaSpend.org  License:Creative Commons CC-By-SA 3.0<a href=""></a></p>
@@ -412,7 +397,6 @@
 
   <script type="text/javascript" src="/aq/static/keen/assets/lib/jquery/dist/jquery.min.js"></script>
   <script type="text/javascript" src="/aq/static/keen/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-
   <script type="text/javascript" src="/aq/static/keen/assets/lib/holderjs/holder.js"></script>
   <script>
     Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
@@ -431,13 +415,12 @@
   <script src={% static "/aq/static/js/bootstrap-datepicker.min.js" %}></script>
   <script src={% static "/aq/static/js/bootstrap-sortable.js" %}></script>
   <script src={% static "/aq/static/js/lib/eventemitter2.js" %}></script>
-  <script src={% static "/aq/static/js/lib/topojson.v1.js" %}></script>
   <script src={% static "/aq/static/js/lib/queue.js" %}></script>
-  <script src={% static "/aq/static/js/elems/barChart.js"%}></script>
   <script src={% static "/aq/static/js/elems/circleChart.js"%}></script>
   <script src={% static "/aq/static/leaflet/leaflet.js" %}></script>
+<!--  <script src={% static "/aq/static/js/drawMap5.js" %}></script> -->
   <script src={% static "/aq/static/js/map.js" %}></script>
-  <script src={% static "/aq/static/js/drawMap.js" %}></script>
-  <script src={% static "/aq/static/js/ui.js" %}></script>
+  <script src={% static "/aq/static/js/dashboard.js" %}></script>
+  <script src={% static "/aq/static/js/ui.js" %}></script>  
 </body>
 </html>
