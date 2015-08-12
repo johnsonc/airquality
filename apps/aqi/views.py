@@ -296,36 +296,24 @@ def aqfeed_detail_time(request, imei, until_date):
     Retrieve, update or delete a feed instance.
     """
     try:        
-        #import pdb; pdb.set_trace();
-        #ed = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
-        ed = datetime.datetime.strptime(until_date, '%d-%m-%Y')
-        #ed = datetime.datetime.now()
-        sd = ed - datetime.timedelta(hours=23)         
-        aqfeed = AQFeed.objects.filter(imei=imei).filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
+        if request.method == 'GET':
+            #import pdb; pdb.set_trace();
+            #ed = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
+            ed = datetime.datetime.strptime(until_date, '%d-%m-%Y')
+            sd = ed - datetime.timedelta(hours=24)         
+            aqfeed=[]
+            while (len(aqfeed) < 1):
+                aqfeed = AQFeed.objects.filter(imei=imei).filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
+                ed = sd
+                sd = ed - datetime.timedelta(hours=24)                                         
+            serializer = AQFeedSerializer(aqfeed, many=True)
+            return Response(serializer.data)    
+        
     except AQFeed.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
-    if request.method == 'GET':
-        serializer = AQFeedSerializer(aqfeed, data=request.data, many=True)
-        if serializer.is_valid():
-            #serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        #serializer = AQFeedSerializer(aqfeed)
-        #return Response(serializer.data)
 
-    elif request.method == 'PUT':
-        serializer = AQFeedSerializer(aqfeed, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        aqfeed.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
