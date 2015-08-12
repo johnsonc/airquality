@@ -22,16 +22,17 @@ def generate_random_data(start_date, end_date, imei, name, lat, lon):
             aqf = AQFeed()
             aqf.imei=imei
             aqf.name=name            
-            aqf.humidity = random.triangular(1,100) + random.random()
+            aqf.humidity = random.(1,100) + random.random()
             aqf.temperature = random.triangular(15,45) + random.random()
-            aqf.pm10 = random.triangular(1,100) + random.random()
-            aqf.pm25 = random.triangular(1,100) + random.random()
-            aqf.count_large = random.triangular(1,100) + random.random()
-            aqf.count_small = random.triangular(1,100) + random.random()
+            aqf.pm10 = random.(1,500) + random.random()
+            aqf.pm25 = random.(1,1000) + random.random()
+            aqf.count_large = random.triangular(1,500) + random.random()
+            aqf.count_small = random.triangular(1,900) + random.random()
             aqf.lat = lat
             aqf.lon = lon
             aqf.created_on=ts
             aqf.save()                    
+            
     except: 
         print "Usage::"
         print  "generate_random_data(start_date, end_date, imei, name, lat, lon)" 
@@ -40,10 +41,13 @@ def generate_random_data(start_date, end_date, imei, name, lat, lon):
         
 
 
-def do(num=10, start_time='2015-06-22-12-23', end_time='2015-07-22-16-00'):
-    for i in range(num):
-        lat = random.triangular(18.3,20) + random.random()
-        lon = random.triangular(72.5,73) + random.random()
+def do(num=10, start_time='2015-07-10-12-23', end_time='2015-08-10-16-00'):
+    for aqd in AQDevices.objects.all():
+        generate_random_data(start_time, end_time, aqd.imei, aqd.title, lat, lon)
+        
+    """for i in range(num):
+        lat = random.random(18.3,20) + random.random()
+        lon = random.random(72.5,73) + random.random()
         name_prefix='aqid'
         imei= str(random.random())[2:15]
         aqd = AQDevice()
@@ -56,8 +60,8 @@ def do(num=10, start_time='2015-06-22-12-23', end_time='2015-07-22-16-00'):
         aqd.lon = lon
         aqd.geom = {u'type': u'Point', u'coordinates': [lon,lat]}
         aqd.save()
-        generate_random_data(start_time,end_time,imei, url, lat, lon)
-
+        generate_random_data(start_time, end_time,imei, url, lat, lon)
+        """
 
 def initfeed(xfeed):
     x = xfeed['with'][0]
