@@ -121,14 +121,25 @@ var Map = function() {
 	"OverlayLines": Stamen_TonerLines,
 	"OverlayLabels": Stamen_TonerLabels,    
     };   
+    
+
+    var getLayers =  function(){ 
+	dd = new Date();	    
+	if ( dd.getHours() < 18 )
+	{ 
+	    return [OpenTopoMap, Stamen_TonerLabels, OpenMapSurfer_AdminBounds];
+	}
+	else {
+	    return [NASAGIBS_ViirsEarthAtNight2012, Stamen_TonerLabels];
+	}
+    };
 
     var thismap =  L.map('mappa', {
-	center: [20,72],
-	zoom: 7,
-	layers: [OpenStreetMap_Mapnik, Stamen_TonerLabels],
+	center: ["21.15","79.09"],  //[20,72],
+	zoom: 4,
+	layers: getLayers(), 
 	touchZoom:false,
-	tap:false,
-	dragging:false
+	//tap:false,
     });
 
     L.control.layers(baseMaps, overlayMaps).addTo(thismap);
@@ -139,7 +150,7 @@ var Map = function() {
 	    'imei':d.imei
 	}).addTo(thismap);
 		
-	marker.on('mouseout', function(e) {
+	marker.on('mouseover', function(e) {
 	    //open popup;	    
 	    var popup = L.popup()
 		.setLatLng(e.latlng) 
@@ -181,9 +192,9 @@ var Map = function() {
 	map.setZoom(self.config.mapCityZoom);
     }
 
-    function showStation(station) {	
-	map.panTo(L.latLng(station.lat, station.lon));
-	map.setZoom(self.config.mapStationZoom);
+    function showDevice(device) {	
+	map.panTo(L.latLng(device.lat, device.lon));
+	map.setZoom(self.config.mapDeviceZoom);
     }
 
     function panTo(lat, lon){
@@ -201,7 +212,7 @@ var Map = function() {
 	}*/
     /* Check if all required fields are present in config */  
 	self.config = config;
-	self.config.mapStationZoom =  parseInt(self.config.mapStationZoom);
+	self.config.mapDeviceZoom =  parseInt(self.config.mapDeviceZoom);
  	self.config.mapStateZoom =  parseInt(self.config.mapStateZoom);
 	self.config.mapCityZoom =  parseInt(self.config.mapCityZoom);
 	self.config.mapZoom =  parseInt(self.config.mapZoom);
@@ -216,17 +227,16 @@ var Map = function() {
 	 */
     }
             
-    var requiredFields = ['mapCenterLat', 'mapCenterLng', 'mapZoom', 'mapStateZoom', 'mapCityZoom', 'mapStationZoom'];
+    var requiredFields = ['mapCenterLat', 'mapCenterLng', 'mapZoom', 'mapStateZoom', 'mapCityZoom', 'mapDeviceZoom'];
     var loaded = false;    
     this.markDevice = markDevice;
     this.markDevices = markDevices;
     this.configure = configure;
     this.panTo = panTo;
     this.setZoom = setZoom;
-    this.showStation = showStation;
+    this.showDevice = showDevice;
     this.showCity = showCity;
-    this.showState = showState;
-    
+    this.showState = showState;    
 };
 
-
+var map = new Map();
