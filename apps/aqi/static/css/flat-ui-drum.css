@@ -8833,7 +8833,7 @@ body.vjs-full-window {
 a.brand {
     background:url('/static/img/is-logo.png') no-repeat; background-position:5px 6px;
     text-indent:13px; margin-left:-3px !important;
-    font-family: 'Lato', cursive;
+    font-family: 'Lato', sans-serif;
     font-size:28px !important;
     padding:3px 20px !important;
     text-decoration:none;
