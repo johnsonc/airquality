@@ -1,8 +1,8 @@
-/*
-Parts of this code have been taken from Sagar Parihar and Swapnil Mahajan's work 
-for the National Air Quality website. 
 
-*/
+/*
+-Parts of this code have been taken from Sagar Parihar and Swapnil Mahajan's work 
+-for the National Air Quality website. 
+ */
 
 var Loader = function() {           
       function configure(config) {
@@ -16,82 +16,88 @@ var Loader = function() {
       }
     
 
-  function loadStations() {
+  function loadDevices() {
     $.getJSON("/aq/api/devices/locations/?format=json", function(data) {
 	if ( !data ) return null;
 	self.data = data;
-	self.emit('stationsLoaded');
+	self.emit('devicesLoaded');
     });
   }
 
-  function stationsLoaded() {
-    getAllStations();
+  function devicesLoaded() {
+    getAllDevices();
     getAllCities();
     getAllStates();
     self.emit('ready');
   }
 
-  function getStationMetrics(imei, startdate, enddate) {
-
-      if (startdate && enddate == null){
-	  return $.getJSON(
-	      "/aq/api/aqfeed/"+imei 	      
-	  );
-      }
-      return $.getJSON(
-	  "/aq/api/aqfeed/"+imei +"/" + startdate + "/" + enddate
-	  //{ d: date , h: hours}
-      );
-  }
+    function getDeviceMetrics(imei, startdate, enddate) {
+	var res;
+	if (enddate  == null){
+	    resp =  $.getJSON(
+		"/aq/api/aqfeed/" + imei 	      
+	    );
+	}	
+	resp = $.getJSON(
+	    "/aq/api/aqfeed/" + imei +"/" + enddate.replace(/\//g, '-') //+ "/" // + enddate
+	);	
+	// sanity check
+	//console.log(resp.responseJSON);
+	if (resp.responseJSON == null){
+	    alert("Loaded device does not have data for today. You can view the device data for earlier days or try another device");	    	    	    
+	} 
+	return resp;			
+	
+    }
 
   function getCityMetrics(id, date, hours) {
     return $.getJSON(
       "/metrics/city/"+id,
-      { d: date, h: hours}
+	{ d: date, h: hours}
     );    
   }
   
   function run() {
-    self.on('stationsLoaded', stationsLoaded)
-    loadStations();
+    self.on('devicesLoaded', devicesLoaded)
+    loadDevices();
   }
 
-  function getStation(id) {
-      for ( i in self.data.allStations ) {
-	  if ( id == self.data.allStations[i].imei )
-              return self.data.allStations[i];
+  function getDevice(id) {
+      for ( i in self.data.allDevices ) {
+	  if ( id == self.data.allDevices[i].imei )
+              return self.data.allDevices[i];
       }
       return null;
   }
 
-  function getCurrentStation() {
+  function getCurrentDevice() {
   }
 
-  function getAllStations() {
-      if ( self.data.allStations ) return self.data.allStations;
-      //console.log("Stations:");
-      //console.log(self.data.stations);
+  function getAllDevices() {
+      if ( self.data.allDevices ) return self.data.allDevices;
+      //console.log("Devices:");
+      //console.log(self.data.devices);
 
-      self.data.allStations = [];      
-      for(i in self.data.stations) {
-	  self.data.allStations = self.data.allStations.concat(self.data.stations[i].devicesInCity);
+      self.data.allDevices = [];      
+      for(i in self.data.devices) {
+	  self.data.allDevices = self.data.allDevices.concat(self.data.devices[i].devicesInCity);
       }
-      self.data.allStations = self.data.allStations.sort(comparator);
-      //console.log("getAllStations:");
-      //console.log(self.data.allStations);
-      return self.data.allStations;
+      self.data.allDevices = self.data.allDevices.sort(comparator);
+      //console.log("getAllDevices:");
+      //console.log(self.data.allDevices);
+      return self.data.allDevices;
   }
     
-  function getStationsByCity(cityID) {
-      for(i in self.data.stations) {
-	  if ( cityID == self.data.stations[i].cityID )	  
-              return self.data.stations[i].devicesInCity;
+  function getDevicesByCity(cityID) {
+      for(i in self.data.devices) {
+	  if ( cityID == self.data.devices[i].cityID )	  
+              return self.data.devices[i].devicesInCity;
       }
     return [];
   }
 
 
-  function getStationsByState(stateID) {
+  function getDevicesByState(stateID) {
 
   }
 
@@ -163,19 +169,19 @@ var Loader = function() {
   this.emit = emit;
   this.run = run;
   this.configure = configure;
-  this.getStation = getStation;
-  this.getAllStations = getAllStations;
-  this.getStationsByCity = getStationsByCity;
-  this.getStationsByState = getStationsByState;
+  this.getDevice = getDevice;
+  this.getAllDevices = getAllDevices;
+  this.getDevicesByCity = getDevicesByCity;
+  this.getDevicesByState = getDevicesByState;
   this.getCity = getCity;
   this.getAllCities = getAllCities;
   this.getCitiesByState = getCitiesByState;
   this.getState = getState;
   this.getAllStates = getAllStates;  
-  this.currentStation = null;
+  this.currentDevice = null;
   this.currentCity = null;
   this.currentState = null;
-  this.getStationMetrics = getStationMetrics;
+  this.getDeviceMetrics = getDeviceMetrics;
   this.getCityMetrics = getCityMetrics;
  // this.getCityRankings = getCityRankings;    
 
@@ -185,9 +191,9 @@ var Loader = function() {
 
 var ui = function(configObj){
     if ( !configObj ) return null;
-    var air = configObj;
-    var states, cities, stations;
 
+    var AQIVis = configObj;
+    var states, cities, devices;
     var datepickerOptions =  {
 	format: "dd/mm/yyyy",
 	startDate: "01/08/2015",
@@ -212,82 +218,76 @@ var ui = function(configObj){
 	    }
 	});
 	self.config = config;
-	//map.configure(config);
     }
 
     function initChoices() {
 	$states = $("#statePicker");
 	$cities = $("#cityPicker");
-	$stations = $("#devicePicker");
+	$devices = $("#devicePicker");
 	$date = $("#datePicker");
 	initializeDatepicker(datepickerOptions);
 	//map.initialize();
-	//map.pinStations(air.getAllStations());
+	//map.pinDevices(AQIVis.getAllDevices());
 	resetDropdowns();
 	//drawCharts();
-	//populateAQIDescTable(self.config.breakpoints);
 	bindEvents();
     }
 
-    function initializeDatepicker(options) {
+    function initializeDatepicker(options) {	
 	$date.datepicker(options);
+	var dateFormat = d3.time.format('%d/%m/%Y');
 	$date.datepicker('setDate', dateFormat(new Date()));
     }
-
     
-    function stationClicked(id) {
-	//window.quickfix(id);
-	var station = air.getStation(id);
-	console.log("clicked station:");
-	console.log(station);
-
-	setDropdowns(station.stateID, station.cityID, station.id);
+    function deviceClicked(id) {
+	var device = AQIVis.getDevice(id);
+	console.log("clicked device:");
+	setDropdowns(device.stateID, device.cityID, device.imei);
     }
     
 
-    function setDropdowns(stateID, cityID, stationID) {
+    function setDropdowns(stateID, cityID, deviceID) {
 	clearStates();
 	populateStates();
 	$states.val(stateID);    
 	clearCities();
 	populateCities();
 	$cities.val(cityID);    
-	clearStations();
-	populateStations();
-	$stations.val(stationID);
-	map.showStation(air.getStation(stationID));    
-	stationSet(stationID);
+	clearDevices();
+	populateDevices();
+	$devices.val(deviceID);
+	map.showDevice(AQIVis.getDevice(deviceID));    
+	deviceSet(deviceID);
     }
 
     /* The 'this' context in below 3 function will belong
        to the dropdown element
     */
+
     function stateSelected() {
-	map.showState(air.getState($(this).val()));
+	map.showState(AQIVis.getState($(this).val()));
 	clearCities();
-	clearStations();
+	clearDevices();
 	populateCities();
     }
     
     function citySelected() {
-	map.showCity(air.getCity($(this).val()));
-	clearStations();
-	populateStations();
+	map.showCity(AQIVis.getCity($(this).val()));
+	clearDevices();
+	populateDevices();
     }
     
-    function stationSelected() {	
-	console.log("StationSelected!");
+    function deviceSelected() {	
+	//debugger;
 	var id = $(this).val();
 	if ( "0" != id ) {
-	    map.showStation(air.getStation(id));
-	    imei.filterAll();
-	    imei.filter(this.value);
-	    dc.redrawAll(); 
+	    map.showDevice(AQIVis.getDevice(id));
+	    deviceSet(id);
 	}	
-	stationSet(id);
+	
     }
     
-    function beforeStationSet() {
+    function beforeDeviceSet() {
 	$("#aqi-info").empty();
 	$("#no-response-panel").clone().appendTo("#aqi-info");
 	$("#aqi-info-wrapper").addClass("loading");
@@ -295,49 +295,67 @@ var ui = function(configObj){
 	$("#aqi-info").removeClass("no-response");
     }
 
-    function afterStationSet() {
+    function afterDeviceSet() {
 	$("#aqi-info-wrapper").removeClass("loading");    
     }
 
-    function stationSet(id) {
-	beforeStationSet();
-	var hours = 23;
-	var date = $date.find("input").val();
+    function deviceSet(id) {
+	beforeDeviceSet();
+	//var hours = 23;
+	//var startdate = $date.find("input").val();
+	var enddate = $date.find("input").val();
 	if ( "0" != id ) {
-	    air.getStationMetrics(id, date, hours)
-		.done(drawPanel) 
+	    AQIVis.getDeviceMetrics(id, null, enddate)	    
+		.done(updateVis) 
 		.fail(onJSONFail)
-		.always(afterStationSet);
-	} else {
-	    air.getCityMetrics($cities.find(":selected").val(), date, hours) 
-		.done(drawPanel)
+		.always(afterDeviceSet);
+	} else {	    
+	    AQIVis.getCityMetrics($cities.find(":selected").val(), null,null) 
+		.done(updateVis)
 		.fail(onJSONFail)
-		.always(afterStationSet);
+		.always(afterDeviceSet);
 	}
 	
     }
+    
+    function updateVis(datapoints){
+	//debugger;
+	vis.processdata(datapoints, append=false);
+	vis.initDimensions();
+	vis.setCharts();
+	vis.renderAll();
+	
+	// in case we need city level filtering we can do that via imei.filter()
+	//processdata(datapoints, append);
+	//vis.imei.filterAll();
+	//vis.imei.filter(this.value);
+	//dc.redrawAll(); 	    
+    }
 
     function dateChanged(e) {
-	var stationID = $stations.find(":selected").val();
-	if ( stationID == -1) return;
-	stationSet(stationID);
+	var deviceID = $devices.find(":selected").val();
+	if ( deviceID == -1) return;
+	//debugger;
+	//deviceSet(deviceID);
+	deviceClicked(deviceID);
     }
 
     function bindEvents() {
 	/* Map event binding */
-	// map.on('stationClick', stationClicked);
+	// map.on('deviceClick', deviceClicked);
 	/* Dropdown event binding */
 	$states.change(stateSelected);
 	$cities.change(citySelected);
-	$stations.change(stationSelected);
+	$devices.change(deviceSelected);
 	$date.datepicker().on('changeDate', dateChanged);
+	//$enddate.datepicker().on('changeDate', dateChanged);
     }
 
     function resetDropdowns() {
 	clearStates();
-	populateStates(air.getAllStates());
+	populateStates(AQIVis.getAllStates());
 	clearCities();
-	clearStations();
+	clearDevices();
     }
 
     function clearStates() {
@@ -352,7 +370,7 @@ var ui = function(configObj){
 
     function populateStates() {
 	_.each(
-	    air.getAllStates(),
+	    AQIVis.getAllStates(),
 	    function(state) {
 		if(state.live != "false") $states.append($("<option />", {
 		    value: state.id,
@@ -374,7 +392,7 @@ var ui = function(configObj){
 
     function populateCities() {
 	_.each(
-	    air.getCitiesByState($states.find(":selected").val()),
+	    AQIVis.getCitiesByState($states.find(":selected").val()),
 	    function(city) {
 		if(city.live !="false") $cities.append($("<option />", {
 		    value: city.id,
@@ -384,9 +402,9 @@ var ui = function(configObj){
 	);
     }
 
-    function clearStations() {
-	$stations.empty();
-	$stations.append($("<option>", {
+    function clearDevices() {
+	$devices.empty();
+	$devices.append($("<option>", {
 	    text: "Select Device",
 	    value: -1,
 	    disabled: "disabled",
@@ -394,24 +412,24 @@ var ui = function(configObj){
 	}));    
     }
 
-    function populateStations() {
+    function populateDevices() {
 	/*
-	  $stations.append($("<option />", {
+	  $devices.append($("<option />", {
 	  value: 0,
 	  text: "CITY AVERAGE"
 	  }));
     	*/
 	//console.log($cities.find(":selected").val());
-	console.log("Stations:");
-	console.log(air.getStationsByCity($cities.find(":selected").val()));	    	    
+	//console.log("Devices:");
+	//console.log(AQIVis.getDevicesByCity($cities.find(":selected").val()));	    	    
 	_.each(	    
-	    air.getStationsByCity($cities.find(":selected").val()),	    	    
-	    function(station) {
-		if(!station.live) 
-		    $stations.append($("<option />", {
-			value: station.imei,
-			text: station.title,
-		    }));
+	    AQIVis.getDevicesByCity($cities.find(":selected").val()),	    	    
+	    function(device) {
+		//if(!device.live) 
+		$devices.append($("<option />", {
+		    value: device.imei,
+		    text: device.title,
+		}));
 	    }
 	);
     }
@@ -422,7 +440,7 @@ var ui = function(configObj){
     }
 
     function run() {
-	air.on('ready', initChoices)
+	AQIVis.on('ready', initChoices)
     }
 
     function on(event, callback) {
@@ -438,7 +456,7 @@ var ui = function(configObj){
     }
 
     
-    /* All accessible properties of airui will go below this line */
+    /* All accessible properties of aqiVizObj will go below this line */
     /* Inheriting from EventEmitter2 to be able to emit and listen to events*/
     //EventEmitter2.call(this);
     this.configure = configure;
@@ -449,11 +467,10 @@ var ui = function(configObj){
     this.on = on;
     this.emit = emit;
     this.run = run;
-    //this.configure = configure;
     this.onJSONFail = onJSONFail;
-    //this.drawPanel = drawPanel;
-    //this.afterStationSet = afterStationSet;
-    //this.stationClicked = stationClicked;    
+    this.updateVis = updateVis;
+    this.afterDeviceSet = afterDeviceSet;
+    this.deviceClicked = deviceClicked;    
     /* For context issues */
     var self = this;
 };
@@ -461,16 +478,16 @@ var ui = function(configObj){
 //$(function() {
     //$(".loader-inner").removeClass("ball-grid-pulse");
     //$("pulsar").removeClass("vjs-loading-spinner");
-    var air = new Loader();
-    var airui = new ui(air);
-    var map = new Map();
+    var AQIVis = new Loader();
+    var aqiVizObj = new ui(AQIVis);
+
     $.getJSON("/aq/api/config", function(config) {
-	air.configure(config);
-	airui.configure(config);
+	AQIVis.configure(config);
+	aqiVizObj.configure(config);
 	map.configure(config);
-	air.run();
-	airui.run();
-	//air.on('stationsLoaded', function() {airui.stationClicked(798)});
+	AQIVis.run();
+	aqiVizObj.run();
+	AQIVis.on('devicesLoaded', function() {aqiVizObj.deviceClicked("865190016042411")});
     });
 //});
 
