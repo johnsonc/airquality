@@ -32,22 +32,24 @@ var Loader = function() {
   }
 
     function getDeviceMetrics(imei, startdate, enddate) {
-	var res;
-	if (enddate  == null){
-	    resp =  $.getJSON(
-		"/aq/api/aqfeed/" + imei 	      
-	    );
-	}	
+	var res;	
+	if (enddate  == null){	    
+	    var dateFormat = d3.time.format('%d/%m/%Y');
+	    enddate = dateFormat(new Date());
+	    $date.datepicker('setDate', enddate);
+	     // resp =  $.getJSON(
+	    //	"/aq/api/aqfeed/" + imei 	      
+	   // );
+	}
+	
 	resp = $.getJSON(
 	    "/aq/api/aqfeed/" + imei +"/" + enddate.replace(/\//g, '-') //+ "/" // + enddate
 	);	
 	// sanity check
 	//console.log(resp.responseJSON);
 	if (resp.responseJSON == null){
-	    alert("Loaded device does not have data for today. You can view the device data for earlier days or try another device");	    	    	    
 	} 
-	return resp;			
-	
+	return resp;				
     }
 
   function getCityMetrics(id, date, hours) {
@@ -309,21 +311,22 @@ var ui = function(configObj){
 		.done(updateVis) 
 		.fail(onJSONFail)
 		.always(afterDeviceSet);
-	} else {	    
+	} else {	  
+	    /*
 	    AQIVis.getCityMetrics($cities.find(":selected").val(), null,null) 
 		.done(updateVis)
 		.fail(onJSONFail)
 		.always(afterDeviceSet);
+		*/
 	}
 	
     }
     
     function updateVis(datapoints){
 	//debugger;
-	vis.processdata(datapoints, append=false);
-	vis.initDimensions();
-	vis.setCharts();
-	vis.renderAll();
+	//vis.processdata(datapoints, append=false);
+	//vis.setCharts();
+	//vis.renderAll();
 	
 	// in case we need city level filtering we can do that via imei.filter()
 	//processdata(datapoints, append);
