@@ -28,6 +28,11 @@
   padding: 12px 5px 10px 0px;
 }
 
+
+.display-none {
+    display:none;
+}
+
 .max {
     background: coral; //rgb(255, 153, 0);
     font-size:11px;
