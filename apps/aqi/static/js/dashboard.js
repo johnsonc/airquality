@@ -1,6 +1,7 @@
-var VisObj = function(){
-    var Width = $(window).width()
-    var Height = $(window).height() 
+//var VisObj = function(){
+
+    var Width =  1200;   //$(window).width()
+    var Height =   $(window).height() 
     
     var mapwidth = Math.round(Width*0.3);
     mapheight = 600,
@@ -27,7 +28,7 @@ var VisObj = function(){
     var numberFormat = d3.format('.2f');
 
     var dataCount  = dc.dataCount("#data-count");
-    var timeChart  = dc.barChart("#time-chart");
+    //var timeChart  = dc.barChart("#time-chart");
     var pm10Chart  = dc.barChart("#pm10-chart"); 
     var pm25Chart = dc.barChart('#pm25-chart');
     var tempChart = dc.barChart('#temp-chart');
@@ -39,7 +40,7 @@ var VisObj = function(){
     var pm10Chart2  = dc.barChart("#pm10-chart2"); 
     var pm25Chart2 = dc.barChart('#pm25-chart2');
     var chartWidthDim = 320; 
-    var chartHeightDim = 96; 
+    var chartHeightDim = 107; 
     var aqiText, aqiDisplay, aqiCircle, aqiTextDate;
     
     var d3pm10max = d3.select("#pm10-max");
@@ -101,7 +102,7 @@ var VisObj = function(){
 	    }
 	    else{
 		datapoints = newdatapoints;
-		datapointCF  = crossfilter(newdatapoints);		
+		datapointCF  = crossfilter(datapoints);		
 	    }
 	    renderAll();
 	}
@@ -160,7 +161,7 @@ var VisObj = function(){
 	else { return {'aqi': pm25aqi, 'pollutant':'pm25' };} 
     }
 
-    function processdata(tmpdatapoints){
+    function processdata(tmpdatapoints, append){
 	tmpdatapoints.forEach(function(t,i){
 	    t['time'] = aqparseDate(t['created_on'].substr(0,16));
 	    t['index'] = i;
@@ -172,23 +173,50 @@ var VisObj = function(){
 	    //t['month']= t.time.getMonth();
 	    //t['year']= t.time.getFullYear();
 	})	
+	//console.log("Old data size:" + datapoints.size());
+	datapoints = [];
 	datapoints = tmpdatapoints;
+	console.log("Data processed New data size:") 
+	console.log(datapoints);	
+	updateDimensions();
     }
 
-	function initDimensions() {		
-	    //if (datapointCF != null){
-		console.log("Called initDimensions");
-		//console.log(datapointCF);		
-		//dc.filterAll(); 
-		//datapointCF.remove();
-	    //}
-	    datapointCF = crossfilter(datapoints);
+    function updateDimensions(){
+	if (datapointCF == null){
+	    console.log("datapointCF is not initialized!.. Initializing!")
+	    console.log(datapointCF);
+	    initDimensions();
+	    return;
+	}
+	dc.filterAll();
+	//datapointCF = new crossfilter([]);
+	datapointCF.remove();
+	console.log("DatapointCF size: "+ datapointCF.size());
+	//datapoints = newdatapoints;
+	datapointCF = new crossfilter(datapoints);
+	console.log("removed datapoints from crossfilter, new data: ");
+	console.log(datapoints);
+    }    
+
+    function initDimensions() {		
+	 //if (datapointCF != null){
+	 //    return updateDimension
+	// }
+	//     console.log("Called initDimensions");
+	//     console.log(datapointCF);		
+	//     dc.filterAll(); 
+	//     console.log("removed datapoints from crossfilter ");
+	//     datapointCF.remove();
+	// }
+	console.log("InitDimensions called");
+	datapointCF = crossfilter(datapoints);
+	//console.log(datapoints);
 	    //debugger;
 	    all = datapointCF.groupAll();	    
 	    dateDim = datapointCF.dimension(function(d) { return d.time;})
 	    minDate = dateDim.bottom(1)[0].time;
-	    maxDate = dateDim.top(1)[0].time;
-	    prevDate = d3.time.day.offset(new Date(), -1);
+	    maxDate = dateDim.top(1)[0].date;
+	    prevDate = d3.time.day.offset(maxDate, -1);
 	    prevWeekDate = d3.time.day.offset(new Date(), -7);
 	    
 	    //datapointIndex = datapointCF.dimension(function(d){ return d.index; });
@@ -295,7 +323,7 @@ var VisObj = function(){
 
 function computeAverages(){		
     d3pm10max.text(numberFormat(_.max(pm10AvgGroupByHour.all(), function (d){ return d.value.average}).value.average));
-	    
+    
     d3pm10min.text(numberFormat(_.min(pm10AvgGroupByHour.all(), function (d){ return d.value.average}).value.average)); 
 	    
     d3pm10avg.text(numberFormat(_.reduce(_.map(pm10AvgGroupByHour.all(), function(d){return d.value.average; }), function(memo,num){ return memo+ num; }, 0)/(pm10AvgGroupByHour.size() === 0 ? 1 :pm10AvgGroupByHour.size())));
@@ -333,8 +361,7 @@ function computeAverages(){
 
 	function setCharts(){
 
-
-
+	    /*
 		function rangesEqual(range1, range2) {
 		    if (!range1 && !range2) {
 			return true;
@@ -450,7 +477,7 @@ function computeAverages(){
 	    timeChart.yAxis().ticks(3);
 	    timeChart.xUnits(d3.time.days);
 	    timeChart.focusCharts([pm10Chart, pm25Chart, tempChart, humidityChart]);		
-
+	    */
 		clChart
 		    .width(Math.round(Width*0.3)).height(chartHeightDim)
 		    .dimension(hourDim)
@@ -530,53 +557,54 @@ function computeAverages(){
 		csChart.xAxis().ticks(8);
 		csChart.xUnits(d3.time.hours);	
 
-
-		pm10Chart
-		    .width(Math.round(Width*0.5)).height(chartHeightDim)
-		    .dimension(hourDim)
-		    .group(pm10AvgGroupByHour)
-		    .margins({top: 10, right: 50, bottom: 30, left: 50})
-		    .transitionDuration(500)
-		    .y(d3.scale.linear().domain([0, 300]))
-		    .x(d3.time.scale().domain([minDate,maxDate]))
-		    .round(dc.round.floor)
-		    .alwaysUseRounding(true)
-		    .renderHorizontalGridLines(true)
-		    .valueAccessor(function(p) {
-			return p.value.average;
-		    })
-		    .colors(function (a) {
-			// AQI Color Standards
-			//var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];
+	    
+	    pm10Chart
+		.width(Math.round(Width*0.3)).height(chartHeightDim)
+		.dimension(hourDim)
+		.group(pm10AvgGroupByHour)
+		.margins({top: 10, right: 50, bottom: 30, left: 50})
+		.transitionDuration(500)
+		.y(d3.scale.linear().domain([0, 300]))
+		.x(d3.time.scale().domain([prevDate,maxDate]))
+	        .elasticY(true)	   	    
+		.round(dc.round.floor)
+		.alwaysUseRounding(true)
+		.renderHorizontalGridLines(true)
+		.valueAccessor(function(p) {
+		    return p.value.average;
+		})
+		.colors(function (a) {
+		    // AQI Color Standards
+		    //var c =	['#00e400','#ffff00','#ff7e00','#ff0000','#99004c','#7e0023'];
 			a = Math.round(a);
-			var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
-			if(a < 50 ){ return c[0];}
-			else if(a < 101){ return c[1];}			    
-			else if(a < 201){ return c[2];}			    
-			else if(a < 301){ return c[3] ;}			    
-			else if(a < 401){ return c[4] ;}			    
-			else if(a > 400){ return c[5] ;}			    
+		    var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
+		    if(a < 50 ){ return c[0];}
+		    else if(a < 101){ return c[1];}			    
+		    else if(a < 201){ return c[2];}			    
+		    else if(a < 301){ return c[3] ;}			    
+		    else if(a < 401){ return c[4] ;}			    
+		    else if(a > 400){ return c[5] ;}			    
 		    })
-		    .colorAccessor(function (d) { return getpm10AQI(d.value.average); })
-		    .brushOn(false)
-		    .label(function (d) {
-			return d3.time.day(d.key).substr(0,12);
-		    }) 
-		    .title(function (d) {
-			return d.value.average.toString().substr(0,5);
-		    })
-		    .renderLabel(true)
-		    .yAxisLabel("PM 10");
-		pm10Chart.yAxis().ticks(4);
-		pm10Chart.xUnits(d3.time.hours);	
-	
-		pm10Chart2 
-		    .width(Math.round(Width*0.3)).height(chartHeightDim)
-		    .dimension(pm10)
+		.colorAccessor(function (d) { return getpm10AQI(d.value.average); })
+		.brushOn(false)
+		.label(function (d) {
+		    return d3.time.day(d.key).substr(0,12);
+		}) 
+		.title(function (d) {
+		    return d.value.average.toString().substr(0,5);
+		})
+		.renderLabel(true)
+		.yAxisLabel("PM 10");
+	    pm10Chart.yAxis().ticks(4);
+	    pm10Chart.xUnits(d3.time.hours);	
+	    
+	    pm10Chart2 
+		.width(Math.round(Width*0.3)).height(chartHeightDim)
+		.dimension(pm10)
 		    .group(pm10s)
 		    .margins({top: 10, right: 50, bottom: 30, left: 50})
 		    .transitionDuration(500)
-		//.elasticY(true)	  
+		    .elasticY(true)	  
 		    .gap(2)
 		    .x(d3.scale.linear().domain([1, d3.min([pm10.top(1).pm10, 600])]))            		   .round(dc.round.floor)
 		    .alwaysUseRounding(true)
@@ -603,7 +631,7 @@ function computeAverages(){
 		    .group(pm25s)
 		    .margins({top: 10, right: 50, bottom: 30, left: 50})
 		    .transitionDuration(500)
-		//.elasticY(true)	  
+		    .elasticY(true)	  
 		    .gap(2)
 		    .x(d3.scale.linear().domain([1, d3.min([pm25.top(1).pm25, 1500])]))
 		    .round(dc.round.floor)
@@ -633,6 +661,7 @@ function computeAverages(){
 		    .transitionDuration(500)
 		    .y(d3.scale.linear().domain([0, 1000]))
 		    .x(d3.time.scale().domain([minDate,maxDate]))
+	            .elasticY(true)	   	    
 		    .round(dc.round.floor)
 		    .renderHorizontalGridLines(true)
 		    .alwaysUseRounding(true)
@@ -672,6 +701,7 @@ function computeAverages(){
 		    .transitionDuration(500)
 		    .y(d3.scale.linear().domain([0, 60]))
 		    .x(d3.time.scale().domain([minDate,maxDate]))
+	            .elasticY(true)	   	    
 		    .renderHorizontalGridLines(true)
 		    .round(dc.round.floor)
 		    .alwaysUseRounding(true)
@@ -705,6 +735,7 @@ function computeAverages(){
 		    .renderHorizontalGridLines(true)
 		    .y(d3.scale.linear().domain([0, 100]))
 		    .x(d3.time.scale().domain([minDate,maxDate]))
+	            .elasticY(true)	   	    
 		    .valueAccessor(function(p) {
 			return p.value.average;
 		    })
@@ -909,7 +940,6 @@ function computeAverages(){
 	})				
 	//var append=true;
 	//processdata(datapoints, append);
-	//initDimensions();
 	//setCharts();
 	//renderAll();
     }
@@ -922,15 +952,23 @@ function computeAverages(){
     this.initialLoad = initialLoad;
     this.processdata = processdata;
     this.initDimensions = initDimensions;
-    this.datapoints = datapoints;
+    //this.datapoints = datapoints;
     this.datapointCF = datapointCF;    
-}
+//}
 
 //aqi.indiaspend.org/aq
 //127.0.0.1:8000
-vis = new VisObj();
-
-queue()
-    //.defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/?format=json")
+//vis = new VisObj();
+  //.defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/?format=json")
+queue()  
     .defer(d3.json, "http://aqi.indiaspend.org/aq/api/devices/?format=json")
-    .await(vis.initialLoad);
+    .await(initialLoad);
+
+
+function print_filter(filter){
+    var f=eval(filter);
+    if (typeof(f.length) != "undefined") {}else{}
+    if (typeof(f.top) != "undefined") {f=f.top(Infinity);}else{}
+    if (typeof(f.dimension) != "undefined") {f=f.dimension(function(d) { return "";}).top(Infinity);}else{}
+    console.log(filter+"("+f.length+") = "+JSON.stringify(f).replace("[","[\n\t").replace(/}\,/g,"},\n\t").replace("]","\n]"));
+} 
