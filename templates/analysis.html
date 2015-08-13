@@ -1,111 +1,483 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% load static from staticfiles %}
-    <meta charset="utf-8">
+  <!--  {% load static from staticfiles %}   -->  
+     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">       
-    <!-- <meta http-equiv="refresh" content="900"> -->
-    <script src={% static "/aq/static/js/pace.min.js" %}></script>
-    <link rel="stylesheet" href={% static "/aq/static/css/pace-theme-barber-shop-red.css" %} />
-    <link rel="stylesheet" href={% static "/aq/static/css/filter.css" %} />
-    <link rel="stylesheet" href={% static "/aq/static/css/dc.css" %} /> 
-    <link rel="stylesheet" href={% static "/aq/static/css/app.css" %} /> 
-
-    <link rel="stylesheet" href={% static "/aq/static/leaflet/leaflet.css" %} />
- <!--   <link rel="stylesheet" href={% static "/aq/static/chosen/chosen.min.css" %} />  -->
-   <link rel="stylesheet" type="text/css" href="/aq/static/css/bootstrap-select.min.css" />
-   <link rel="stylesheet" type="text/css" href="/aq/static/keen/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <title>IndiaSpend Air Quality Initiative</title>
+    <script src="/aq/static/js/pace.min.js"></script>
+    <link rel="stylesheet" href="/aq/static/css/pace-theme-barber-shop-red.css"/>
+    <link rel="stylesheet" href="/aq/static/css/filter.css"/>
+    <link rel="stylesheet" href="/aq/static/css/dc.css"  /> 
+    <link rel="stylesheet" href="/aq/static/leaflet/leaflet.css" />
+    <!-- <link rel="stylesheet" href="/aq/static/chosen/chosen.min.css" />  -->
+    <link rel="stylesheet" type="text/css" href="/aq/static/css/bootstrap-select.min.css" />
+    <link rel="stylesheet" type="text/css" href="/aq/static/keen/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
    <link rel="stylesheet" type="text/css" href="/aq/static/css/bootstrap-datepicker3.standalone.min.css" />
-   <link rel="stylesheet" type="text/css" href="/aq/static/css/bootstrap-select.min.css" />
-   <link rel="stylesheet" type="text/css" href="/aq/static/keen/assets/css/keen-dashboards.css" /> 
+    <link rel="stylesheet" type="text/css" href="/aq/static/css/keen-dashboards.css" />
     <style>
       @import url("http://fonts.googleapis.com/css?family=Lato:400,700,900,400italic");
       @import url("http://fonts.googleapis.com/css?family=Aladin");
-    </style>
-    <!--<link rel="stylesheet" type="text/css" href="/static/css/flat-ui.css" /> -->
-    <link rel="stylesheet" href="/aq/static/css/flat-ui-drum.css" type="text/css">
+      .leaflet-control-attribution leaflet-control a {
+      display:none
+      }
 
+      .leaflet-control-attribution {
+      display:none
+      }
+      
+    </style>
+    <!--
+    <link rel="stylesheet" href="/aq/static/css/flat-ui-drum-----.css" type="text/css">
+    -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+		
+	<link rel="stylesheet" type="text/css" media="all" href="http://www.indiaspend.com/wp-content/themes/advanced-newspaper/style.css" />
+	
+	<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.indiaspend.com/feed" />	
+	<link rel="pingback" href="http://www.indiaspend.com/xmlrpc.php" />
+	<!-- JLM FIXED THESE TO POINT AT LIVE SITE -->
+	<script type="text/javascript" src="http://www.indiaspend.com/wp-content/themes/advanced-newspaper/jquery.min.js"></script>
+	<script type="text/javascript" src="http://www.indiaspend.com/wp-content/themes/advanced-newspaper/imtech_pager.js"></script>
+	<!-- JLM FIXED THESE TO POINT AT LIVE SITE -->
+<script>
+$(document).ready(function(){
+    $("#mybutton").click(function(){
+        $(".mydropdown1").toggleClass("mydropdown11");
+    });
+	
+ $("#mybutton1").click(function(){
+        $(".mydropdown12").toggleClass("mydropdown121");
+    });
+	 $("#mybutton2").click(function(){
+        $(".mydropdown22").toggleClass("mydropdown221");
+    }); 
+	
+	 $("#mybutton3").click(function(){
+        $(".mydropdown33").toggleClass("mydropdown331");
+    }); 
+	
+	 $("#mybutton4").click(function(){
+        $(".mydropdown44").toggleClass("mydropdown441");
+    }); 
+	$("#mybutton5").click(function(){
+        $(".mydropdown55").toggleClass("mydropdown551");
+    }); 
+	$("#mybutton6").click(function(){
+        $(".mydropdown66").toggleClass("mydropdown661");
+    });
+	$("#mybutton7").click(function(){
+        $(".mydropdown77").toggleClass("mydropdown771");
+    });
+	
+	$("#mybutton8").click(function(){
+        $(".mydropdown88").toggleClass("mydropdown881");
+    });
+	
+	});
+</script>
 
-    <title>IndiaSpend Air Quality Initiative</title>
+
+
+	
+<!-- BEGIN Metadata added by Add-Meta-Tags WordPress plugin -->
+<meta name="description" content="Reports on expenditure and policies at the State Level" />
+<meta name="keywords" content="states" />
+<!-- END Metadata added by Add-Meta-Tags WordPress plugin -->
+
+<meta name='OBKey' content='opkVNg+oMNUVg3nGOKdyIg==' />
+<link rel="alternate" type="application/rss+xml" title="IndiaSpend &raquo; Feed" href="http://www.indiaspend.com/feed" />
+<link rel="alternate" type="application/rss+xml" title="IndiaSpend &raquo; Comments Feed" href="http://www.indiaspend.com/comments/feed" />
+<link rel="alternate" type="application/rss+xml" title="IndiaSpend &raquo; States Category Feed" href="http://www.indiaspend.com/category/states/feed" />
+<link rel='stylesheet' id='flick-css'  href='http://www.indiaspend.com/wp-content/plugins/mailchimp//css/flick/flick.css?ver=4.0.1' type='text/css' media='all' />
+<link rel='stylesheet' id='mailchimpSF_main_css-css'  href='http://www.indiaspend.com/?mcsf_action=main_css&#038;ver=4.0.1' type='text/css' media='all' />
+<!--[if IE]>
+<link rel='stylesheet' id='mailchimpSF_ie_css-css'  href='http://www.indiaspend.com/wp-content/plugins/mailchimp/css/ie.css?ver=4.0.1' type='text/css' media='all' />
+<![endif]-->
+<link rel='stylesheet' id='sociablecss-css'  href='http://www.indiaspend.com/wp-content/plugins/sociable/css/sociable.css?ver=4.0.1' type='text/css' media='all' />
+<link rel='stylesheet' id='facebookall-button-style-css'  href='http://www.indiaspend.com/wp-content/plugins/facebookall/assets/css/fball_fbbutton.css?ver=4.0.1' type='text/css' media='all' />
+<link rel='stylesheet' id='wpbfsb-frontend-icons-css'  href='http://www.indiaspend.com/wp-content/plugins/fixed-wp-social-share-buttons/assets/css/wpbfsb-frontend-icons.css?ver=4.0.1' type='text/css' media='all' />
+<link rel='stylesheet' id='wpbfsb-frontend-css'  href='http://www.indiaspend.com/wp-content/plugins/fixed-wp-social-share-buttons/assets/css/wpbfsb-frontend.css?ver=4.0.1' type='text/css' media='all' />
+<style type='text/css'>
+.wpbfsb .wpbfsb-button-named-linkedin {background-color:#0073b2; color:#ffffff;}.wpbfsb .wpbfsb-button-named-linkedin:hover {background-color:#73b2;}.wpbfsb .wpbfsb-button-named-google {background-color:#d64937; color:#ffffff;}.wpbfsb .wpbfsb-button-named-google:hover {background-color:#c53826;}.wpbfsb .wpbfsb-button-named-twitter {background-color:#327ead; color:#ffffff;}.wpbfsb .wpbfsb-button-named-twitter:hover {background-color:#216d9c;}.wpbfsb .wpbfsb-button-named-facebook {background-color:#3b5997; color:#ffffff;}.wpbfsb .wpbfsb-button-named-facebook:hover {background-color:#2a4886;}.wpbfsb button:nth-child(n+5) { display: none; }.wpbfsb button.wpbfsb-more-button {display: inline-block;}.wpbfsb {left: auto; top: 35%; right: 0; bottom: auto; text-align: right;max-width: 58px;width: auto;}.wpbfsb i { font-size: 24px; }.wpbfsb button {margin: 0 0 5px 5px;height:48px;width:48px;display: block;}.wpbfsb-count { .wpbfsb-count { display: none; }font-size:10px;}.wpbfsb button.wpbfsb-more-button {display: none;}.wpbfsb button.wpbfsb-share-info {font-size: 12px;color: #ffffff;}.wpbfsb-share-info-responsive-inner { display: none; }.wpbfsb-share-info-inner { display: inline; }.wpbfsb button.wpbfsb-tooltips span.wpbfsb-tooltip {font-size: 12px;color: #ffffff;}.wpbfsb button.wpbfsb-tooltips span.wpbfsb-tooltip:after {top: 50%;left: 100%;right: auto;bottom: auto;margin: -8px 0 0 0;width: 0;height: 0;border-left: 8px solid #000000;border-top: 8px solid transparent;border-bottom: 8px solid transparent;border-right: 0 none;}.wpbfsb button.wpbfsb-tooltips:hover span.wpbfsb-tooltip {right: 58px;top: 9px;left: auto;bottom: auto;margin: 0;}@media all and (min-width: 968px) {}@media all and (max-width: 968px) {wpbfsb button.wpbfsb-more-button {display: inline-block;}.wpbfsb button:nth-child(n+5) { display: block;}.wpbfsb button:nth-child(n+1) { display: none; }.wpbfsb button.wpbfsb-more-button {display: block;}.wpbfsb {left: auto; top: 20%; right: 0; bottom: auto; text-align: right;}.wpbfsb i { font-size: 15px; }.wpbfsb button {margin: 0 0 5px 5px;height:30px;width:30px;display: block;}.wpbfsb-count { display: none;font-size:8px;}.wpbfsb button.wpbfsb-share-info {font-size: 10px;min-height:30px;min-width:30px;color: #ffffff;}.wpbfsb-share-info-responsive-inner { display: inline; }.wpbfsb-share-info-inner { display: none; }.wpbfsb button.wpbfsb-tooltips span.wpbfsb-tooltip {font-size: 10px;color: #ffffff;}.wpbfsb button.wpbfsb-tooltips span.wpbfsb-tooltip:after {top: 50%;left: 100%;right: auto;bottom: auto;margin: -8px 0 0 0;width: 0;height: 0;border-left: 8px solid #000000;border-top: 8px solid transparent;border-bottom: 8px solid transparent;border-right: 0 none;}.wpbfsb button.wpbfsb-tooltips:hover span.wpbfsb-tooltip {right: 40px;top: 0px;left: auto;bottom: auto;margin: 0;}}
+</style>
+<link rel='stylesheet' id='wp-email-css'  href='http://www.indiaspend.com/wp-content/plugins/wp-email/email-css.css?ver=2.60' type='text/css' media='all' />
+<link rel='stylesheet' id='kamn-css-easy-twitter-feed-widget-css'  href='http://www.indiaspend.com/wp-content/plugins/easy-twitter-feed-widget/easy-twitter-feed-widget.css?ver=4.0.1' type='text/css' media='all' />
+<link rel='stylesheet' id='fancyboxcss-css'  href='http://www.indiaspend.com/wp-content/themes/advanced-newspaper/inc/js/fancybox/jquery.fancybox-1.3.4.css?ver=4.0.1' type='text/css' media='all' />
+<script type='text/javascript' src='https://www.google.com/jsapi?ver=4.0.1'></script>
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js?ver=4.0.1'></script>
+<script type='text/javascript' src='http://www.indiaspend.com/wp-includes/js/jquery/ui/jquery.ui.core.min.js?ver=1.10.4'></script>
+<script type='text/javascript' src='http://www.indiaspend.com/wp-content/plugins/mailchimp//js/datepicker.js?ver=4.0.1'></script>
+<script type='text/javascript' src='http://www.indiaspend.com/wp-content/plugins/sociable/js/sociable.js?ver=4.0.1'></script>
+<script type='text/javascript' src='http://www.indiaspend.com/wp-content/plugins/sociable/js/vuible.js?ver=4.0.1'></script>
+<script type='text/javascript' src='http://www.indiaspend.com/wp-content/plugins/sociable/js/addtofavorites.js?ver=4.0.1'></script>
+<script type='text/javascript' src='http://www.indiaspend.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.2.1'></script>
+<script type='text/javascript' src='http://www.indiaspend.com/wp-content/themes/advanced-newspaper/inc/js/jquery.tools.min.js?ver=4.0.1'></script>
+<script type='text/javascript' src='http://www.indiaspend.com/wp-content/themes/advanced-newspaper/inc/js/flowplayer/flowplayer-3.2.6.min.js?ver=4.0.1'></script>
+
+<!-- <script type='text/javascript' src='http://www.indiaspend.com/wp-content/themes/advanced-newspaper/inc/js/superfish-1.4.8.js?ver=4.0.1'></script> -->
+
+<script type='text/javascript' src='http://www.indiaspend.com/wp-content/themes/advanced-newspaper/inc/js/fancybox/jquery.fancybox-1.3.4.pack.js?ver=4.0.1'></script>
+<script type='text/javascript' src='http://www.indiaspend.com/wp-content/themes/advanced-newspaper/inc/js/fancybox/jquery.mousewheel-3.0.4.pack.js?ver=4.0.1'></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://www.indiaspend.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://www.indiaspend.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 4.0.1" />
+<script type='text/javascript' src='http://www.indiaspend.com/wp-content/plugins/facebookall/assets/js/fball_connect.js?ver=1.0.0'></script>
+<!-- HeadSpace SEO 3.6.41 by John Godley - urbangiraffe.com -->
+<meta name="description" content="Reports on expenditure and policies at the State Level" />
+<meta name="keywords" content="andhra pradesh,arunachal pradesh,assam,bihar,central india,chief minister,debt,east,expenditure,fiscal deficit,goa,gujarat,haryana,himachal pradesh,jammu &amp; kashmir,jharkhand,karnataka,kerala,maharashtra,manipur,meghalaya,mizoram,nagaland,new delhi,north,north east,orissa,per capita income,punjab,sikkim,south,state expenditure,states,tamil nadu,tripura,uttarakhand,west,west bengal" />
+<!-- HeadSpace -->
+	<script type="text/javascript">
+		jQuery(function($) {
+			$('.date-pick').each(function() {
+				var format = $(this).data('format') || 'mm/dd/yyyy';
+				format = format.replace(/yyyy/i, 'yy');
+				$(this).datepicker({
+					autoFocusNextInput: true,
+					constrainInput: false,
+					changeMonth: true,
+					changeYear: true,
+					beforeShow: function(input, inst) { $('#ui-datepicker-div').addClass('show'); },
+					dateFormat: format.toLowerCase(),
+				});
+			});
+			d = new Date();
+			$('.birthdate-pick').each(function() {
+				var format = $(this).data('format') || 'mm/dd';
+				format = format.replace(/yyyy/i, 'yy');
+				$(this).datepicker({
+					autoFocusNextInput: true,
+					constrainInput: false,
+					changeMonth: true,
+					changeYear: false,
+					minDate: new Date(d.getFullYear(), 1-1, 1),
+					maxDate: new Date(d.getFullYear(), 12-1, 31),
+					beforeShow: function(input, inst) { $('#ui-datepicker-div').removeClass('show'); },
+					dateFormat: format.toLowerCase(),
+				});
+
+			});
+
+		});
+	</script>
+	<link rel="stylesheet" type="text/css" href="http://www.indiaspend.com/wp-content/plugins/most-shared-posts/most-shared-posts.css"><style type="text/css">.myfixed { margin:0 auto!important; float:none!important; border:0px!important; background:none!important; max-width:100%!important; }
+	#mysticky-nav { width:100%!important;  position: static;top: -100px;}.wrapfixed { position: fixed!important; top:0px!important; left: 0px!important; margin-top:0px!important;  z-index: 1000000; -webkit-transition: 0.1s; -moz-transition: 0.1s; -o-transition: 0.1s; transition: 0.1s;   -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=95)"; filter: alpha(opacity=95); opacity:.95; background-color: #333333!important;  }
+	@media (max-width: 359px) {.wrapfixed {position: static!important; display: none!important;}}
+	</style>
+	<script type='text/javascript' src='http://indiaspendindia.api.oneall.com/socialize/library.js'></script>
+<script type='text/javascript'>var base_url_sociable = 'http://www.indiaspend.com/wp-content/plugins/sociable/'</script><script type='text/javascript' src='http://apis.google.com/js/plusone.js'></script><link href="http://www.indiaspend.com/wp-content/themes/advanced-newspaper/styles/default.css" rel="stylesheet" type="text/css" />
+<!-- Custom Styling -->
+<style type="text/css">
+.posttitle a{color:#000000;}
+span#bcrum, ul.footercats{display:none;}</style>
+
+	<script type='text/javascript'>
+	(function($) {
+		$(document).ready(function() { 
+			
+			$('a[href=#top]').click(function(){
+				$('html, body').animate({scrollTop:0}, 'slow');
+				return false;
+			});
+			
+			$("a[rel=gab_gallery]").fancybox({
+			'transitionIn'		: 'none',
+			'transitionOut'		: 'none',
+			'titlePosition' 	: 'over',
+			'titleFormat'       : function(title, currentArray, currentIndex, currentOpts) {
+				return '<span id="fancybox-title-over">' + title /* + ' ('+(currentIndex + 1) + ' / ' + currentArray.length + ')' */ +'</span>';
+			}
+			});			
+			
+			$(".show").fancybox({  
+				'titleShow'     : 'false',  
+				'transitionIn'      : 'fade',  
+				'transitionOut'     : 'fade'  
+			});
+			
+			$(".iframe").fancybox({	
+				'width'	: '75%',
+				'height' : '75%',
+				'autoScale'     	: false,
+				'transitionIn'		: 'none',
+				'transitionOut'		: 'none',
+				'type'				: 'iframe'
+			});				
+
+						
+			$("ul.tabs").tabs("div.panes > div");
+			// $("ul.sc_tabs").tabs("div.sc_tabs-content > div");
+			
+		});
+	})(jQuery);
+	</script>
+
+<!-- All in One SEO Pack 2.2.3.1 by Michael Torbert of Semper Fi Web Design[378,414] -->
+<meta name="description"  content="Reports on expenditure and policies at the State Level" />
+<link rel='next' href='http://www.indiaspend.com/category/states/page/2' />
+
+<link rel="canonical" href="http://www.indiaspend.com/category/states" />
+<!-- /all in one seo pack -->
+<link rel="shortcut icon" href="http://www.indiaspend.com/wp-content/uploads/fav2.jpg"/>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=201489560024380";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+	
+	
+		
+	<!--link href="http://www.indiaspend.com/wp-content/themes/advanced-newspaper/donate/css/default.css" rel="stylesheet" type="text/css"-->
+	
+
+	
+<script type="text/javascript">
+function popularpost(id){
+var hash="#"+id+"1";
+var tag="#"+id;
+$("#most_read1").hide();
+$("#most_popular1").hide();
+$("#most_mail1").hide();
+$(hash).show();
+$(".most_section a").removeClass('active_most');
+$(tag).addClass('active_most');
+}
+
+</script>
+
+
+
+
+
+
+
+
+<!-- JLM ADDITIONS -->
+<script type="text/javascript" src="lib/modernizr.custom.90705.js"></script>
+<link href="dataroom.css" rel="stylesheet" type="text/css" />
+<!-- JLM ADDITIONS -->
+
+
+
+
+
+
+
+
+
 </head>
+<body class="application" style=" width: 100%; ">
 
-  <body class="application" >
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
+  <div class="masthead_head">
+	<div id="masthead">
+		<ul class="mastheadnav dropdown">
+						
+				<li class="date">
+					<script type="text/javascript">
+						<!--
+						var mydate=new Date()
+						var year=mydate.getYear()
+						if (year < 1000)
+						year+=1900
+						var day=mydate.getDay()
+						var month=mydate.getMonth()
+						var daym=mydate.getDate()
+						if (daym<10)
+						daym="0"+daym
+						var dayarray=new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
+						var montharray=new Array("January","February","March","April","May","June","July","August","September","October","November","December")
+						document.write(""+dayarray[day]+", "+montharray[month]+" "+daym+", "+year+"")
+						// -->
+					</script>
+				</li>
+				<li><a class="show" href="#sconnected" id="clicksconnected">Stay Connected</a></li>			
+					</ul>
+		<div class="hide">
+			<div id="sconnected"> 
+				<div id="gab_social_widget-2" class="widget gab_social_widget"><div class="widgetinner"><h3 class="widgettitle">Socialize</h3>
+<a target="_blank" class="facebook" href="https://www.facebook.com/IndiaSpend" rel="nofollow">Facebook</a><a target="_blank" class="twitter" href="https://twitter.com/IndiaSpend" rel="nofollow">Twitter</a><a target="_blank" class="feed" href="http://feeds.feedburner.com/Indiaspend" rel="nofollow">RSS Feed</a><a target="_blank" class="plus1" href="https://plus.google.com/+Indiaspendofficial" rel="nofollow">Google +1</a><a target="_blank" class="youtube" href="http://www.youtube.com/user/IndiaSpend" rel="nofollow">Youtube</a><div class="clear"></div></div></div>
+			<!-- MK Splash issue  -->
+						</div>
+		</div> 
+				
+		<div id="search">
+			<form class="gab_search_style1" action="http://www.indiaspend.com/">
+	<fieldset>
+		<input type="text" id="s" name="s" value="Search in site..." onfocus="if(this.value==this.defaultValue)this.value='';" onblur="if(this.value=='')this.value=this.defaultValue;"/>
+		
+		<input type="image" class="submit_style1" src="http://www.indiaspend.com/wp-content/themes/advanced-newspaper/framework/images/search.png" alt="Search in site..." value="" /> 
+	</fieldset>
+</form>		</div><!-- /search -->
+		
+		
+		
+		<div class="clear"></div>
+		
+			</div><!-- /masthead -->
+ </div><!-- /masthead_head -->
+	<div id="header">
+	     <div class="header_inner">
+	       <div class="themequote quoteleft">
+		 <span class="img">
+		   <a href="http://www.indiaspend.com/cover-story/aap-is-unique-but-not-indias-best-political-debutant-55177" rel="bookmark">							
+		     <img src="http://www.indiaspend.com/wp-content/uploads/AAPBanner80x9527012015.jpg" alt="" />
+		 </a>					</span>
+		 <span class="quotetext">
+		   <span class="quotecaption">
+		     <a href="http://www.indiaspend.com/cover-story/aap-is-unique-but-not-indias-best-political-debutant-55177" rel="bookmark">Delhi Election Battle</a>					</span>
+					<span class="quote">
+						<a href="http://www.indiaspend.com/cover-story/aap-is-unique-but-not-indias-best-political-debutant-55177" rel="bookmark">AAP Is Unique But Not India??s Best Political Debutant</a>					</span>
+				</span>
+			</div><!-- themequote quoteleft -->
+			
+			<div class="logo" style="padding:15px 0px 0px 0px;">	
+									<h1>
+						<a href="http://www.indiaspend.com/" title="">
+							<img src="http://www.indiaspend.com/wp-content/uploads/is_logo.png" alt="IndiaSpend" title="IndiaSpend"/>
+						</a>
+					</h1>
+							</div><!-- logo -->
+			
+			<div class="themequote quoteright">
+				
+			  <span class="img">
+			    <a href="http://www.indiaspend.com/cover-story/at-66-the-indian-republic-has-much-to-do-82838" rel="bookmark">						
+			      <img src="http://www.indiaspend.com/wp-content/uploads/RepublicBanner80x9527012015.jpg" alt="" />
+			  </a>					</span>
+								
+			  <span class="quotetext">
+			    <span class="quotecaption">
+			      <a href="http://www.indiaspend.com/cover-story/at-66-the-indian-republic-has-much-to-do-82838" rel="bookmark">Prime Time: India's Grand Challenges</a>					</span>
+			    <span class="quote">
+			      <a href="http://www.indiaspend.com/cover-story/at-66-the-indian-republic-has-much-to-do-82838" rel="bookmark">At 66, The Indian Republic Has Much To Do</a>					</span>
+			  </span>
+			  
+			</div><!-- themequote quoteright -->
+			<div class="clear"></div>
+					</div><!-- /header_inner -->	
+
+	</div><!-- /header -->
+<div class="wrapper">
+	<!--<div id="mainmenu" class="nav navbar-nav">-->
+	<nav class="navbar navbar-default" role="navigation" style=" background-color: #333333; border-color: #333333; ">
 	<div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        <a class="navbar-brand" href="../">
-          <span class="glyphicon glyphicon-chevron-left"></span>
-        </a>
-        <a class="navbar-brand" href="./">IndiaSpend Air Quality Initiative</a>
-      </div>
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-left">
-          <li><a href="/aq">Home</a></li>
-          <li><a href="/aq/view-devices">View Devices</a></li>
-          <li><a href="/aq/analysis">Analysis</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" 
+         data-target="#example-navbar-collapse">
+         <span class="sr-only">Toggle navigation</span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+      </button>
+      
+   </div> 
+    <div class="collapse navbar-collapse" id="example-navbar-collapse" style=" padding-left: 0px; ">
+		<ul class="mainnav dropdown nav navbar-nav" >
+			<li id="menu-item-5780" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-5780"><a href="http://www.indiaspend.com">Home</a></li>
+<li id="menu-item-371" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-371"><a style=" float: left; " href="http://www.indiaspend.com/about">About</a><span id="mybutton"  style=" margin-top: 5px;" ><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/WhiteDot.svg" height="20" width="20"></span><!--<button class="desktop-hide btn dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span></button> -->
+<ul class="adjust mydropdown1 "  >
+ 
+	<li id="menu-item-376 " class="menu-item menu-item-type-post_type menu-item-object-page menu-item-376"><a id="menu-item-subs" href="http://www.indiaspend.com/about/about-indiaspend">About IndiaSpend</a></li>
+	<li id="menu-item-374" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-374"><a id="menu-item-subs" href="http://www.indiaspend.com/about/our-team">Our Team</a></li>
+	<li id="menu-item-375 " class="menu-item menu-item-type-post_type menu-item-object-page menu-item-375"><a id="menu-item-subs" href="http://www.indiaspend.com/about/trustees">Trustees &#038; Patrons</a></li>
+	<li id="menu-item-372  " class="menu-item menu-item-type-post_type menu-item-object-page menu-item-372"><a  id="menu-item-subs"href="http://www.indiaspend.com/about/work-with-us">Work With Us</a></li>
+	<li id="menu-item-526 " class="menu-item menu-item-type-post_type menu-item-object-page menu-item-526"><a  id="menu-item-subs" href="http://www.indiaspend.com/contactus">Contact Us</a></li>
+	<li id="menu-item-9508 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-9508"><a id="menu-item-subs"  href="http://www.indiaspend.com/category/indiaspend-in-the-news">IndiaSpend In The News</a></li>
+</ul> 
+</li>
+<li id="menu-item-14290" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-14290"><a target="_blank" href="http://factchecker.in/">Fact Check</a></li>
+<li id="menu-item-19926" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-19926"><a href="http://www.indiaspend.com/call-for-papers">Events</a></li>
+<li id="menu-item-390" class="menu-item menu-item-type-taxonomy menu-item-object-category current-menu-item menu-item-has-children menu-item-390"><a  style=" float: left; " href="http://www.indiaspend.com/category/states">States</a><span id="mybutton1" style=" margin-top: 5px; "><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/WhiteDot.svg" height="20" width="20"></span><!--<button class="desktop-hide btn dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span></button> -->
+<ul class=" adjust  mydropdown12  ">
+	<li id="menu-item-1161 menu-item-subs" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-1161"><a  id="north-clear" id="menu-item-subs"  href="http://www.indiaspend.com/category/states/north">NORTH</a><span id="mybutton2" style=" margin-top: 5px; "><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/WhiteDot.svg" height="20" width="20"></span>
+	<ul class=" adjust states-drop mydropdown22 ">
+		<li id="menu-item-1239 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1239"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/north/haryana">Haryana</a></li>
+		<li id="menu-item-1240 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1240"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/north/himachal-pradesh">Himachal Pradesh</a></li>
+		<li id="menu-item-1241 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1241"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/north/jammu-kashmir">Jammu &#038; Kashmir</a></li>
+		<li id="menu-item-1243 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1243"><a id="menu-item-subs"  href="http://www.indiaspend.com/category/states/north/new-delhi">New Delhi</a></li>
+		<li id="menu-item-1244" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1244"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/north/punjab">Punjab</a></li>
+		<li id="menu-item-1245 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1245"><a id="menu-item-subs"  href="http://www.indiaspend.com/category/states/north/rajasthan">Rajasthan</a></li>
+		<li id="menu-item-1246 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1246"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/north/uttar-pradesh">Uttar Pradesh</a></li>
+		<li id="menu-item-1247 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1247"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/north/uttarakhand">Uttarakhand</a></li>
+	</ul>
+</li>
+	<li id="menu-item-1252 menu-item-subs" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-1252"><a id="north-east-clear" id="menu-item-subs"    href="http://www.indiaspend.com/category/states/north-east">NORTH EAST</a><span id="mybutton3" style=" margin-top: 5px; "><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/WhiteDot.svg" height="20" width="20"></span><!--<button class="desktop-hide btn dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span></button> -->
+	<ul class=" adjust states-drop  mydropdown33  ">
+		<li id="menu-item-1253 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1253"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/north-east/arunachal-pradesh">Arunachal Pradesh</a></li>
+		<li id="menu-item-1254 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1254"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/north-east/assam">Assam</a></li>
+		<li id="menu-item-1255 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1255"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/north-east/manipur">Manipur</a></li>
+		<li id="menu-item-1256  " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1256"><a id="menu-item-subs"  href="http://www.indiaspend.com/category/states/north-east/meghalaya">Meghalaya</a></li>
+		<li id="menu-item-1257" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1257"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/north-east/mizoram">Mizoram</a></li>
+		<li id="menu-item-1258 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1258"><a id="menu-item-subs"  href="http://www.indiaspend.com/category/states/north-east/nagaland">Nagaland</a></li>
+		<li id="menu-item-1259 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1259"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/north-east/sikkim">Sikkim</a></li>
+		<li id="menu-item-1260" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1260"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/north-east/tripura">Tripura</a></li>
+	</ul>
+</li>
+	<li id="menu-item-1277 menu-item-subs" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-1277"><a id="east-clear"  id="menu-item-subs"  href="http://www.indiaspend.com/category/states/east">EAST</a><span id="mybutton4" style=" margin-top: 5px; "><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/WhiteDot.svg" height="20" width="20"></span><!--<button class="desktop-hide btn dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span></button> -->
+	<ul class=" adjust states-drop mydropdown44">
+		<li id="menu-item-1278 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1278"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/east/bihar">Bihar</a></li>
+		<li id="menu-item-1279 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1279"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/east/jharkhand">Jharkhand</a></li>
+		<li id="menu-item-1280 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1280"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/east/orissa">Orissa</a></li>
+		<li id="menu-item-1281 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1281"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/east/west-bengal">West Bengal</a></li>
+	</ul>
+</li>
+	<li id="menu-item-1283 menu-item-subs" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-1283"><a  id="south-clear"   id="menu-item-subs"  href="http://www.indiaspend.com/category/states/south">SOUTH</a><span id="mybutton5" style=" margin-top: 5px; "><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/WhiteDot.svg" height="20" width="20"></span><!--<button class="desktop-hide btn dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span></button> -->
+	<ul class=" adjust states-drop mydropdown55">
+		<li id="menu-item-1284 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1284"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/south/andhra-pradesh">Andhra Pradesh</a></li>
+		<li id="menu-item-1285 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1285"><a id="menu-item-subs"  href="http://www.indiaspend.com/category/states/south/karnataka">Karnataka</a></li>
+		<li id="menu-item-1286 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1286"><a id="menu-item-subs"  href="http://www.indiaspend.com/category/states/south/kerala">Kerala</a></li>
+		<li id="menu-item-1287 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1287"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/south/tamil-nadu">Tamil Nadu</a></li>
+	</ul>
+</li>
+	<li id="menu-item-1289 menu-item-subs" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-1289"><a  id="west-clear"  id="menu-item-subs"  href="http://www.indiaspend.com/category/states/west">WEST</a><span id="mybutton6" style=" margin-top: 5px; "><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/WhiteDot.svg" height="20" width="20"></span><!--<button class="desktop-hide btn dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span></button> -->
+	<ul class="adjust  states-drop mydropdown66">
+		<li id="menu-item-1290 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1290"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/west/goa">Goa</a></li>
+		<li id="menu-item-1291 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1291"><a id="menu-item-subs" href="http://www.indiaspend.com/category/states/west/gujarat">Gujarat</a></li>
+		<li id="menu-item-1292 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1292"><a  id="menu-item-subs" href="http://www.indiaspend.com/category/states/west/maharashtra">Maharashtra</a></li>
+	</ul>
+</li>
+	<li id="menu-item-1317 menu-item-subs" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-1317"><a  id="central-clear" id="menu-item-subs"  href="http://www.indiaspend.com/category/states/central-india">CENTRAL INDIA</a><span id="mybutton7" style=" margin-top: 5px; "><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/WhiteDot.svg" height="20" width="20"></span><!--<button class="desktop-hide btn dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span></button> -->
+	<ul class=" adjust states-drop mydropdown77">
+		<li id="menu-item-1242 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1242"><a id="menu-item-subs"  href="http://www.indiaspend.com/category/states/central-india/madhya-pradesh">Madhya Pradesh</a></li>
+		<li id="menu-item-1238 " class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1238"><a id="menu-item-subs"  href="http://www.indiaspend.com/category/states/central-india/chattisgarh">Chattisgarh</a></li>
+	</ul>
+</li>
+</ul>
+</li>
+<li id="menu-item-13265  menu-item-subs" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-13265">
+<a href="http://www.indiaspend.com/wp-content/DataRom/index.html">Data Room</a></li>
+<li id="menu-item-9011" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-9011"><a href="http://www.indiaspend.com/category/opinion">Videos</a></li>
+<li id="menu-item-1940 menu-item-subs" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children menu-item-1940"><a  style=" float: left; " href="http://www.indiaspend.com/category/viznomics">Viznomics</a><span id="mybutton8" style=" margin-top: 5px; "><img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/WhiteDot.svg" height="20" width="20"></span><!--<button class="desktop-hide btn dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span></button>-->
 
-    <div  class="container-x row-x col-md-12">
-      <div id="station-aqi" class="container-x">
-        <!--h2 class="text-center">Station AQI</h2-->
-        <div class="row">
-          <div class="col-md-3 form-group nullable">
-            <div class="input-group">
-              <div class="input-group-addon">State</div>
-              <select id="statePicker" class="form-control selectpicker" data-width="25%" data-live-search="true"  title="Select State" >
-              </select>              
-            </div>
-          </div>
-          <div class="col-md-3 form-group">
-            <div class="input-group">
-              <div class="input-group-addon">City</div>
-              <select id="cityPicker" class="form-control selectpicker" data-width="25%" data-live-search="true"  title="Select City">
-              </select>              
-            </div>            
-          </div>
-          <div class="col-md-3 form-group">
-            <div class="input-group">
-              <div class="input-group-addon">Device</div>
-              <select id="devicePicker" class="form-control selectpicker" data-width="25%" data-live-search="true"  title="Select Device">
-              </select>              
-            </div>                        
-          </div>
+<ul class="dropdown-menu mydropdown88 ">
+	<li id="menu-item-12096" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-12096"><a id="menu-item-subs"    href="http://www.indiaspend.com/category/chart-of-the-day">Chart of the Day</a></li>
+</ul>
+</li>
+<li id="menu-item-17348 menu-item-subs" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-17348"><a href="http://www.indiaspend.com/donate1">Donate</a></li>
+<li id="menu-item-19927 menu-item-subs" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-19927"><a title="Mumbai Special: The Revival Agenda" href="http://www.indiaspend.com/category/mumbai-special-the-revival-agenda">Mumbai Special</a></li>
+	
+		</ul> </div>
+		<div class="clear"></div>
+	<!--</div>--><!-- /mainmenu --> 
 
-          <div class="col-md-2 form-group">
-            <div id="datePicker" class="input-group date">
-              <input type="text" class="form-control" required>
-              <span class="input-group-addon">
-                <i class="glyphicon glyphicon-th"></i>
-              </span>
-            </div>
-          </div>
-	  <!--
-          <div class="col-md-2 form-group">
-            <div id="endDate" class="input-group date">
-              <input type="text" class="form-control" required>
-              <span class="input-group-addon">
-                <i class="glyphicon glyphicon-th"></i>
-              </span>
-            </div>
-          </div>
-	  -->
-        </div>
+	<!-- #Container --></div><!-- wrapper -->
+<!--- rest body starts here-->
 
-
+ 
   <div class="container-fluid">
     <div class="row">
       <div class="fullrow">
@@ -116,56 +488,59 @@
 	      <a href="javascript:dc.filterAll(); dc.renderAll();">Reset Filters</a>
 	      </div>	    
           </div>
-
           <div class="chart-stage">
-	    <div style="width:100%;text-align:center">
-	      <div id="svg-loader" class="svg-loader" style="display:none">
-		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svgloader" x="0px" y="0px" width="150px" height="150px" viewBox="0 0 213.235 241.176" enable-background="new 0 0 213.235 241.176" xml:space="preserve" fill="#0057B8">
-		  <path d="M108.581,64.968V14.124l44.007,25.422L108.581,64.968"/>
-		  <path fill-opacity="0.9" d="M153.591,92.101V41.258L109.582,66.68L153.591,92.101"/><path d="M155.586,92.062V41.221l44.009,25.42L155.586,92.062"/><path fill-opacity="0.7" d="M200.299,119.14V68.297l-44.004,25.421L200.299,119.14"/><path fill-opacity="0.85" d="M155.586,146.255V95.412l44.009,25.422L155.586,146.255"/><path fill-opacity="0.7" d="M200.299,173.35v-50.844l-44.004,25.422L200.299,173.35"/><path fill-opacity="0.6" d="M155.586,200.482v-50.84l44.009,25.417L155.586,200.482"/><path fill-opacity="0.5" d="M153.591,200.521v-50.84l-44.009,25.418L153.591,200.521"/><path fill-opacity="0.6" d="M108.581,227.696v-50.844l44.007,25.421L108.581,227.696"/><path fill-opacity="0.5" d="M106.62,227.696v-50.844l-44.005,25.421L106.62,227.696"/><path fill-opacity="0.7" d="M61.562,200.553V149.71l44.007,25.423L61.562,200.553"/><path fill-opacity="0.7" d="M59.709,200.56v-50.843l-44.008,25.422L59.709,200.56"/><path fill-opacity="0.7" d="M14.699,173.467v-50.843l44.01,25.42L14.699,173.467"/><path fill-opacity="0.5" d="M59.709,146.235V95.392l-44.008,25.42L59.709,146.235"/><path fill-opacity="0.7" d="M14.699,119.141V68.297l44.01,25.421L14.699,119.141"/><path fill-opacity="0.6" d="M59.709,92.101V41.258L15.701,66.68L59.709,92.101"/><path fill-opacity="0.85" d="M61.562,92.092V41.249l44.007,25.419L61.562,92.092"/>
-		  <path fill-opacity="0.9" d="M106.62,64.968V14.124L62.614,39.546L106.62,64.968"/>	      </svg>
-	      </div>
-	    </div>
 
 
-	    <div id=""> Time line</div> 
-
-            <div id="aqi-info-wrapper" class="col-md-7 col-sm-12 col-xs-12">
-              <div class="overlay">
-		<div class="loader">
-                  <span></span><span></span><span></span><span></span><span></span>
-		</div>
-              </div>                      
-              <div id="aqi-info">
-              </div>
+    <div  class="container-x row-x col-md-12 col-xs-12">
+      <div id="station-aqi" class="container-x">
+        <!--h2 class="text-center">Station AQI</h2-->
+        <div class="row col-md-12 col-xs-12" style=" margin-top: 10px; ">
+          <div class=" col-md-3 col-xs-12  col-sm-3 col-lg-3  form-group nullable">
+            <div class="input-group">
+              <div class="input-group-addon">State</div>
+              <select id="statePicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select State" >
+              </select>              
             </div>
+          </div>
+          <div class=" col-md-3 col-xs-12  col-sm-3 col-lg-3  form-group">
+            <div class="input-group">
+              <div class="input-group-addon">City</div>
+              <select id="cityPicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select City">
+              </select>              
+            </div>            
+          </div>
+          <div class="col-md-3 col-xs-12  col-sm-3 col-lg-3  form-group">
+            <div class="input-group">
+              <div class="input-group-addon">Device</div>
+              <select id="devicePicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select Device">
+              </select>              
+            </div>                        
+          </div>
+          <div class="col-md-3 col-xs-12  col-sm-3 col-lg-3 form-group">
+            <div id="datePicker" class="input-group date">
+              <input type="text" style=" height: 34px; " class="form-control" required>
+              <span class="input-group-addon">
+                <i class="glyphicon glyphicon-th"></i>
+              </span>
+            </div>
+          </div>
+        </div>
 
-	    <div class="loaderoverlay">
-	      <div id='pulsar2' class="loader">
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-	      </div>
 
-	      <div id="pulsar" class="loader-inner ball-grid-pulse" style="display:block">
-	      </div>
-	    </div>
-
-	    <div style="float:left" id="time-chart">
+	    <!--
+	    <div id="" style="display:none;"> Time line</div> 
+	    <div style="display:none;" style="float:left" id="time-chart">
+	      <span class='reset' style='display: none;'>  
+		Current filter: <span class='filter'></span>
+	    </div> 
+	    <div style="text-align:center;" id="aqi-display">
 	    </div> 
 
-	    <div style="float:right" id="aqi-display">
-	    </div> 
+	    -->
 	    
           </div>
           <div class="chart-notes">
-            AQI over time
+	    Select the State, City to view the devices. 
           </div>
         </div>
       </div>
@@ -176,14 +551,22 @@
       <div class="col-sm-5">
         <div class="chart-wrapper">
           <div class="chart-title">
+	    <!--
+	    <div id="banner" style="text-align:right">
+	      Select a device to filter:
+	      <select id="devicePicker">
+	      </select>
+	    </div>	    
+	    -->
           </div>
           <div class="chart-stage">
             <div id="grid-1-1">
 	      <div id="mappa" class="display" style="height: 400px"> </div> 
+              <!-- img data-src="holder.js/100%x240/white/text:#grid-1-1"> -->
             </div>
           </div>
           <div class="chart-notes">
-            Try using the map overlay layers to add context to the map view.
+            Click on the map markers or choose from the menu. Click on the other map layers to add to the map view.
           </div>
         </div>
       </div>
@@ -194,69 +577,58 @@
           </div>
           <div class="chart-stage">
             <div id="dashboard">
-	      <div class="max"> </div>
-	      <div id="pm10-chart"> 
-		<span class='reset' style='display: none;'>  
-		  Current filter: <span class='filter'></span>		  
-	      </div> 
+	      <div id="pm10container" class="row" >
+		<div id="pm10-chart" class="col-xs-9"> 
+		</div> 
+		
+		<ul id="pm10-stats" class="list-inline stats pm10 col-xs-3"> 		
+		  <li id="pm10-max" class="max"> Max</li> 
+		  <li id="pm10-avg" class="avg"> Avg</li> 	      
+		  <li id="pm10-min" class="min"> Min</li> 		
+		</ul> 	      	      
+	      </div>
 	      
-	      <div id="pm10-stats" class="stats pm10"> 		
-		<div id="pm10-max" class="max"> Max		
+	      <div id="pm25container" class="row" >
+		<div id="pm25-chart">
+		</div>
+		<div id="pm25-stats" class="stats"> 		
+		  <div id="pm25-max" class="max"> Max		
+		  </div> 
+		  <div id="pm25-avg" class="avg"> Avg		
+		  </div> 	      
+		  <div id="pm25-min" class="min"> Min 		
+		  </div> 
+		</div> 		  
+	      </div>
+	      <div id="tempcontainer" class="row" >
+		<div id="temp-chart" >
 		</div> 
-		<div id="pm10-avg" class="avg"> Avg		
-		</div> 	      
-		<div id="pm10-min" class="min"> Min 		
-		</div> 		
-	      </div> 	      
-	      <br/>
-
-	      <div id="pm25-chart">
-		<span class='reset' style='display: none;'>  
-		  Current filter: <span class='filter'></span>
-		  <div id="pm25-stats" class="stats"> 		
-		    <div id="pm25-max" class="max"> Max		
-		    </div> 
-		    <div id="pm25-avg" class="avg"> Avg		
-		    </div> 	      
-		    <div id="pm25-min" class="min"> Min 		
-		    </div> 
-		  </div> 		  
-	      </div> 
-
-	      <br/>
-	      <div id="temp-chart">
-		<span class='reset' style='display: none;'>  
-		  Current filter: <span class='filter'></span>
-	      </div> 
-
-	      <div id="temp-stats" class="stats"> 		
-		<div id="temp-max" class="max"> Max		
-		</div> 		
-		<div id="temp-avg" class="avg"> Avg		
-		</div> 	      
-		<div id="temp-min" class="min"> Min 		
-		</div> 		
-	      </div> 
-
-	      <br/>
-	      <div id="hum-chart"> 
-		<span class='reset' style='display: none;'>  
-		  Current filter: <span class='filter'></span>
-	      </div> 
-	      <div id="humidity-stats" class="stats"> 				
-		<div id="humidity-max" class="max"> Max		
-		</div> 		
-		<div id="humidity-avg" class="avg"> Avg		
-		</div> 	      
-		<div id="humidity-min" class="min"> Min 		
+		<div id="temp-stats" class="stats"> 		
+		  <div id="temp-max" class="max"> Max		
+		  </div> 		
+		  <div id="temp-avg" class="avg"> Avg		
+		  </div> 	      
+		  <div id="temp-min" class="min"> Min 		
+		  </div> 		
 		</div> 
-	      </div> 
-
-	      <br/>
+	      </div>
+	      <div id="humcontainer" class="row" >
+		<div id="hum-chart"  class="row"> 
+		</div>
+		<div id="humidity-stats" class="stats"> 				
+		  <div id="humidity-max" class="max"> Max		
+		  </div> 		
+		  <div id="humidity-avg" class="avg"> Avg		
+		  </div> 	      
+		  <div id="humidity-min" class="min"> Min 		
+		  </div> 
+		</div> 
+	      </div>
+	      
 	    </div>	            
           </div>
           <div class="chart-notes">
-            These above charts show the data aggregated hour-wise.
+            Notes about this chart
           </div>
         </div>
       </div>
@@ -269,17 +641,19 @@
 	    Particle counts (Experimental data)
           </div>
           <div class="chart-stage">
-	    <div id="cs-chart" class="">
-	      <div class="title">Small particle count</div>
-	      <span class='reset' style='display: none;'>  
-		Current filter: <span class='filter'></span>		
-	    </div>
+		<div id="cs-chart" class="">
+		  <div class="title">Small particle count</div>
+		  <span class='reset' style='display: none;'>  
+		    Current filter: <span class='filter'></span>
+		    
+		</div>
 
-	    <div id="cl-chart" class="">
-	      <div class="title">Large particle count</div>
-	      <span class='reset' style='display: none;'>  
-		Current filter: <span class='filter'></span>		
-	    </div>
+		<div id="cl-chart" class="">
+		  <div class="title">Large particle count</div>
+		  <span class='reset' style='display: none;'>  
+		    Current filter: <span class='filter'></span>
+
+		</div>
 
           </div>
           <div class="chart-notes">
@@ -288,75 +662,75 @@
         </div>
       </div>
 
+
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
             Averages
           </div>
-
           <div class="chart-stage">
-	    <div id="pm25-chart2" class="">
+	    <div id="pm25-chart2" class="bChart display">
 	      <div class="title" class="reset" >PM 2.5
 	      </div>
 	      <span class="reset" style='display: none;'>  
-		Current filter: <span class='filter'></span>		
+		Current filter: <span class='filter'></span>
+		
 	    </div>	    
-
-	    <div id="pm10-chart2" class="">
+	    <div id="pm10-chart2" class="bChart display">
 	      <div class="title">PM 10
 	      </div>
 		<span class='reset' style='display: none;'>  
 		  Current filter: <span class='filter'></span>
 	    </div>	    
           </div>
-
           <div class="chart-notes">
             This chart shows how frequently the same values occur (histogram).
-	    Drag on the charts to show which of these values are prominent 
-	    during different times of the day and how many points they 
-	    contribute to the daily average on the weekly chart.
+	    As you can see PM10 and PM25 have different concentration regions. Drag on the charts to show which of these values are prominent during different times of the day.
           </div>
         </div>
       </div>
-
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
             Averages
           </div>
-
           <div class="chart-stage">
-	    <div id="chart-ring-pollutant" class="">
+	    <div id="chart-ring-year" class="">
+
 	    </div>		  
 
-	    <div id="temp-chart2" class="">
-	      <div class="title">Temperature</div>
-	    </div>
-	    
-	    <div id="humidity-chart2" class="">
-	      <div class="title">Humidity</div>
-	    </div>
-	    <br/>	    
+
+		<div id="temp-chart2" class="bChart display">
+			<div class="title">Temperature</div>
+		</div>
+
+		<div id="humidity-chart2" class="bChart display">
+			<div class="title">Humidity</div>
+		</div>
+		  <br/>
+		   <p style=" width: auto; ">Need more data to compute averages!</p>
+		
           </div>
-          <div class="chart-notes">            
+          <div class="chart-notes">
+            Notes about this chart
           </div>
         </div>
       </div>
 <!-- end of three -->
     <hr>
+
 <div>
 
-  <div class="col-sm-6 col-md-4">
-    <table class="table panel panel-default table-hover">
-      <thead>
-	<tr class="active">
-          <th class="col-md-1 text-center">AQI</th>
-          <th class="col-md-2 text-center">Remark</th>
-          <th class="col-md-1">Color Code</th>
-          <th class="col-md-8">Possible Health Impacts</th>                  
-	</tr>
-      </thead>
-      <tbody class="aqi-desc-container">
+  <table class="table panel panel-default table-hover" style=" font-size: 14px; ">
+    <thead>
+      <tr class="active">
+        <th class="col-md-1 text-center">AQI</th>
+        <th class="col-md-2 text-center">Remark</th>
+        <th class="col-md-1">Color Code</th>
+        <th class="col-md-8">Possible Health Impacts</th>                  
+      </tr>
+    </thead>
+    <tbody class="aqi-desc-container">
       <tr class="" style="">
         <td class="col-md-1 aqi-value text-center text-middle">0-50</td>
         <td class="col-md-2 remark text-center text-middle">Good</td>
@@ -389,14 +763,65 @@
         <td class="col-md-8 desc">Affects healthy people and seriously impacts those with existing diseases</td>     
     </tr></tbody>
   </table>
+
+
+  <!--
+  <table class="table panel panel-default table-hover">
+    <thead>
+      <tr class="active">
+        <th class="col-md-1 text-center">AQI</th>
+        <th class="col-md-2 text-center">Remark</th>
+        <th class="col-md-1">Color Code</th>
+        <th class="col-md-8">Possible Health Impacts</th>                  
+      </tr>
+    </thead>
+    <tbody class="aqi-desc-container">
+      <tr class="" style="">
+        <td class="col-md-1 aqi-value text-center text-middle">0-50</td>
+        <td class="col-md-2 remark text-center text-middle">Good</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(0, 228, 0);"></td>          
+        <td class="col-md-8 desc">Minimal impact</td>     
+      </tr><tr class="" style="">
+        <td class="col-md-1 aqi-value text-center text-middle">51-100</td>
+        <td class="col-md-2 remark text-center text-middle">Satisfactory</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(255, 255, 0);"></td>          
+        <td class="col-md-8 desc">Minor breathing discomfort to sensitive people</td>     
+      </tr><tr class="" style="">
+        <td class="col-md-1 aqi-value text-center text-middle">101-200</td>
+        <td class="col-md-2 remark text-center text-middle">Moderate</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(255, 126, 0);"></td>          
+        <td class="col-md-8 desc">Breathing discomfort to the people with lungs, asthma and heart diseases</td>     
+      </tr><tr class="" style="">
+        <td class="col-md-1 aqi-value text-center text-middle">201-300</td>
+        <td class="col-md-2 remark text-center text-middle">Poor</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(255, 0, 0);"></td>          
+        <td class="col-md-8 desc">Breathing discomfort to most people on prolonged exposure</td>     
+      </tr><tr class="" style="">
+	<td class="col-md-1 aqi-value text-center text-middle">301-400</td>
+        <td class="col-md-2 remark text-center text-middle">Very Poor</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(153, 0, 76);"></td>          
+        <td class="col-md-8 desc">Respiratory illness on prolonged exposure</td>     
+      </tr><tr class="" style="">
+	<td class="col-md-1 aqi-value text-center text-middle">401 and above</td>
+        <td class="col-md-2 remark text-center text-middle">Severe</td>
+        <td class="col-md-1 color-code" style="background-color: rgb(126, 0, 35);"></td>          
+        <td class="col-md-8 desc">Affects even healthy people and seriously impacts those with existing diseases</td>     
+    </tr></tbody>
+</table>  -->
+
+  
 </div>
 
-    <p class="small text-muted">By IndiaSpend.org  License:Creative Commons CC-By-SA 3.0<a href=""></a></p>
-
+      <p style=" width: auto; " class="small text-muted">By IndiaSpend.org  License:Creative Commons CC-By-SA 3.0, Map data and Image courtesy:OSM, NASA, Mapbox, Stamen, University of Heidelberg, Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System  <a href=""></a></p>
+      
+    </div>
+<!-- 2 added div-->
   </div>
-
-  <script type="text/javascript" src="/aq/static/keen/assets/lib/jquery/dist/jquery.min.js"></script>
+      </div>
+      
+ <script type="text/javascript" src="/aq/static/keen/assets/lib/jquery/dist/jquery.min.js"></script>
   <script type="text/javascript" src="/aq/static/keen/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
   <script type="text/javascript" src="/aq/static/keen/assets/lib/holderjs/holder.js"></script>
   <script>
     Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
@@ -404,23 +829,23 @@
 
  <!--  <script type="text/javascript" src="/aq/static/keen/assets/lib/keen-js/dist/keen.min.js"></script> 
   <script type="text/javascript" src="/aq/static/keen/assets/js/meta.js"></script> -->
- <!-- -->
-  <script src={% static "/aq/static/js/lib/colorbrewer.js" %}></script>
-  <script src={% static "/aq/static/js/lib/d3.js" %}></script>
-  <script src={% static "/aq/static/js/lib/crossfilter.js"%}></script>
-  <script src={% static "/aq/static/js/lib/dc.js" %}></script>
-  <script src={% static "/aq/static/js/lib/reductio.min.js" %}></script>
-  <script src={% static "/aq/static/js/lib/underscore-min.js" %}></script>
-  <script src={% static "/aq/static/js/lib/eventemitter2.js" %}></script>
-  <script src={% static "/aq/static/js/bootstrap-datepicker.min.js" %}></script>
-  <script src={% static "/aq/static/js/bootstrap-sortable.js" %}></script>
-  <script src={% static "/aq/static/js/lib/eventemitter2.js" %}></script>
-  <script src={% static "/aq/static/js/lib/queue.js" %}></script>
-  <script src={% static "/aq/static/js/elems/circleChart.js"%}></script>
-  <script src={% static "/aq/static/leaflet/leaflet.js" %}></script>
-<!--  <script src={% static "/aq/static/js/drawMap5.js" %}></script> -->
-  <script src={% static "/aq/static/js/map.js" %}></script>
-  <script src={% static "/aq/static/js/dashboard.js" %}></script>
-  <script src={% static "/aq/static/js/ui.js" %}></script>  
+
+  <script src="/aq/static/js/lib/colorbrewer.js" ></script>
+  <script src="/aq/static/js/lib/d3.js" ></script>
+  <script src="/aq/static/js/lib/crossfilter.js"></script>
+  <script src="/aq/static/js/lib/dc.js" ></script>
+  <script src="/aq/static/js/lib/reductio.min.js" ></script>
+  <script src="/aq/static/js/lib/underscore-min.js" ></script>
+  <script src="/aq/static/js/lib/eventemitter2.js" ></script>
+  <script src="/aq/static/js/bootstrap-datepicker.min.js" ></script>
+  <script src="/aq/static/js/bootstrap-sortable.js" ></script>
+  <script src="/aq/static/js/lib/eventemitter2.js" ></script>
+  <script src="/aq/static/js/lib/queue.js" ></script>
+  <script src="/aq/static/js/elems/circleChart.js"></script>
+  <script src="/aq/static/leaflet/leaflet.js" ></script>
+<!--  <script src="/aq/static/js/drawMap5.js" ></script> -->
+  <script src="/aq/static/js/map.js" ></script>
+  <script src="/aq/static/js/dashboard.js" ></script>
+  <script src="/aq/static/js/ui.js" ></script>  
 </body>
 </html>
