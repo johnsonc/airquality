@@ -271,12 +271,14 @@ var ui = function(configObj){
 	clearCities();
 	clearDevices();
 	populateCities();
+	$("#aqi-display").addClass("display-none");
     }
     
     function citySelected() {
 	map.showCity(AQIVis.getCity($(this).val()));
 	clearDevices();
 	populateDevices();
+	$("#aqi-display").addClass("display-none");
     }
     
     function deviceSelected() {	
@@ -286,6 +288,7 @@ var ui = function(configObj){
 	    map.showDevice(AQIVis.getDevice(id));
 	    deviceSet(id);
 	}	
+	$("#aqi-display").removeClass("display-none");
 	
     }
     

@@ -534,14 +534,13 @@ $(tag).addClass('active_most');
 	      <span class='reset' style='display: none;'>  
 		Current filter: <span class='filter'></span>
 	    </div> 
-	    <div style="text-align:center;" id="aqi-display">
-	    </div> 
-
 	    -->
 	    
           </div>
           <div class="chart-notes">
-	    Select the State, City to view the devices. 
+	    <div style="text-align:center;" id="aqi-display" class="img-rounded">
+	    </div> 
+
           </div>
         </div>
       </div>
@@ -663,8 +662,9 @@ $(tag).addClass('active_most');
 		</div>
 
           </div>
-          <div class="chart-notes">
-            Notes about this chart
+          <div class="chart-notes"> 
+               This chart shows the particle counts per hour. 
+	       This is experimental data for now.
           </div>
         </div>
       </div>
@@ -673,17 +673,17 @@ $(tag).addClass('active_most');
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Averages
+            Particle concentration distribution
           </div>
           <div class="chart-stage">
-	    <div id="pm25-chart2" class="bChart display">
+	    <div id="pm25-chart2" class="">
 	      <div class="title" class="reset" >PM 2.5
 	      </div>
 	      <span class="reset" style='display: none;'>  
 		Current filter: <span class='filter'></span>
 		
 	    </div>	    
-	    <div id="pm10-chart2" class="bChart display">
+	    <div id="pm10-chart2" class="">
 	      <div class="title">PM 10
 	      </div>
 		<span class='reset' style='display: none;'>  
@@ -692,34 +692,33 @@ $(tag).addClass('active_most');
           </div>
           <div class="chart-notes">
             This chart shows how frequently the same values occur (histogram).
-	    As you can see PM10 and PM25 have different concentration regions. Drag on the charts to show which of these values are prominent during different times of the day.
+	    Drag on the charts to show which of these values are prominent during different times of the day.
           </div>
         </div>
       </div>
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Averages
+            Particle count distribution
           </div>
           <div class="chart-stage">
 	    <div id="chart-ring-year" class="">
-
 	    </div>		  
+	    
+	    <div id="cs-chart2" class="">
+	      <div class="title">Small Particulate Matter (< 2.5 ug) </div>
+	    </div>
+	    <br/>	    
 
+	    <div id="cl-chart2" class="">
+	      <div class="title">Large Particulate Matter (> 2.5ug < 10 ug) </div>
+	    </div>
 
-		<div id="temp-chart2" class="bChart display">
-			<div class="title">Temperature</div>
-		</div>
-
-		<div id="humidity-chart2" class="bChart display">
-			<div class="title">Humidity</div>
-		</div>
-		  <br/>
-		   <p style=" width: auto; ">Need more data to compute averages!</p>
 		
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            This chart shows how frequently the same values occur (histogram).
+	    Drag on the charts to show which of these values are prominent during different times of the day.
           </div>
         </div>
       </div>
