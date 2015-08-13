@@ -324,9 +324,9 @@ var ui = function(configObj){
     
     function updateVis(datapoints){
 	//debugger;
-	//vis.processdata(datapoints, append=false);
-	//vis.setCharts();
-	//vis.renderAll();
+	processdata(datapoints, append=false);
+	setCharts();
+	renderAll();
 	
 	// in case we need city level filtering we can do that via imei.filter()
 	//processdata(datapoints, append);
