@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/aq/static/css/pace-theme-barber-shop-red.css"/>
     <link rel="stylesheet" href="/aq/static/css/filter.css"/>
     <link rel="stylesheet" href="/aq/static/css/dc.css"  /> 
+    <link rel="stylesheet" href="/aq/static/css/app.css"  /> 
     <link rel="stylesheet" href="/aq/static/leaflet/leaflet.css" />
     <!-- <link rel="stylesheet" href="/aq/static/chosen/chosen.min.css" />  -->
     <link rel="stylesheet" type="text/css" href="/aq/static/css/bootstrap-select.min.css" />
@@ -551,13 +552,7 @@ $(tag).addClass('active_most');
       <div class="col-sm-5">
         <div class="chart-wrapper">
           <div class="chart-title">
-	    <!--
-	    <div id="banner" style="text-align:right">
-	      Select a device to filter:
-	      <select id="devicePicker">
-	      </select>
-	    </div>	    
-	    -->
+	    Device Map with weather overlays
           </div>
           <div class="chart-stage">
             <div id="grid-1-1">
@@ -566,7 +561,10 @@ $(tag).addClass('active_most');
             </div>
           </div>
           <div class="chart-notes">
-            Click on the map markers or choose from the menu. Click on the other map layers to add to the map view.
+            Click on the map markers or choose from the menu. <br />
+	    To get a deeper context for the current day, use the map layers. One can view wind, rain, clouds and temperature indicators at a global scale. 
+	    <br/>
+	    Overlay data and imagery is from various agencies mentioned at the page bottom. 
           </div>
         </div>
       </div>
@@ -577,45 +575,53 @@ $(tag).addClass('active_most');
           </div>
           <div class="chart-stage">
             <div id="dashboard">
+
 	      <div id="pm10container" class="row" >
-		<div id="pm10-chart" class="col-xs-9"> 
-		</div> 
-		
-		<ul id="pm10-stats" class="list-inline stats pm10 col-xs-3"> 		
-		  <li id="pm10-max" class="max"> Max</li> 
-		  <li id="pm10-avg" class="avg"> Avg</li> 	      
-		  <li id="pm10-min" class="min"> Min</li> 		
-		</ul> 	      	      
-	      </div>
-	      
-	      <div id="pm25container" class="row" >
-		<div id="pm25-chart">
+		<div id="pm10-chart"  class="col-xs-10"> 
 		</div>
-		<div id="pm25-stats" class="stats"> 		
-		  <div id="pm25-max" class="max"> Max		
+		<div id="pm10-stats" class="stats col-xs-2"> 			
+		  <div id="pm10-max" class="max"> Max		
+		  </div> 		
+		  <div id="pm10-avg" class="avg"> Avg		
+		  </div> 	      
+		  <div id="pm10-min" class="min"> Min 		
 		  </div> 
+		</div> 
+	      </div>
+
+
+	      <div id="pm25container" class="row" >
+		<div id="pm25-chart"  class="col-xs-10"> 
+		</div>
+		<div id="pm25-stats" class="stats col-xs-2"> 			
+		  <div id="pm25-max" class="max"> Max		
+		  </div> 		
 		  <div id="pm25-avg" class="avg"> Avg		
 		  </div> 	      
 		  <div id="pm25-min" class="min"> Min 		
 		  </div> 
-		</div> 		  
-	      </div>
-	      <div id="tempcontainer" class="row" >
-		<div id="temp-chart" >
 		</div> 
-		<div id="temp-stats" class="stats"> 		
+	      </div>
+
+
+	      <div id="tempcontainer" class="row" >
+		<div id="temp-chart"  class="col-xs-10"> 
+		</div>
+		<div id="temp-stats" class="stats col-xs-2"> 			
 		  <div id="temp-max" class="max"> Max		
 		  </div> 		
 		  <div id="temp-avg" class="avg"> Avg		
 		  </div> 	      
 		  <div id="temp-min" class="min"> Min 		
-		  </div> 		
+		  </div> 
 		</div> 
 	      </div>
+
+
 	      <div id="humcontainer" class="row" >
-		<div id="hum-chart"  class="row"> 
+		<div id="hum-chart"  class="col-xs-10"> 
 		</div>
-		<div id="humidity-stats" class="stats"> 				
+		<div id="humidity-stats" class="stats col-xs-2"> 			
 		  <div id="humidity-max" class="max"> Max		
 		  </div> 		
 		  <div id="humidity-avg" class="avg"> Avg		
@@ -624,6 +630,7 @@ $(tag).addClass('active_most');
 		  </div> 
 		</div> 
 	      </div>
+
 	      
 	    </div>	            
           </div>

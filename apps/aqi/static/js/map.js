@@ -116,8 +116,7 @@ var Map = function() {
 	"Rain": OpenWeatherMap_Rain,
 	"Clouds": OpenWeatherMap_Clouds,
 	"Topography":Stamen_TopOSMFeatures,
-	"OverlayHybrid1": Stamen_TonerHybrid,
-	"OverlayHybrid2": MapQuestOpen_HybridOverlay,
+	"OverlayHybrid": Stamen_TonerHybrid,
 	"OverlayLines": Stamen_TonerLines,
 	"OverlayLabels": Stamen_TonerLabels,    
     };   

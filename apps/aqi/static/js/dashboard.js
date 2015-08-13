@@ -41,6 +41,10 @@
     var pm25Chart2 = dc.barChart('#pm25-chart2');
     var chartWidthDim = 320; 
     var chartHeightDim = 107; 
+
+    var linechartWidth = "90%"; //Math.round(Width*0.5); 
+    var linechartHeight = 107; 
+
     var aqiText, aqiDisplay, aqiCircle, aqiTextDate;
     
     var d3pm10max = d3.select("#pm10-max");
@@ -323,40 +327,31 @@
 
 
 function computeAverages(){		
-    d3pm10max.text(numberFormat(_.max(pm10AvgGroupByHour.all(), function (d){ return d.value.average}).value.average));
+    d3pm10max.text("Max: " + numberFormat(_.max(pm10AvgGroupByHour.all(), function (d){ return d.value.average}).value.average));
     
-    d3pm10min.text(numberFormat(_.min(pm10AvgGroupByHour.all(), function (d){ return d.value.average}).value.average)); 
+    d3pm10min.text("Min: " + numberFormat(_.min(pm10AvgGroupByHour.all(), function (d){ return d.value.average}).value.average)); 
 	    
-    d3pm10avg.text(numberFormat(_.reduce(_.map(pm10AvgGroupByHour.all(), function(d){return d.value.average; }), function(memo,num){ return memo+ num; }, 0)/(pm10AvgGroupByHour.size() === 0 ? 1 :pm10AvgGroupByHour.size())));
+    d3pm10avg.text("Avg: " + numberFormat(_.reduce(_.map(pm10AvgGroupByHour.all(), function(d){return d.value.average; }), function(memo,num){ return memo+ num; }, 0)/(pm10AvgGroupByHour.size() === 0 ? 1 :pm10AvgGroupByHour.size())));
 	   	    	  	    
-	    d3.select("#pm25-max")
-	    .text(numberFormat(_.max(pm25AvgGroupByHour.all(), function (d){ return d.value.average}).value.average));
+    d3pm25max.text("Max: " + numberFormat(_.max(pm25AvgGroupByHour.all(), function (d){ return d.value.average}).value.average));
 	
-	    d3.select("#pm25-min")
-	    .text(numberFormat(_.min(pm25AvgGroupByHour.all(), function (d){ return d.value.average}).value.average)); 
+    d3pm25min.text("Min: " + numberFormat(_.min(pm25AvgGroupByHour.all(), function (d){ return d.value.average}).value.average)); 
 	
-	d3.select("#pm25-avg")
-	    .text(numberFormat(_.reduce(_.map(pm25AvgGroupByHour.all(), function(d){return d.value.average; }), function(memo,num){ return memo+ num; }, 0)/(pm25AvgGroupByHour.size() === 0 ? 1 :pm10AvgGroupByHour.size())));
+    d3pm25avg.text("Avg: " + numberFormat(_.reduce(_.map(pm25AvgGroupByHour.all(), function(d){return d.value.average; }), function(memo,num){ return memo+ num; }, 0)/(pm25AvgGroupByHour.size() === 0 ? 1 :pm10AvgGroupByHour.size())));
 
-	    d3.select("#temp-max")
-	    .text(numberFormat(_.max(tempAvgGroupByHour.all(), function (d){ return d.value.average}).value.average));
+    d3tempmax.text("Max: " + numberFormat(_.max(tempAvgGroupByHour.all(), function (d){ return  d.value.average}).value.average));
 	
-	    d3.select("#temp-min")
-	    .text(numberFormat(_.min(tempAvgGroupByHour.all(), function (d){ return d.value.average}).value.average)); 
+    d3tempmin.text("Min: " + numberFormat(_.min(tempAvgGroupByHour.all(), function (d){ return d.value.average}).value.average)); 
 	
-	d3.select("#temp-avg")
-	    .text(numberFormat(_.reduce(_.map(tempAvgGroupByHour.all(), function(d){return d.value.average; }), function(memo,num){ return memo+ num; }, 0)/(tempAvgGroupByHour.size() === 0 ? 1 :pm10AvgGroupByHour.size())));
+    d3tempavg.text("Avg: " + numberFormat(_.reduce(_.map(tempAvgGroupByHour.all(), function(d){return d.value.average; }), function(memo,num){ return memo+ num; }, 0)/(tempAvgGroupByHour.size() === 0 ? 1 :pm10AvgGroupByHour.size())));
 
-	    d3.select("#humidity-max")
-	    .text(numberFormat(_.max(humidityAvgGroupByHour.all(), function (d){ return d.value.average}).value.average));
+    d3hummax.text("Max: " + numberFormat(_.max(humidityAvgGroupByHour.all(), function (d){ return d.value.average}).value.average));
+		    
+    d3hummin.text("Min: " + numberFormat(_.min(humidityAvgGroupByHour.all(), function (d){ return d.value.average}).value.average)); 
+    
+    d3humavg.text("Avg: " + numberFormat(_.reduce(_.map(humidityAvgGroupByHour.all(), function(d){return d.value.average; }), function(memo,num){ return memo+ num; }, 0)/(humidityAvgGroupByHour.size() === 0 ? 1 :pm10AvgGroupByHour.size())));
 	
-	    d3.select("#humidity-min")
-	    .text(numberFormat(_.min(humidityAvgGroupByHour.all(), function (d){ return d.value.average}).value.average)); 
-	
-	d3.select("#humidity-avg")
-	    .text(numberFormat(_.reduce(_.map(humidityAvgGroupByHour.all(), function(d){return d.value.average; }), function(memo,num){ return memo+ num; }, 0)/(humidityAvgGroupByHour.size() === 0 ? 1 :pm10AvgGroupByHour.size())));
-	
-	    };
+};
 
 
 
@@ -560,7 +555,7 @@ function computeAverages(){
 
 	    
 	    pm10Chart
-		.width(Math.round(Width*0.3)).height(chartHeightDim)
+		.width(Math.round(linechartWidth)).height(chartHeightDim)
 		.dimension(hourDim)
 		.group(pm10AvgGroupByHour)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
@@ -655,7 +650,7 @@ function computeAverages(){
 		
 
 		pm25Chart
-		    .width(Math.round(Width*0.5)).height(chartHeightDim)
+		    .width(Math.round(linechartWidth)).height(chartHeightDim)
 		    .dimension(hourDim)
 		    .group(pm25AvgGroupByHour)
 		    .margins({top: 10, right: 50, bottom: 30, left: 50})
@@ -695,7 +690,7 @@ function computeAverages(){
 		pm25Chart.xUnits(d3.time.hours);
 
 		tempChart
-		    .width(Math.round(Width*0.5)).height(chartHeightDim)
+		    .width(Math.round(linechartWidth)).height(chartHeightDim)
 		    .dimension(hourDim)
 		    .group(tempAvgGroupByHour)
 		    .margins({top: 10, right: 50, bottom: 30, left: 50})
@@ -728,7 +723,7 @@ function computeAverages(){
 		tempChart.xUnits(d3.time.hours);
 
 		humidityChart
-		    .width(Math.round(Width*0.5)).height(chartHeightDim)
+		    .width(Math.round(linechartWidth)).height(chartHeightDim)
 		    .dimension(hourDim)
 		    .group(humidityAvgGroupByHour)
 		    .margins({top: 10, right: 50, bottom: 30, left: 50})
