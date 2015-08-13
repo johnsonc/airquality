@@ -293,6 +293,7 @@ var ui = function(configObj){
 	$("#aqi-info").empty();
 	$("#no-response-panel").clone().appendTo("#aqi-info");
 	$("#aqi-info-wrapper").addClass("loading");
+	//$(".chart-stage").addClass("display-hide");
 	$("#aqi-info").removeClass("no-data");
 	$("#aqi-info").removeClass("no-response");
     }
