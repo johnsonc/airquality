@@ -191,11 +191,12 @@
 	dc.filterAll();
 	//datapointCF = new crossfilter([]);
 	datapointCF.remove();
-	console.log("DatapointCF size: "+ datapointCF.size());
-	//datapoints = newdatapoints;
+	initDimensions();
+	/*
 	datapointCF = new crossfilter(datapoints);
 	console.log("removed datapoints from crossfilter, new data: ");
 	console.log(datapoints);
+	*/
     }    
 
     function initDimensions() {		
@@ -215,7 +216,7 @@
 	    all = datapointCF.groupAll();	    
 	    dateDim = datapointCF.dimension(function(d) { return d.time;})
 	    minDate = dateDim.bottom(1)[0].time;
-	    maxDate = dateDim.top(1)[0].date;
+	    maxDate = dateDim.top(1)[0].time;
 	    prevDate = d3.time.day.offset(maxDate, -1);
 	    prevWeekDate = d3.time.day.offset(new Date(), -7);
 	    
@@ -952,7 +953,7 @@ function computeAverages(){
     this.initialLoad = initialLoad;
     this.processdata = processdata;
     this.initDimensions = initDimensions;
-    //this.datapoints = datapoints;
+    this.datapoints = datapoints;
     this.datapointCF = datapointCF;    
 //}
 
