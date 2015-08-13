@@ -1,0 +1,191 @@
+
+
+
+/*
+ * Full-page application style
+ */
+ /* new code 10th august 2015 for indiaspend header*/
+ /*.mydropdown1{display:block;} .mydropdown12{display:block;} */
+ /*.mydropdown12 {margin-top: -4px !important;}*/
+ #north-east-clear{float:none !important;}
+  #north-clear{float:none !important;}
+    .adjust{  margin-top: 31px; }
+ @media screen and (max-width: 960px)
+ {
+.adjust{
+margin-top: 0px;
+    margin-left: 43px !important;
+    border-bottom: 0px !important;
+}
+ #south-clear{float:left !important;background-color: inherit; color: white; border: none;}
+  #west-clear{float:left !important;background-color: inherit; color: white; border: none;}
+  #central-clear{float:left !important;background-color: inherit; color: white; border: none;}
+ #east-clear{float:left !important;background-color: inherit; color: white; border: none;}
+ #north-east-clear{float:left !important;background-color: inherit; color: white; border: none;}
+  #north-clear{float:left !important;background-color: inherit; color: white; border: none;}
+ .mydropdown12 {margin-top: 0px !important;}
+  .mainnav li ul li {
+    float: left !important;}
+	.mainnav li ul li a{width: auto !important;}
+ ul.mainnav.dropdown.nav.navbar-nav{margin-left: 3% !important;}
+ .dropdown li {
+    width: 100%  !important;
+   
+}
+ .masthead_head{display:none;}
+ .quoteleft {display:none;}
+  .quoteright{display:none;}
+  .header_inner {
+    width: auto !important;}
+	.logo {
+    width: auto !important ;}
+	
+	 
+	
+ }/*  do it here*/
+ #mybutton{display:none;} #mybutton1{display:none;} #mybutton2{display:none;} #mybutton3{display:none;} #mybutton4{display:none;} 
+ #mybutton5{display:none;}  #mybutton6{display:none;}  #mybutton7{display:none;} #mybutton8{display:none;}
+ .navbar .nav > li > a {
+  
+  color: white !important;
+  }
+  .dropdown-menu {
+  
+    display: inherit ; }
+/*.desktop-hide{display:none !important;}*/
+.wrapper {
+    
+    width: 983px !important; }
+/*.btn {
+    display: inline-block;
+    padding: 0px 6px !important;
+    margin-top: 4px  !important;	}  */
+ @media screen and (max-width: 960px)
+ { 
+/*  do it here*/
+ .mydropdown1{display:none;}  .mydropdown11{display:block;} .mydropdown22{display:none;} 
+ .mydropdown12{display:none;}  .mydropdown121{display:block;} .mydropdown221{display:block;}
+ .mydropdown33{display:none;} .mydropdown331{display:block;} 
+  .mydropdown44{display:none;} .mydropdown441{display:block;}
+.mydropdown55{display:none;} .mydropdown551{display:block;}  
+.mydropdown66{display:none;} .mydropdown661{display:block;}
+.mydropdown77{display:none;} .mydropdown771{display:block;} 
+.mydropdown88{display:none;} .mydropdown881{display:block;}     
+  #mybutton{display:block;}  #mybutton1{display:block;} #mybutton2{display:block;} #mybutton3{display:block;}#mybutton4{display:block;}
+ 	#mybutton5{display:block;} #mybutton6{display:block;} #mybutton7{display:block;} #mybutton8{display:block;}
+	#menu-item-subs{
+ 	
+    color: white;
+    background: #333333;
+    border: 0;
+}
+ .states-drop{    margin: 0px 0px 0px 32px  !important;
+  border-bottom: 0px !important;
+}
+.mainnav li ul {
+   
+    position: static !important;  }
+ .navbar-nav>li>.dropdown-menu {
+    /*margin-top: 17px !important;*/
+    margin-left: -43px !important;
+	    border-bottom: 0px !important;
+}
+  #menu-item-subs {background: #333333 !important;
+    color: white !important;
+    border: 0px !important;     font: inherit !important;}
+ .wrapper {
+     width: auto  !important;  }
+ .desktop-hide{display:block !important;}
+ } 
+ .mainnav li ul li a {
+ width: auto !important;  }
+ .form-control{margin-top: 0px !important;}
+ #menu-item-5780 {
+    background: url('http://www.indiaspend.com/wp-content/themes/advanced-newspaper/styles/image/home_hover.png')no-repeat;
+}
+#menu-item-5780 {
+   /* background: url('image/home_ab.png')no-repeat;*/
+    text-indent: -9999px;
+    width: 28px;
+    height: 26px;
+}
+
+#menu-item-5780 {
+    padding: 0 !important;
+    margin: 5px;
+}
+
+/*new code ends here*/
+body.application {
+  background: #f2f2f2;
+  padding: 0px 20px 0;
+}
+body.application > .container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+}
+body.application div[class^="col-"] {
+ /* padding-left: 5px;
+  padding-right: 5px; */
+}
+body.application div[class^="col-"] div[class^="col-"] {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+body.application hr {
+  border-color: #d7d7d7;
+  margin: 10px 0;
+}
+
+
+.navbar-inverse {
+  background-color: #3d4a57;
+  border-color: #333;
+}
+.navbar-inverse .navbar-nav > li > a,
+.navbar .navbar-brand {
+  color: #fbfbfb;
+  text-decoration: none;
+}
+
+.main-nav > li > a:hover {
+  border-bottom: 2px solid transparent;
+  -webkit-transition: border 300ms ease;
+  -o-transition: border 300ms ease;
+  transition: border 300ms ease;
+  border-bottom-color: white;
+}
+
+.return-link, .return-link:focus, .return-link:hover {
+  text-decoration: none;
+}
+
+.chart-wrapper {
+  background: #fff;
+  border: 1px solid #e2e2e2;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+.chart-wrapper .chart-title {
+  border-bottom: 1px solid #d7d7d7;
+  color: #666;
+  font-size: 14px;
+  font-weight: 200;
+  padding: 7px 10px 4px;
+}
+
+.chart-wrapper .chart-stage {
+  /*min-height: 240px;*/
+  overflow: hidden;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.chart-wrapper .chart-notes {
+  background: #fbfbfb;
+  border-top: 1px solid #e2e2e2;
+  color: #808080;
+  font-size: 12px;
+  padding: 8px 10px 5px;
+}
