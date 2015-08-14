@@ -2,6 +2,7 @@ from django.db import models
 from djangotoolbox.fields import ListField, DictField
 from djgeojson.fields import PointField
 import datetime
+from django_mongodb_engine.contrib import MongoDBManager
 
 class AQDevice(models.Model):
     #simpleid = models.CharField(max_length=512)
@@ -17,6 +18,7 @@ class AQDevice(models.Model):
     state =  models.CharField(max_length=128, null=True, blank=True )
     created_on = models.DateTimeField(auto_now_add=True, null=True)
     notes =  models.CharField(max_length=512, null=True, blank=True )
+    #live = models.BooleanField(null=True, blank=True )
     
     class Meta:
         ordering = ('created_on',)
@@ -39,6 +41,7 @@ class AQFeed(models.Model):
     lon =  models.CharField(max_length=24, null=True, blank=True)
     ip =  models.CharField(max_length=28, null=True, blank=True) # include IPv6
     created_on = models.DateTimeField(blank=True, null=True)    
+    objects = MongoDBManager()
 
     class Meta:
         ordering = ('-created_on',)

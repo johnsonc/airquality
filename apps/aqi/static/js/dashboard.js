@@ -1,6 +1,8 @@
 //var VisObj = function(){
 
-    var Width =  1200;   //$(window).width()
+var DeviceWidth  = $(window).width();
+console.log(DeviceWidth);
+    var Width =  1200;   
     var Height =   $(window).height() 
     
     var mapwidth = Math.round(Width*0.3);
@@ -222,6 +224,11 @@
 	dateDim = datapointCF.dimension(function(d) { return d.time;})
 	minDate = dateDim.bottom(1)[0].time;
 	maxDate = dateDim.top(1)[0].time;
+	console.log("minDate:");
+	console.log(minDate);
+	console.log("maxDate:");
+	console.log(maxDate);
+
 	prevDate = d3.time.day.offset(maxDate, -1);
 	prevWeekDate = d3.time.day.offset(new Date(), -7);
 	
