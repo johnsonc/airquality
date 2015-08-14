@@ -293,15 +293,35 @@ def aqfeed_detail(request, imei):
 @api_view(['GET'])
 def aqfeed_detail_time(request, imei, until_date):
     """
-    Retrieve, update or delete a feed instance.
+    Retrieve a feed instance according to time.
     """
     try:        
         if request.method == 'GET':
             #import pdb; pdb.set_trace();
             #ed = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
-            ed = datetime.datetime.strptime(until_date, '%d-%m-%Y')
-            sd = ed - datetime.timedelta(hours=24)         
-            aqfeed=[]
+
+            sd = datetime.datetime.strptime(until_date, '%d-%m-%Y')
+            today = datetime.datetime.now()
+            if today.date() == sd.date():
+                ed = today                
+                sd = ed - datetime.timedelta(hours=24)         
+            else:                                
+                ed = sd + datetime.timedelta(hours=24)                         
+
+            aqfeed = AQFeed.objects.raw_query(
+                { 
+                    "created_on": 
+                    {
+                        '$gte': sd,
+                        '$lte': ed
+                        }, 
+                    "imei":imei 
+                    }
+                ).order_by("created_on")
+            
+            #aqfeed=[]
+            #aqfeed = AQFeed.objects.filter(imei=imei).filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
+            # if given date has no entries, loop backwards till a proper date is found
             while (len(aqfeed) < 1):
                 aqfeed = AQFeed.objects.filter(imei=imei).filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
                 ed = sd
