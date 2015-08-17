@@ -30,20 +30,24 @@ var Map = function() {
 	opacity: 0.5
     });
 
-    var OpenStreetMap_Mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	maxZoom: 19,
-	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    });
-
     var OpenStreetMap_Mapquest = L.tileLayer('http://oatile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg', {
 	attribution : 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency',
 	subdomains : '1234'
     });
 
     var OpenTopoMap = L.tileLayer('http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-	maxZoom: 16,
+	minZoom: 1,
+	maxZoom: 8,
 	attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
     });
+
+
+    var OpenStreetMap_Mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	minZoom:9,
+	maxZoom: 19,
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+
 
     var NASAGIBS_ViirsEarthAtNight2012 = L.tileLayer('http://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}', {
 	attribution: 'Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System (<a href="https://earthdata.nasa.gov">ESDIS</a>) with funding provided by NASA/HQ.',
@@ -126,14 +130,14 @@ var Map = function() {
 	dd = new Date();	    
 	if ( dd.getHours() < 18 )
 	{ 
-	    return [OpenTopoMap, Stamen_TonerLabels, OpenMapSurfer_AdminBounds];
+	    return [OpenStreetMap_Mapnik, OpenTopoMap, Stamen_TonerLabels, OpenMapSurfer_AdminBounds];
 	}
 	else {
-	    return [NASAGIBS_ViirsEarthAtNight2012, Stamen_TonerLabels];
+	    return [OpenStreetMap_Mapnik, NASAGIBS_ViirsEarthAtNight2012, Stamen_TonerLabels];
 	}
     };
 
-    var thismap =  L.map('mappa', {
+    thismap =  L.map('mappa', {
 	center: ["21.15","79.09"],  //[20,72],
 	zoom: 4,
 	layers: getLayers(), 
@@ -148,32 +152,61 @@ var Map = function() {
 	marker = L.marker([d.lat,d.lon],{
 	    'imei':d.imei
 	}).addTo(thismap);
-		
+	
+	/*
 	marker.on('mouseover', function(e) {
 	    //open popup;	    
 	    var popup = L.popup()
-		.setLatLng(e.latlng) 
+	    popup.offset = new L.Point(0, -50);
+	    popup
+		.setLatLng(e.latlng)
 		.setContent("<b>" + d.title + "</b><hr/>"+ d.desc + "<hr/>" + d.city + ","+d.state)
 		.openOn(thismap);
-	});
+
+		});*/
+
+	popupText = "<b>" + d.title + "</b><hr/>"+ d.desc + "<hr/>" + d.city + ","+d.state;
+	marker.bindPopup(popupText, { offset: new L.Point(0, -27) });
 	
-	
-	//marker.bindPopup("<b>" + d.title + "</b><hr/>"+ d.desc + "<hr/>" + d.city + ","+d.state);
-	//"<b>" + d.title + "</b><hr/><br>"+ d.desc + "");
-	/*
-	marker.on('mouseout', function(d){ 
+	marker.on('mouseover', function(d){ 
+	    console.log("MouseOver popup");
 	    this.openPopup();
-	    setTimeout(this.closePopup(), 3000);
+	    //setTimeout(this.closePopup(), 3000);
 	});			
-	*/
-	
+		
 	marker.on('click', function(d){ 
-	    imei.filterAll();
-	    imei.filter(this.options.imei);
-	    console.log(this.options.imei);
-	});			
-	   
+	    //map.showDevice(AQIVis.getDevice(this.options.imei));
+	    aqiVizObj.deviceClicked(this.options.imei);
+	    $("#aqi-display").removeClass("display-none");	    
+	    //imei.filterAll();
+	    //imei.filter(this.options.imei);
+	    //console.log(this.options.imei);
+	});				   
     }
+
+    /*
+    var lastTileConf=[];
+
+    thismap.on("zoomend", function (e) { 
+	console.log("ZOOMEND", e); 
+
+	//swtichLayer()
+	//lastTileConf
+    });
+
+
+    function switchLayer(destLayer){ 
+	for (var base in baseMaps) { 	    
+            if (map.hasLayer(baseMaps[base]) && baseMaps[base] != destLayer) { 
+		map.removeLayer(baseMaps[base]); 
+		lastTileConf.push(baseMaps[base]);
+            } 
+	}
+	map.addLayer(destLayer); 
+    }; 
+
+    */
+
 
     function markDevices(devices){
 	_.each(devices, function(device){ 

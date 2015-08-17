@@ -1,9 +1,8 @@
 //var VisObj = function(){
 
 var DeviceWidth  = $(window).width();
-console.log(DeviceWidth);
-    var Width =  1200;   
-    var Height =   $(window).height() 
+var Width =  1200;   
+var Height =   $(window).height() 
     
     var mapwidth = Math.round(Width*0.3);
     mapheight = 600,
@@ -70,13 +69,65 @@ console.log(DeviceWidth);
     var d3humavg = d3.select("#humidity-avg");
 
 
-    var radius = 50;	
-    var aqiDisplay = d3.select('#aqi-display')
-	.append('svg')
-	.attr('width', radius*4)
-	.attr('height', (radius*2)+12)	    
-	.append("g");	    
-    
+var margin = 30,
+w = 200 - margin * 2,
+h = w,
+radius = w/2,
+strokeWidth = 4,
+hyp2 = Math.pow(radius, 2),
+nodeBaseRad = 5;
+
+var aqiradius = 50;
+var AQIDisp = d3.select('#aqi-display')
+    .append('svg')
+    .attr('width', w)
+    .attr('height', h+12);
+var aqiDisplay = AQIDisp
+    .append("g");
+    //.attr('transform', 'translate(' + '' + ',' + margin + ')');	    
+
+//d3.select('#aqi-display2')
+//    .append('svg')
+ //   .attr('width', w)
+ //   .attr('height', h)	    
+
+
+var aqiIndicators = [
+    {"id":1,
+     "remark":"Good",
+     "color":"#00B050",
+     "uplimit":50,
+     "description":"Minimal impact"},
+    {"id":2,
+     "remark":"Satisfactory",
+     "color":"#92D050",
+     "uplimit":100,
+     "description":"Minor breathing discomfort to sensitive people"},
+    {"id":3,
+     "remark":"Moderate",
+     "color":"#FFFF00",
+     "uplimit":200,
+     "description":"Breathing discomfort to the people with lung, asthma and heart diseases"},
+    {"id":4,
+     "remark":"Poor",
+     "color":"#FF9900",
+     "uplimit":300,
+     "description":"Breathing discomfort to most people on prolonged exposure"},
+    {"id":5,
+     "remark":"Very Poor",
+     "color":"#FF0000",
+     "uplimit":400,
+     "description":"Respiratory illness on prolonged exposure"},
+    {"id":6,
+     "remark":"Severe",
+     "color":"#C00000",
+     "uplimit":500,
+     "description":"Affects healthy people and seriously impacts those with existing diseases"}
+]
+
+var aqiDisplay2 = AQIDisp
+    .append("g");
+    //.attr('transform', 'translate(' + '0' + ',' + '0' + ')');	    
 
     function streamStart(){
     if (timerId) return;
@@ -167,7 +218,7 @@ console.log(DeviceWidth);
     function getAQI(t){
 	pm25aqi = getpm25AQI(t.pm25);
 	pm10aqi = getpm10AQI(t.pm10);
-	if (pm10aqi <= pm25aqi) { return {'aqi': pm10aqi, 'pollutant':'pm10'  }; } 
+	if (pm10aqi >= pm25aqi) { return {'aqi': pm10aqi, 'pollutant':'pm10'  }; } 
 	else { return {'aqi': pm25aqi, 'pollutant':'pm25' };} 
     }
 
@@ -879,9 +930,9 @@ function computeAverages(){
 		    .data([data])
 		    .enter()
 		    .append("circle")
-		    .attr("r", radius)
-		    .attr("cx", radius)
-		    .attr("cy", radius)
+		    .attr("r", aqiradius)
+		    .attr("cx", aqiradius)
+		    .attr("cy", aqiradius)
 		    .attr("fill",  function (d) {
 			// AQI Color Standards
 			a = Math.round(d.value.average);
@@ -898,8 +949,8 @@ function computeAverages(){
 		    .data([data])
 		    .enter()
 		    .append("text")
-		    .attr("x", radius)
-		    .attr("y", radius+8)
+		    .attr("x", aqiradius)
+		    .attr("y", aqiradius+8)
 		    .attr("text-anchor", "middle")
 		    .text(function(d){ 
 			return numberFormat(d.value.average);
@@ -907,24 +958,72 @@ function computeAverages(){
 		    .attr("font-family", "'Aladin', cursive")
 		    .attr("font-size", function(d) { return (d.value.average > 999) ? "27px":"40px";})
 		    .attr("font-style", "bold")
-		    .attr("fill", "#f0fcfc");	
-		/*
-		//debugger;
-		aqiTextDate = aqiDisplay.selectAll("text")
-		    .data([data])
-		    .enter()
-		    .append("text")
-		    .attr("x", radius)
-		    .attr("y", radius-8)
-		    .attr("text-anchor", "middle")
-		    .text(function(d){
-			return dateFormat(d.key);
+		    .attr("fill",   function (d) {
+			// AQI Color Standards
+			a = Math.round(d.value.average);
+			var c = ['#c00000', '#ff0000', '#ff9900', '#ffff00',  '#92d050', '#00b050' ];
+			if(a < 50 ){ return c[0];}
+			else if(a < 101){ return c[1];}
+			else if(a < 201){ return c[2];}		    
+			else if(a < 301){ return c[3];}			    
+			else if(a < 401){ return c[4];}			    
+			else if(a > 400){ return c[5];}			    
+		    });	
+		
+		function randomNodes(n, cs, cl) {
+		    var mydata = [],
+		    range = d3.range(n);		    
+		    for (var i = range.length - 1; i >= 0; i--) {
+			mydata.push({
+			    rad: Math.floor(Math.random() * 3)
+			});
+		    }
+		    return mydata;
+		}
+		
+		nodeData = randomNodes(80);
+
+		force = d3.layout.force()
+		    .charge(-3)
+		    .gravity(0.05)
+		    .nodes(nodeData)
+		    .friction(1)
+		    .size([w,h]);
+		
+		var nodes =  aqiDisplay2.selectAll('.nodes')
+		    .data(nodeData)
+		    .enter().append('circle')
+		    .attr({
+			class: 'nodes',
+			r: function (d) { return d.rad + nodeBaseRad; },
+			fill: "rgba(30,30,30,0.2)",
+			//stroke:'#000000'
 		    })
-		    .attr("font-family", "'Lato', sans-serif")
-		    .attr("font-size", "12px")
-		    .attr("font-style", "bold")
-		    .attr("fill", "#555555");		    
-		*/
+
+		function pythag(r, b, coord) {
+		    r += nodeBaseRad;
+    // force use of b coord that exists in circle to avoid sqrt(x<0)
+		    b = Math.min(w - r - strokeWidth, Math.max(r + strokeWidth, b));
+		    var b2 = Math.pow((b - radius), 2),
+		    a = Math.sqrt(hyp2 - b2);
+    // radius - sqrt(hyp^2 - b^2) < coord < sqrt(hyp^2 - b^2) + radius
+		    coord = Math.max(radius - a + r + strokeWidth,
+				     Math.min(a + radius - r - strokeWidth, coord));
+
+		    return coord;
+		}
+
+		function tick() {
+		    //debugger;
+		    nodes.attr('cx', function (d) { return d.x = pythag(d.rad, d.y, d.x); })
+			.attr('cy', function (d) { return d.y = pythag(d.rad, d.x, d.y); });
+		}
+
+		nodes.call(force.drag);
+		
+		force.on('tick', tick)
+		    .start();
+
 	    };
 	    
 	    initAQIChart();
