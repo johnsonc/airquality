@@ -6,6 +6,89 @@
 
 
 
+.aqi-disp{
+    box-shadow: 2px;    
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 300px; /* from 56px to 60px */
+  height: 120px; /* from 20px to 26px */
+  padding: 3px;
+  background-color: white;
+  border-radius: 18px;
+  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  background-image: -webkit-linear-gradient(top, #eeeeee, white 100px);
+  background-image: -moz-linear-gradient(top, #eeeeee, white 100px);
+  background-image: -o-linear-gradient(top, #eeeeee, white 100px);
+  background-image: linear-gradient(to bottom, #eeeeee, white 100px);
+}
+
+.switch-label {
+  position: static; /* from relative to static */
+  display: block;
+  height: 50px; /* from inherit to 18px */
+  font-size: 24px;
+  text-transform: uppercase;
+  background: #eceeef;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
+  -webkit-transition: 0.15s ease-out;
+  -moz-transition: 0.15s ease-out;
+  -o-transition: 0.15s ease-out;
+  transition: 0.15s ease-out;
+  -webkit-transition-property: opacity background;
+  -moz-transition-property: opacity background;
+  -o-transition-property: opacity background;
+  transition-property: opacity background;
+}
+
+#aqiDate
+{
+    float:right;
+}
+
+.switch-label:before, .switch-label:after {
+  position: absolute;
+  top: 40%;
+  margin-top: -.5em;
+  line-height: 1;
+  -webkit-transition: inherit;
+  -moz-transition: inherit;
+  -o-transition: inherit;
+  transition: inherit;
+}
+
+.switch-label:before {
+  content: attr(aqi);
+  right: 11px;
+  color: #aaa;
+  text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+}
+
+.switch-handle {
+  position: absolute;
+  top: -10px;
+  left: -30px;
+  width: 150px;
+  height: 150px;
+  background: white;
+  border-radius: 90px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+  background-image: -webkit-linear-gradient(top, white 40%, #f0f0f0);
+  background-image: -moz-linear-gradient(top, white 40%, #f0f0f0);
+  background-image: -o-linear-gradient(top, white 40%, #f0f0f0);
+  background-image: linear-gradient(to bottom, white 40%, #f0f0f0);
+  -webkit-transition: left 0.15s ease-out;
+  -moz-transition: left 0.15s ease-out;
+  -o-transition: left 0.15s ease-out;
+  transition: left 0.15s ease-out;
+}
+
+
+
 .ghost-center {
   position: relative;
 }
