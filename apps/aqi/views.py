@@ -378,10 +378,10 @@ def aqdatapoint(request):
         d['count_small'] = request.GET['s']         
         d['created_on'] = datetime.datetime.now()
         
-        if (d['pm25'] > 1500) or (d['pm10'] > 1500 ):            
-            f.write("\n Invalid data:" + str(d))
-            f.close()                    
-            return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
+        #if (d['pm25'] > 1500) or (d['pm10'] > 1500 ):            
+        #    f.write("\n Invalid data:" + str(d))
+        #    f.close()                    
+        #    return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
         
         try:
             #import pdb; pdb.set_trace()        
