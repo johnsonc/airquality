@@ -10,8 +10,8 @@ class AQDevice(models.Model):
     url =  models.TextField()
     imei = models.CharField(max_length=128)
     desc = models.TextField(null=True, blank=True)
-    lat =  models.CharField(max_length=24,  null=True, blank=True )
-    lon =  models.CharField(max_length=24, null=True, blank=True )
+    #lat =  models.CharField(max_length=24,  null=True, blank=True )
+    #lon =  models.CharField(max_length=24, null=True, blank=True )
     geom = PointField()
     ip =  models.CharField(max_length=28, null=True, blank=True) # include IPv6
     city =  models.CharField(max_length=512, null=True, blank=True )
