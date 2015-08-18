@@ -342,8 +342,7 @@ def aqdatapoint(request):
     f = open('/tmp/aqrequest.log', 'a+')
     f.write("\n" + str(deviceip))
     
-    if request.method == "GET":        
-        
+    if request.method == "GET":                
         d={}
         d['imei'] = request.GET['i']
         d['humidity'] = request.GET['h']
@@ -351,9 +350,14 @@ def aqdatapoint(request):
         d['pm10'] = request.GET['10']
         d['pm25'] = request.GET['25']
         d['count_large'] = request.GET['l']
-        d['count_small'] = request.GET['s'] 
+        d['count_small'] = request.GET['s']         
+        d['created_on'] = datetime.datetime.now()
         
-
+        if (d['pm25'] > 1500) or (d['pm10'] > 1500 ):            
+            f.write("\n Invalid data:" + str(d))
+            f.close()                    
+            return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
+        
         try:
             #import pdb; pdb.set_trace()        
             try:            
@@ -399,7 +403,6 @@ def aqdatapoint(request):
             import sys
             f.write("\nERROR: " + str(sys.exc_info()))
 
-        d['created_on'] = datetime.datetime.now()
         f.write("\nAQFeed:" + str(d))
         f.close()        
         serializer = AQFeedSerializer(data=d)
