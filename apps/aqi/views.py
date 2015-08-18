@@ -1,4 +1,3 @@
-
 # Create your views here.
 
 import json
@@ -34,7 +33,6 @@ def aqdevice_list(request):
         aqdevices = AQDevice.objects.all()
         serializer = AQDeviceSerializer(aqdevices, many=True)
         return Response(serializer.data)
-
     elif request.method == 'POST':
         data = JSONParser().parse(request)
         serializer = AQDeviceSerializer(data=data)
@@ -95,7 +93,6 @@ def displayConfig(request):
             return Response(config)     
     except:
         return Response(status=404)    
-
 
 @csrf_exempt
 @api_view(['GET'])
@@ -372,10 +369,10 @@ def aqdatapoint(request):
                 #even if call fails, fail silently since device streams every 5 min.
                 ipdetails = requests.get("http://ip-api.com/json/"+ deviceip ).json()
                 aqd.ip = deviceip
-                aqd.lat = ipdetails['lat']
-                aqd.lon = ipdetails['lon']            
-                aqd.geom = {u'type': u'Point', u'coordinates': [aqd.lon, aqd.lat]}
-
+                #aqd.lat = ipdetails['lat']
+                #aqd.lon = ipdetails['lon']            
+                # Until GPS coarse loc is available, turn off overwriting            
+                #aqd.geom = {u'type': u'Point', u'coordinates': [ipdetails['lon'], ipdetails['lat']}
                 # 3. Update state, city details if device changes locations
                 try:
                     # 4. Check and get state in incoming IP
@@ -392,13 +389,13 @@ def aqdatapoint(request):
                 #after ascertaining city and state objects, save aqd 
                 aqd.city = c.name
                 aqd.state = s.name
-                aqd.save()
+                # Until GPS coarse loc is available, turn off overwriting            
+                #aqd.save()
                 f.write("\nAQD:" + str(aqd.__dict__))
                 #write to log if loc of AQD changed.
-
             d['ip'] = deviceip            
-            d['lat'] = aqd.lat
-            d['lon'] = aqd.lon            
+            d['lat'] = aqd.data['geom']['coordinates'][1]   #ipdetails['lat']
+            d['lon'] = aqd.data['geom']['coordinates'][0]   #ipdetails['lon']   
         except:       
             import sys
             f.write("\nERROR: " + str(sys.exc_info()))
@@ -410,7 +407,6 @@ def aqdatapoint(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 def getState(ipdetails):
@@ -473,7 +469,6 @@ def aqdatapointsfordevice(request, device_imei, start_time, end_time):
                 return Response({'error': "Device not found"}, status=status.HTTP_400_BAD_REQUEST)                     
         except:
             return Response({'error': "Error in finding device. Is the device imei proper or registered?"}, status=status.HTTP_400_BAD_REQUEST)
-
         try:
             sd = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
             ed = datetime.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')            
