@@ -2,12 +2,12 @@
 
 var DeviceWidth  = $(window).width();
 var Width =  1200;   
-var Height =   $(window).height() 
+var Height = $(window).height() 
     
-    var mapwidth = Math.round(Width*0.3);
-    mapheight = 600,
-    centered = true;
-    zoomRender = false;
+var mapwidth = Math.round(Width*0.3);
+mapheight = 600,
+centered = true;
+zoomRender = false;
     
     var varWidth = Math.round(Width*0.5);
     var varHeight = Math.round(Width*0.3);    
@@ -205,15 +205,15 @@ var aqiDisplay2 = AQIDisp
 	    d3.scale.linear().domain([61, 90]).range([101,200]),
 	    d3.scale.linear().domain([91, 120]).range([201,300]),
 	    d3.scale.linear().domain([121, 250]).range([301,400]),
-	    d3.scale.linear().domain([250, 350]).range([401,500]),
+	    d3.scale.linear().domain([250, 500]).range([401,500]),
 	];
 	
 	if(d < 31) { return scale[0](d); } 
 	if(d < 61) { return scale[1](d); }			    
 	if(d < 91){ return scale[2](d);  }			    
 	if(d < 121){return scale[3](d);  }			    
-	if(d < 251){return scale[3](d);  }			    
-	if(d >= 251){ return scale[4](d); }			    
+	if(d < 251){return scale[4](d);  }			    
+	if(d >= 251){ return scale[5](d); }			    
     }
 
     function getAQI(t){
@@ -228,7 +228,7 @@ var aqiDisplay2 = AQIDisp
 	    t['time'] = aqparseDate(t['created_on'].substr(0,16));
 	    t['index'] = i;
 	    a = getAQI(t);
-	    t['aqi'] = a.aqi;
+	    t['aqi'] = _.min([a.aqi, 500]); 
 	    t['pollutant'] = a.pollutant;
 	    t['hour'] = d3.time.hour(t.time);
 	    //t['day']= t.time.getHour();
@@ -272,17 +272,25 @@ var aqiDisplay2 = AQIDisp
 	//     datapointCF.remove();
 	// }
 	datapointCF = crossfilter(datapoints);
-	all = datapointCF.groupAll();	    
+	all = datapointCF.groupAll();
 	dateDim = datapointCF.dimension(function(d) { return d.time;})
 	minDate = dateDim.bottom(1)[0].time;
 	maxDate = dateDim.top(1)[0].time;
+	if (d3.time.day(new Date())==d3.time.day(maxDate)){
+	    prevDate = d3.time.day.offset(maxDate, -1);	    
+	}
+	else{
+	    prevDate = d3.time.day(maxDate);
+	    maxDate = d3.time.day.offset(prevDate, +1);
+	}
+	prevWeekDate = d3.time.day.offset(new Date(), -7);
+
 	console.log("minDate:");
 	console.log(minDate);
 	console.log("maxDate:");
 	console.log(maxDate);
-
-	prevDate = d3.time.day.offset(maxDate, -1);
-	prevWeekDate = d3.time.day.offset(new Date(), -7);
+	console.log("prevDate:");
+	console.log(prevDate);
 	
 	//datapointIndex = datapointCF.dimension(function(d){ return d.index; });
 	//datapointIndexs = datapointIndex.group();
@@ -423,7 +431,7 @@ function computeAverages(){
 
 function getAQIDesc(v){
     for (var i in aqiIndicators){
-	if (v <= aqiIndicators[i].uplimit){
+	if (v < aqiIndicators[i].uplimit+1){
 	    return aqiIndicators[i];
 	}		    
     }
@@ -522,7 +530,6 @@ function setCharts(){
 		    .transitionDuration(500)
 		    .y(d3.scale.linear().domain([0, 60]))
 		    .x(d3.time.scale().domain([prevDate,maxDate]))
-	            .elasticY(true)	   	    
 		    .renderHorizontalGridLines(true)
 		    .round(dc.round.floor)
 		    .alwaysUseRounding(true)
@@ -556,7 +563,6 @@ function setCharts(){
 		    .renderHorizontalGridLines(true)
 		    .y(d3.scale.linear().domain([0, 100]))
 		    .x(d3.time.scale().domain([prevDate,maxDate]))
-	            .elasticY(true)	   	    
 		    .valueAccessor(function(p) {
 			return p.value.average;
 		    })
@@ -1091,7 +1097,7 @@ function setCharts(){
 	    */
 	var aqiTextDate = d3.select("#aqiDate")
 	    .data([data])
-	    .html(function(d){ return dateFormat(d.key);});
+	    .html(function(d){ return "on: " + dateFormat(d.key);});
 
 	var aqiTextRemark = d3.select(".switch-label")
 	    .data([data])

@@ -13,7 +13,7 @@
  @media screen and (max-width: 960px)
  {
 .adjust{
-margin-top: 0px;
+    margin-top: 0px;
     margin-left: 43px !important;
     border-bottom: 0px !important;
 }
