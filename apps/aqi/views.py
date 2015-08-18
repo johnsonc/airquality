@@ -384,7 +384,7 @@ def aqdatapoint(request):
         #    return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
         
         try:
-            import pdb; pdb.set_trace()        
+            #import pdb; pdb.set_trace()        
             try:            
                 deviceip = request.GET['ip']
             except:
