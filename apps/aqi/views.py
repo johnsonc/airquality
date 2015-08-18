@@ -209,7 +209,16 @@ def aqfeed_list(request):
     if request.method == 'GET':
         ed = datetime.datetime.now()
         sd = ed - datetime.timedelta(days=2)         
-        aqfeeds = AQFeed.objects.filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
+        aqfeeds = AQFeed.objects.raw_query(
+            { 
+                "created_on": 
+                {
+                    '$gte': sd,
+                    '$lte': ed
+                    }, 
+                }
+            ).order_by("-created_on")
+
         serializer = AQFeedSerializer(aqfeeds, many=True)
         return Response(serializer.data)
 
@@ -229,7 +238,17 @@ def aqfeed_detail(request, imei):
     try:        
         ed = datetime.datetime.now()
         sd = ed - datetime.timedelta(days=7)         
-        aqfeed = AQFeed.objects.filter(imei=imei).filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
+        aqfeed = AQFeed.objects.raw_query(
+                { 
+                    "created_on": 
+                    {
+                        '$gte': sd,
+                        '$lte': ed
+                        }, 
+                    "imei":imei 
+                    }
+                ).order_by("-created_on")
+
     except AQFeed.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
@@ -266,7 +285,6 @@ def aqfeed_detail_time(request, imei, until_date):
         if request.method == 'GET':
             #import pdb; pdb.set_trace();
             #ed = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
-
             sd = datetime.datetime.strptime(until_date, '%d-%m-%Y')
             today = datetime.datetime.now()
             if today.date() == sd.date():
@@ -275,7 +293,7 @@ def aqfeed_detail_time(request, imei, until_date):
             else:                                
                 ed = sd + datetime.timedelta(hours=24)                         
 
-            aqfeed = AQFeed.objects.raw_query(
+            aqfeeds = AQFeed.objects.raw_query(
                 { 
                     "created_on": 
                     {
@@ -284,16 +302,26 @@ def aqfeed_detail_time(request, imei, until_date):
                         }, 
                     "imei":imei 
                     }
-                ).order_by("created_on")
+                ).order_by("-created_on")
             
             #aqfeed=[]
             #aqfeed = AQFeed.objects.filter(imei=imei).filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
             # if given date has no entries, loop backwards till a proper date is found
-            while (len(aqfeed) < 1):
-                aqfeed = AQFeed.objects.filter(imei=imei).filter(created_on__gte=sd).filter(created_on__lte=ed).order_by('created_on')
-                ed = sd
+            while (len(aqfeeds) < 1):
+                ed = sd.combine(sd.date(), datetime.time(0,0))
                 sd = ed - datetime.timedelta(hours=24)                                         
-            serializer = AQFeedSerializer(aqfeed, many=True)
+                aqfeeds = AQFeed.objects.raw_query(
+                { 
+                    "created_on": 
+                    {
+                        '$gte': sd,
+                        '$lte': ed
+                        }, 
+                    "imei":imei 
+                    }
+                ).order_by("-created_on")
+
+            serializer = AQFeedSerializer(aqfeeds, many=True)
             return Response(serializer.data)    
         
     except AQFeed.DoesNotExist:
@@ -452,7 +480,15 @@ def aqdatapointintime(request, start_time, end_time):
             ed = datetime.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
         except:
             return Response({'error': "Format of date should be YYYY-MM-DDTHH:MM:SS, eg. 2015-06-22T17:03:00"}, status=status.HTTP_400_BAD_REQUEST)
-        aqdatapoints = AQFeed.objects.filter(created_on__gte=sd).filter(created_on__lte=ed)
+        aqdatapoints = AQFeed.objects.raw_query(
+            { 
+                "created_on": 
+                {
+                    '$gte': sd,
+                    '$lte': ed
+                    }, 
+                }
+            ).order_by("-created_on")
         serializer = AQFeedSerializer(aqdatapoints, many=True)
         return Response(serializer.data)
 
@@ -474,6 +510,16 @@ def aqdatapointsfordevice(request, device_imei, start_time, end_time):
             ed = datetime.datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')            
         except:
             return Response({'error': "Format of date should be YYYY-MM-DDTHH:MM:SS, eg. 2015-06-22T17:03:00"}, status=status.HTTP_400_BAD_REQUEST)
-        aqdatapoints = AQFeed.objects.filter(imei=device_imei).filter(created_on__gte=sd).filter(created_on__lte=ed)
+
+        aqdatapoints = AQFeed.objects.raw_query(
+            { 
+                "created_on": 
+                {
+                    '$gte': sd,
+                    '$lte': ed
+                    }, 
+                }
+            ).order_by("-created_on")
+
         serializer = AQFeedSerializer(aqdatapoints, many=True)
         return Response(serializer.data)
