@@ -9,14 +9,19 @@ class AQDeviceSerializer(serializers.Serializer):
     url =  serializers.CharField(required=False, allow_blank=True,max_length=1024)
     imei = serializers.CharField(max_length=128)
     desc = serializers.CharField(required=False, allow_blank=True)
-    lat =  serializers.CharField(max_length=24, required=False, allow_blank=True)
-    lon =  serializers.CharField(max_length=24, required=False, allow_blank=True)
+    lat = serializers.SerializerMethodField('getlat')
+    lon = serializers.SerializerMethodField('getlon') 
     ip =  serializers.CharField(max_length=28, required=False, allow_blank=True)
     city =  serializers.CharField(max_length=512, required=False, allow_blank=True)
-    state =  serializers.CharField(max_length=128, required=False, allow_blank=True)
-
-    #geom = serializers.PointField()
+    state = serializers.CharField(max_length=128, required=False, allow_blank=True)
+    geom = gs.GeometryField()
     created_on = serializers.DateTimeField(required=False)        
+
+    def getlat(self, instance):
+        return instance.geom['coordinates'][1]
+
+    def getlon(self, instance):
+        return instance.geom['coordinates'][0]
 
     def create(self, validated_data):
         """
@@ -38,7 +43,7 @@ class AQDeviceSerializer(serializers.Serializer):
         instance.ip = validated_data.get('ip', instance.ip)
         instance.city = validated_data.get('city', instance.city)
         instance.state = validated_data.get('state', instance.state)
-        #instance.geom = validated_data.get('geom', instance.geom)
+        instance.geom = validated_data.get('geom', instance.geom)
         instance.created_on = validated_data.get('created_on', instance.created_on)
         instance.save()
         return instance
