@@ -157,6 +157,18 @@ INSTALLED_APPS = (
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
+REST_FRAMEWORK = {
+    # specifying the renderers
+    'DEFAULT_RENDERER_CLASSES': (
+        'drf_ujson.renderers.UJSONRenderer',
+        'rest_framework_csv.renderers.CSVRenderer',
+        ),
+
+    'DEFAULT_PARSER_CLASSES': (
+        'drf_ujson.parsers.UJSONParser',
+        ),
+    }
+
 
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (19.0, 77.0),

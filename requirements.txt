@@ -13,3 +13,5 @@ django-leaflet
 djgeojson
 django-cors-headers
 python-geoip
+drf_ujson
+djangorestframework-csv
