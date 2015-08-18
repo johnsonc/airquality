@@ -384,7 +384,7 @@ def aqdatapoint(request):
         #    return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
         
         try:
-            #import pdb; pdb.set_trace()        
+            import pdb; pdb.set_trace()        
             try:            
                 deviceip = request.GET['ip']
             except:
@@ -419,11 +419,11 @@ def aqdatapoint(request):
                 aqd.state = s.name
                 # Until GPS coarse loc is available, turn off overwriting            
                 #aqd.save()
-                f.write("\nAQD:" + str(aqd.__dict__))
+                #f.write("\nAQD:" + str(aqd.__dict__))
                 #write to log if loc of AQD changed.
-            d['ip'] = deviceip            
-            d['lat'] = aqd.data['geom']['coordinates'][1]   #ipdetails['lat']
-            d['lon'] = aqd.data['geom']['coordinates'][0]   #ipdetails['lon']   
+            d['ip'] = deviceip             #aqd.ip
+            d['lat'] = ipdetails['lat']    #aqd.geom['coordinates'][1]   
+            d['lon'] = ipdetails['lon']    #aqd.geom['coordinates'][0]   
         except:       
             import sys
             f.write("\nERROR: " + str(sys.exc_info()))
