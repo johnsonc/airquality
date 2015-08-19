@@ -22,6 +22,7 @@ zoomRender = false;
     var mmm;
     var parseDate = d3.time.format("%x %H:%M").parse;
     aqparseDate = d3.time.format("%Y-%m-%dT%H:%M").parse;
+    aqparseDateUtc = d3.time.format.utc("%Y-%m-%dT%H:%M").parse;
     var datapoint;
     var datapoints;
     var datapointCF;
@@ -227,7 +228,7 @@ var aqiDisplay2 = AQIDisp
 	tmpdatapoints.forEach(function(t,i){
 	    var tmp1  =  t['pm10'];
 	    t['pm10']   =  t['count_large'];
-	    t['count_large']   =  tmp1;
+	    t['count_large']  =  tmp1;
 	    tmp1  =  t['pm25'];
 	    t['pm25']   =  t['count_small'];
 	    t['count_small']   =  tmp1;	
@@ -237,8 +238,9 @@ var aqiDisplay2 = AQIDisp
 	      t['count_small']   =  tmp1;
 	      t['pm25']   =  tmp2;	   
 	    */
-	    t['time'] = aqparseDate(t['created_on'].substr(0,16));
-	    t['created_on'] = d3.time.minute.offset(t['time'], 330);
+	    //debugger;
+	    t['time'] = aqparseDateUtc(t['created_on'].substr(0,16));
+	    //t['created_on'] = d3.time.minute.offset(t['time'], 330);
 	    t['index'] = i;
 	    a = getAQI(t);
 	    t['aqi'] = _.min([a.aqi, 500]); 
