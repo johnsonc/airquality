@@ -225,7 +225,20 @@ var aqiDisplay2 = AQIDisp
 
     function processdata(tmpdatapoints, append){
 	tmpdatapoints.forEach(function(t,i){
+	    var tmp1  =  t['pm10'];
+	    t['pm10']   =  t['count_large'];
+	    t['count_large']   =  tmp1;
+	    tmp1  =  t['pm25'];
+	    t['pm25']   =  t['count_small'];
+	    t['count_small']   =  tmp1;	
+	    /*
+	      var tmp1  =  t['pm25'];
+	      var tmp2  =  t['count_small'];	    
+	      t['count_small']   =  tmp1;
+	      t['pm25']   =  tmp2;	   
+	    */
 	    t['time'] = aqparseDate(t['created_on'].substr(0,16));
+	    t['created_on'] = d3.time.minute.offset(t['time'], 330);
 	    t['index'] = i;
 	    a = getAQI(t);
 	    t['aqi'] = _.min([a.aqi, 500]); 
