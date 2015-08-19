@@ -22,10 +22,10 @@ def generate_random_data(start_date, end_date, imei, name, lat, lon):
             aqf = AQFeed()
             aqf.imei=imei
             aqf.name=name            
-            aqf.humidity = random.(1,100) + random.random()
-            aqf.temperature = random.triangular(15,45) + random.random()
-            aqf.pm10 = random.(1,500) + random.random()
-            aqf.pm25 = random.(1,1000) + random.random()
+            aqf.humidity = random.random(1,100) + random.random()
+            aqf.temperature = random.random(15,45) + random.random()
+            aqf.pm10 = random.random(1,500) + random.random()
+            aqf.pm25 = random.random(1,1000) + random.random()
             aqf.count_large = random.triangular(1,500) + random.random()
             aqf.count_small = random.triangular(1,900) + random.random()
             aqf.lat = lat

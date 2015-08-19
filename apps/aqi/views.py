@@ -12,6 +12,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import requests
+from dateutil.tz import tzlocal
 
 class JSONResponse(HttpResponse):
     """
@@ -377,11 +378,12 @@ def aqdatapoint(request):
         d['count_large'] = request.GET['l']
         d['count_small'] = request.GET['s']         
         d['created_on'] = datetime.datetime.now()
+        #import pdb; pdb.set_trace()        
         
-        #if (d['pm25'] > 1500) or (d['pm10'] > 1500 ):            
-        #    f.write("\n Invalid data:" + str(d))
-        #    f.close()                    
-        #    return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
+        if float(d['pm25']) > 1500 or float(d['pm10']) > 1500:            
+            f.write("\nInvalid data: " + str(d))
+            f.close()                    
+            return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
         
         try:
             #import pdb; pdb.set_trace()        
