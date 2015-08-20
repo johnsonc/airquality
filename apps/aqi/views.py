@@ -13,6 +13,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import requests
 from dateutil.tz import tzlocal
+from dateutil import parser as dateparser
 
 class JSONResponse(HttpResponse):
     """
@@ -286,13 +287,14 @@ def aqfeed_detail_time(request, imei, until_date):
         if request.method == 'GET':
             #import pdb; pdb.set_trace();
             #ed = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
-            sd = datetime.datetime.strptime(until_date, '%d-%m-%Y')
-            today = datetime.datetime.now()
+            sdd = datetime.datetime.strptime(until_date, '%d-%m-%Y')
+            sd = dateparser.parse(until_date + " 00:00 +0530")
+            today = datetime.datetime.now(tzlocal())
             if today.date() == sd.date():
-                ed = today                
-                sd = ed - datetime.timedelta(hours=24)         
-            else:                                
-                ed = sd + datetime.timedelta(hours=24)                         
+                ed = today
+                sd = ed - datetime.timedelta(hours=24)
+            else:
+                ed = sd + datetime.timedelta(hours=24)
 
             aqfeeds = AQFeed.objects.raw_query(
                 { 
@@ -450,7 +452,6 @@ def getState(ipdetails):
             #But just in case, fallback to a reverse lookup, and if fails, then raise Error
             r = requests.get("http://photon.komoot.de/reverse?lon=" + str(ipdetails['lon']) + "&lat=" + str(ipdetails['lat'])).json()
             s = State.objects.get(name=r['features'][0]['properties']['state'])
-
     return s
                 
 
