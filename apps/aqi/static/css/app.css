@@ -1,10 +1,7 @@
 
-
 .ball-grid-pulse > div: {
   background: blue;
 }
-
-
 
 .aqi-disp{
     box-shadow: 2px;    
@@ -14,12 +11,13 @@
   position: relative;
   display: inline-block;
   vertical-align: top;
-  width: 325px; 
+  width: 335px; 
   height: 120px; 
   padding: 3px;
   background-color: white;
   border-radius: 18px;
-  box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  //box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
   background-image: -webkit-linear-gradient(top, #eeeeee, white 100px);
   background-image: -moz-linear-gradient(top, #eeeeee, white 100px);
   background-image: -o-linear-gradient(top, #eeeeee, white 100px);
@@ -47,7 +45,13 @@
 
 #aqiDate
 {
-    float:right;
+    position:absolute;
+    right:70px;
+}
+
+.dc-chart path.line {
+    fill: none;
+    stroke-width: 5.5px;
 }
 
 .switch-label:before, .switch-label:after {

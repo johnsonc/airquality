@@ -1,6 +1,5 @@
 // Leaflet
 
-
 var Map = function() { 
     var OpenWeatherMap_Clouds = L.tileLayer('http://{s}.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png', {
 	maxZoom: 19,

@@ -1,10 +1,11 @@
 
 /*
--Parts of this code have been taken from Sagar Parihar and Swapnil Mahajan's work 
--for the National Air Quality website. 
- */
+  -Parts of this code have been taken from Sagar Parihar and Swapnil Mahajan's work 
+  -for the National Air Quality website. 
+*/
 
 var Loader = function() {           
+    urlprefix= "http://aqi.indiaspend.org";
       function configure(config) {
 	  // Required fields in configuration object 
 	  var requiredFields = [];
@@ -12,12 +13,12 @@ var Loader = function() {
 	  _.each(requiredFields, function(field){
 	      if ( !_.has(config, field) ) return null;
 	  });
-	  self.config = config;
+	  self.config = config;	  
       }
     
 
   function loadDevices() {
-    $.getJSON("/aq/api/devices/locations/?format=json", function(data) {
+    $.getJSON(urlprefix + "/aq/api/devices/locations/?format=json", function(data) {
 	if ( !data ) return null;
 	self.data = data;
 	self.emit('devicesLoaded');
@@ -43,7 +44,7 @@ var Loader = function() {
 	}
 	
 	resp = $.getJSON(
-	    "/aq/api/aqfeed/" + imei +"/" + enddate.replace(/\//g, '-') //+ "/" // + enddate
+	    urlprefix + "/aq/api/aqfeed/" + imei +"/" + enddate.replace(/\//g, '-') //+ "/" // + enddate
 	);	
 	// sanity check
 	//console.log(resp.responseJSON);
@@ -459,13 +460,14 @@ var ui = function(configObj){
     }
 
     function getConfig() {
-	return $.getJSON("/aq/api/config");
+	return $.getJSON(urlprefix + "/aq/api/config");
     }
 
     
     /* All accessible properties of aqiVizObj will go below this line */
     /* Inheriting from EventEmitter2 to be able to emit and listen to events*/
     //EventEmitter2.call(this);
+    this.urlprefix = urlprefix;
     this.configure = configure;
     this.initChoices = initChoices;
     this.initializeDatepicker = initializeDatepicker;
@@ -488,14 +490,14 @@ var ui = function(configObj){
     var AQIVis = new Loader();
     var aqiVizObj = new ui(AQIVis);
 
-    $.getJSON("/aq/api/config", function(config) {
-	AQIVis.configure(config);
-	aqiVizObj.configure(config);
-	map.configure(config);
-	AQIVis.run();
-	aqiVizObj.run();
-	AQIVis.on('devicesLoaded', function() {aqiVizObj.deviceClicked("865190016042411")});
-    });
+$.getJSON(urlprefix + "/aq/api/config", function(config) {
+    AQIVis.configure(config);
+    aqiVizObj.configure(config);
+    map.configure(config);
+    AQIVis.run();
+    aqiVizObj.run();
+    AQIVis.on('devicesLoaded', function() {aqiVizObj.deviceClicked("865190016042411")});
+});
 //});
 
 
