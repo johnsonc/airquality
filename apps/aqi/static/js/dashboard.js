@@ -31,7 +31,7 @@ zoomRender = false;
 
     var dataCount  = dc.dataCount("#data-count");
     //var timeChart  = dc.barChart("#time-chart");
-    var pm10Chart  = dc.barChart("#pm10-chart"); 
+    var pm10Chart  = dc.lineChart("#pm10-chart"); 
     var pm25Chart = dc.barChart('#pm25-chart');
     var tempChart = dc.barChart('#temp-chart');
     var humidityChart = dc.barChart('#hum-chart');
@@ -466,7 +466,6 @@ function setCharts(){
 		.x(d3.time.scale().domain([prevDate,maxDate]))
 	        .elasticY(true)	   	    
 		.round(dc.round.floor)
-		.alwaysUseRounding(true)
 		.renderHorizontalGridLines(true)
 		.valueAccessor(function(p) {
 		    return p.value.average;
@@ -483,7 +482,7 @@ function setCharts(){
 		    else if(a < 401){ return c[4] ;}			    
 		    else if(a > 400){ return c[5] ;}			    
 		    })
-		.colorAccessor(function (d) { return getpm10AQI(d.value.average); })
+	//.colorAccessor(function (d) { globald = d; return getpm10AQI(globald.data.value.average); })
 		.brushOn(false)
 		.label(function (d) {
 		    return d3.time.day(d.key).substr(0,12);
@@ -695,7 +694,7 @@ function setCharts(){
 		    return p.value.count;
 		})
 		.x(d3.scale.linear().domain([1, d3.min([pm10.top(1).pm10, 600])]))            		   .round(dc.round.floor)
-		.alwaysUseRounding(true)
+	.alwaysUseRounding(true)
 		.renderHorizontalGridLines(true)
 		.yAxisLabel("PM 10");
 	    pm10Chart2.yAxis().ticks(4);
@@ -713,39 +712,40 @@ function setCharts(){
 		    
 		}); 	
 
-		pm25Chart2 
-		    .width(Math.round(Width*0.3)).height(chartHeightDim)
-		    .dimension(pm25)
-		    .group(pm25s)
-		    .margins({top: 10, right: 50, bottom: 30, left: 50})
-		    .transitionDuration(500)
-		    .elasticY(true)	  
-		.keyAccessor(function(p) {
-		    return p.key;
-		})
-	    	.valueAccessor(function(p) {
-		    return p.value.count;
-		})
-		    .gap(2)
-		    .x(d3.scale.linear().domain([1, d3.min([pm25.top(1).pm25, 1500])]))
-		    .round(dc.round.floor)
-		    .alwaysUseRounding(true)
-		    .renderHorizontalGridLines(true)
-		.yAxisLabel("PM 2.5");
-		pm25Chart2.yAxis().ticks(4);
-		pm25Chart2.xUnits(function range(x0, x1, dx) {
-		    var x = Math.ceil(x0), xs = [];
-		    if (dx > 1) {
-			while (x < x1) {
-			    if (!(number(x) % dx)) xs.push(x);
-			    step(x, 1);
-			}
-		    } else {
-			while (x < x1) xs.push(x), x+=10;
-		    }
-		    return xs;	    
-		}); 	
-		
+    pm25Chart2 
+	.width(Math.round(Width*0.3)).height(chartHeightDim)
+	.dimension(pm25)
+	.group(pm25s)
+	.margins({top: 10, right: 50, bottom: 30, left: 50})
+	.transitionDuration(500)
+	.elasticY(true)	  
+	.keyAccessor(function(p) {
+	    return p.key;
+	})
+	.valueAccessor(function(p) {
+	    return p.value.count;
+	})
+	.gap(2)
+	.x(d3.scale.linear().domain([1, d3.min([pm25.top(1).pm25, 1500])]))
+        .elasticX(true)    
+	.round(dc.round.floor)
+	.alwaysUseRounding(true)
+	.renderHorizontalGridLines(true)
+	.yAxisLabel("PM 2.5");
+    pm25Chart2.yAxis().ticks(4);
+    pm25Chart2.xUnits(function range(x0, x1, dx) {
+	var x = Math.ceil(x0), xs = [];
+	if (dx > 1) {
+	    while (x < x1) {
+		if (!(number(x) % dx)) xs.push(x);
+		step(x, 1);
+	    }
+	} else {
+	    while (x < x1) xs.push(x), x+=10;
+	}
+	return xs;	    
+    }); 	
+    
 
 	    csChart2 
 		.width(Math.round(Width*0.3)).height(chartHeightDim)
@@ -817,10 +817,6 @@ function setCharts(){
 		return xs;
 		
 	    }); 	
-
-
-
-
 	    
 	     /* dc.dataCount('.dc-data-count', 'chartGroup'); */	
 	    //console.log(datapointCF);
@@ -968,7 +964,7 @@ function setCharts(){
 		    .text(function(d){ 
 			return numberFormat(d.value.average);
 		    })
-		    .attr("font-family", "'Aladin', cursive")
+		    .attr("font-family", "'Lato', sans-serif")
 		    .attr("font-size", function(d) {
 			return Math.min(2 * aqiradius, (2 * aqiradius - 8) / numberFormat(d.value.average).length * 24) + "px";
 			//return (d.value.average > 999) ? "27px":"40px";})
