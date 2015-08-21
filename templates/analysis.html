@@ -485,9 +485,7 @@ $(tag).addClass('active_most');
         <div class="chart-wrapper">
           <div class="chart-title">
             Air Quality Dashboard 
-	    <div id="data-count" style="float:right">
-	      <a href="javascript:dc.filterAll(); dc.renderAll();">Reset Filters</a>
-	      </div>	    
+		    
           </div>
           <div class="chart-stage">
 
@@ -498,14 +496,14 @@ $(tag).addClass('active_most');
         <div class="row col-md-12 col-xs-12" style=" margin-top: 10px; ">
           <div class=" col-md-3 col-xs-12  col-sm-3 col-lg-3  form-group nullable">
             <div class="input-group">
-              <div class="input-group-addon">State</div>
+              <div class="input-group-addon">State &nbsp;</div>
               <select id="statePicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select State" >
               </select>              
             </div>
           </div>
           <div class=" col-md-3 col-xs-12  col-sm-3 col-lg-3  form-group">
             <div class="input-group">
-              <div class="input-group-addon">City</div>
+              <div class="input-group-addon">City &nbsp; &nbsp;</div>
               <select id="cityPicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select City">
               </select>              
             </div>            
@@ -537,21 +535,22 @@ $(tag).addClass('active_most');
           </div>
       
           <div class="chart-notes">
-	    <div style="text-align:center; margin:25px;" id="aqi-display3" class="">
+	    <div class="col-xs-0 col-md-3"></div>
+	    <div style="text-align:center; margin:25px;" id="aqi-display3" class="col-xs-12 col-md-5">
 	      <div class="switch">
-                <b>AQI:</b> </br>		      
+                <b>Air Quality Index:</b> <br/>		      
 		<span class="switch-label" aqi="">
 		</span> 			
 		<div id="aqiDate"></div> 		      
-		      <span class="switch-handle">
-			<div style="text-align:center;" id="aqi-display" class="aqid1">
-			</div> 
-			<div style="text-align:center;" id="aqi-display2" class="aqid2">
-			</div> 
-		      </span>
+		<span class="switch-handle">
+		  <div style="text-align:center;" id="aqi-display" class="aqid1">
+		  </div> 
+		  <div style="text-align:center;" id="aqi-display2" class="aqid2">
+		  </div> 
+		</span>
 	      </div>
 	    </div> 	 
-
+	    <div class="col-xs-0 col-md-4"></div>
 
           </div>
         </div>
@@ -572,8 +571,10 @@ $(tag).addClass('active_most');
             </div>
           </div>
           <div class="chart-notes">
-            Click on the map markers or choose from the menu. <br />
-	    To get a deeper context for the current day, use the map layers. One can view wind, rain, clouds and temperature indicators at a global scale. 
+            Click on the map markers or choose from the menu. 
+	    <br />
+	    To get a deeper context for the current day, use the map layers. 
+	    One can view wind, rain, clouds and temperature indicators at a global scale.
 	    <br/>
 	    Overlay data and imagery is from various agencies mentioned at the page bottom. 
           </div>
@@ -641,12 +642,11 @@ $(tag).addClass('active_most');
 		  </div> 
 		</div> 
 	      </div>
-
 	      
 	    </div>	            
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            The above charts show concentrations of particulate matter(PM) divided into two categories. PM2.5 are particles below 2.5 ug (micrograms) and PM10 indicates size below 10ug. 
           </div>
         </div>
       </div>
