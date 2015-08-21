@@ -13,12 +13,9 @@ zoomRender = false;
     var varHeight = Math.round(Width*0.3);    
 
     var lastStreamTimeStamp;
-    var timerId; // current timer if started                                                  
-
-
+    var timerId; // current timer if started
     var widthScale = d3.scale.pow().exponent(.5);
     var colorScale = d3.scale.linear();
-    var opacityScale = d3.scale.quantile();
     var mmm;
     var parseDate = d3.time.format("%x %H:%M").parse;
     aqparseDate = d3.time.format("%Y-%m-%dT%H:%M").parse;
@@ -29,7 +26,6 @@ zoomRender = false;
     dateFormat = d3.time.format('%d/%m/%Y');
     var numberFormat = d3.format('.2f');
 
-    var dataCount  = dc.dataCount("#data-count");
     //var timeChart  = dc.barChart("#time-chart");
     var pm10Chart  = dc.lineChart("#pm10-chart"); 
     var pm25Chart = dc.barChart('#pm25-chart');
@@ -68,8 +64,10 @@ zoomRender = false;
     var d3humavg = d3.select("#humidity-avg");
 
 var aqiText, aqiDisplay, aqiCircle, aqiTextDate;
-var margin = 30,
-w = 200 - margin * 2,
+
+
+var margin = 30; //DeviceWidth*0.05,
+w = 200 - margin * 2, // DeviceWidth
 h = w,
 radius = w/2,
 strokeWidth = 4,
@@ -79,20 +77,24 @@ nodeBaseRad = 5;
 var aqiradius = 70;
 var AQIDisp = d3.select('#aqi-display')
     .append('svg')
-    .attr('width', w*3)
+    .attr('width', w)
     .attr('height', h+12)
-    .attr('class', 'img-rounded aqi-disp');
+    .attr('class', 'img-rounded aqi-disp')
+    .call(responsivefy);
 
 var aqiDisplay = AQIDisp
     .append("g");
+
+var aqiDisplay2 = AQIDisp
+    .append("g")
+    .attr('transform', 'translate(' + '2' + ',' + '2' + ')');	    
+
 
 //.attr('transform', 'translate(' + '' + ',' + margin + ')');	    
 //d3.select('#aqi-display2')
 //    .append('svg')
 //   .attr('width', w)
 //   .attr('height', h)	    
-
-
 
 var aqiIndicators = [
     {"id":1,
@@ -127,9 +129,6 @@ var aqiIndicators = [
      "description":"Affects healthy people and seriously impacts those with existing diseases"}
 ]
 
-var aqiDisplay2 = AQIDisp
-    .append("g")
-    .attr('transform', 'translate(' + '5' + ',' + '5' + ')');	    
 
     function streamStart(){
     if (timerId) return;
@@ -144,9 +143,38 @@ var aqiDisplay2 = AQIDisp
 	timerId = null;
 	console.log('Stream stopped');
     }
+
+
+function responsivefy(svg) {
+    // get container + svg aspect ratio
+    var container = d3.select(svg.node().parentNode),
+    width = parseInt(svg.style("width")),
+    height = parseInt(svg.style("height")),
+    aspect = width / height;
+
+    // add viewBox and preserveAspectRatio properties,
+    // and call resize so that svg resizes on inital page load
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+        .attr("perserveAspectRatio", "xMinYMid")
+        .call(resize);
+
+    // to register multiple listeners for same event type, 
+    // you need to add namespace, i.e., 'click.foo'
+    // necessary if you call invoke this function for multiple svgs
+    // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+        var targetWidth = parseInt(container.style("width"));
+        svg.attr("width", targetWidth);
+        svg.attr("height", Math.round(targetWidth / aspect));
+    }
+}
+
     
-    function streamUpdate()
-    {
+function streamUpdate()
+{
 	if (!lastStreamTimeStamp) { return };
 	now = new Date();
 	queue()
@@ -293,13 +321,17 @@ var aqiDisplay2 = AQIDisp
 	maxDate = dateDim.top(1)[0].time;
 	if (d3.time.day(new Date())==d3.time.day(maxDate)){
 	    prevDate = d3.time.day.offset(maxDate, -1);	    
+	    // Toggle live streaming if date is current date here. 
+	    streamStart();
 	}
 	else{
 	    prevDate = d3.time.day(maxDate);
 	    maxDate = d3.time.day.offset(prevDate, +1);
+	    streamStop();
 	}
 	prevWeekDate = d3.time.day.offset(new Date(), -7);
 
+	
 	console.log("minDate:");
 	console.log(minDate);
 	console.log("maxDate:");
@@ -818,34 +850,21 @@ function setCharts(){
 		
 	    }); 	
 	    
-	     /* dc.dataCount('.dc-data-count', 'chartGroup'); */	
-	    //console.log(datapointCF);
-	    //console.log(all);
-
-	    dataCount
-		.dimension(datapointCF)
-		.group(all)	   
-		.html({
-		    some: '<strong>%filter-count</strong> selected out of <strong>%total-count</strong> records' +
-		    '<a href=\'javascript:dc.filterAll(); dc.renderAll();\'\'>Reset All</a>',
-		    all:'All records selected.'
-		});	
-	
 
 	    function initAQIChart(data){
 	 	if(data == null){
 		    data = _.max(aqiAvgGroupByDay.all(), function (d) { return d.key });
 		    data['desc'] = getAQIDesc(data.value.average);
-		}
+		}		
 		// requires data in key value format
 		aqiCircle = aqiDisplay.selectAll("circle")
 		    .attr("class", "bubble")
 		    .data([data])
 		    .enter()
 		    .append("circle")
-		    .attr("r", aqiradius)
-		    .attr("cx", aqiradius+5)
-		    .attr("cy", aqiradius+5)
+		    .attr("r", aqiradius-4)
+		    .attr("cx", aqiradius)
+		    .attr("cy", aqiradius)
 		    .attr("fill",  function (d) {
 			// AQI Color Standards
 			a = Math.round(d.value.average);
@@ -957,16 +976,17 @@ function setCharts(){
 		    .data([data])
 		    .enter()
 		    .append("text")
-		    .attr("x", aqiradius+5)
+		    .attr("x", aqiradius)
 		    .attr("y", aqiradius+8+5)
 		    .attr("text-anchor", "middle")
 		    .attr("class", "title aqinumber")
 		    .text(function(d){ 
-			return numberFormat(d.value.average);
+			return numberFormat(d.value.average).substr(0,5);
 		    })
 		    .attr("font-family", "'Lato', sans-serif")
 		    .attr("font-size", function(d) {
-			return Math.min(2 * aqiradius, (2 * aqiradius - 8) / numberFormat(d.value.average).length * 24) + "px";
+			return "4.0em";
+			//return Math.min(2 * aqiradius, (2 * aqiradius - 8) / numberFormat(d.value.average).length * 24) + "px";
 			//return (d.value.average > 999) ? "27px":"40px";})
 		    })  
 		    .attr("font-style", "bold")
@@ -974,7 +994,7 @@ function setCharts(){
 			// AQI Color Standards
 			//return "#111111";
 			a = Math.round(d.value.average);
-			var c = ['#c00000', '#ff0000', '#ff9900', '#ffff00',  '#92d050', '#00b050'];
+			var c = ['aliceblue', 'aliceblue', '#009900', '#0000aa',  'aliceblue', 'aliceblue'];
 			if(a < 50 ){ return c[0];}
 			else if(a < 101){ return c[1];}
 			else if(a < 201){ return c[2];}		    
@@ -1015,22 +1035,25 @@ function setCharts(){
 	    initAQIChart();
 
 	} // end of setCharts
+
+
+
     
     function updateAQIChart(data){		
 	if(data == null){
 	    var data = _.max(aqiAvgGroupByDay.all(), function (d) { return d.key });
 	    data['desc'] = getAQIDesc(data.value.average);	    
-	}
-	
+z	}
+		
 	var aqiCircle = aqiDisplay.selectAll("circle")
 	    .data([data]);	    
 	
 	aqiCircle.exit().remove();		
 
 	aqiCircle
-	    .attr("r", aqiradius)
-	    .attr("cx", aqiradius+5)
-	    .attr("cy", aqiradius+5)
+	    .attr("r", aqiradius-4)
+	    .attr("cx", aqiradius)
+	    .attr("cy", aqiradius)
 	    .attr("fill",  function (d) {
 		// AQI Color Standards
 		a = Math.round(d.value.average);
@@ -1051,26 +1074,27 @@ function setCharts(){
 	    .remove();
 	
 	aqiText
-	    .attr("x", radius+5)
+	    .attr("x", radius)
 	    .attr("y", radius+8+5)
 	    .attr("text-anchor", "middle")
 	    .text(function(d){ 
-		return numberFormat(d.value.average); 
+		return numberFormat(d.value.average).substr(0,5); 
 	    })
 	    .attr("font-family", "'Aladin', cursive")
-	    .attr("font-size", "40px")
+	    .attr("font-size", "4.0em")
 	    .attr("font-style", "bold")
 	    .attr("fill",   function (d) {
 		// AQI Color Standards
-		//return "#111111";
-		a = Math.round(d.value.average);
-		var c = ['#000000', '#ffffff'];
+		//return "#111111";	
+		a = Math.round(d.value.average);		
+		var c = ['aliceblue', 'aliceblue', '#009900', '#0000aa',  'aliceblue', 'aliceblue'];
 		if(a < 50 ){ return c[0];}
-		else if(a < 101){ return c[0];}
-		else if(a < 201){ return c[0];}		    
-		else if(a < 301){ return c[1];}			    
-		else if(a < 401){ return c[1];}			    
-		else if(a > 400){ return c[1];}			    
+		else if(a < 101){ return c[1];}
+		else if(a < 201){ return c[2];}		    
+		else if(a < 301){ return c[3];}			    
+		else if(a < 401){ return c[4];}			    
+		else if(a > 400){ return c[5];}			    		
+
 	    });	
 		  
 
@@ -1108,7 +1132,11 @@ function setCharts(){
 	    */
 	var aqiTextDate = d3.select("#aqiDate")
 	    .data([data])
-	    .html(function(d){ return "on: " + dateFormat(d.key);});
+	    .html(function(d){ 		
+		return "on: " + dateFormat(d.key);
+	    });
+
+	
 
 	var aqiTextRemark = d3.select(".switch-label")
 	    .data([data])
