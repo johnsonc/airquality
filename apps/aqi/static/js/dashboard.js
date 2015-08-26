@@ -525,6 +525,7 @@ function setCharts(){
 		.renderLabel(true)
 		.yAxisLabel("PM 10");
 	    pm10Chart.yAxis().ticks(4);
+	    pm10Chart.xAxis().ticks(5);
 	    pm10Chart.xUnits(d3.time.hours);	
 	    
 
@@ -566,6 +567,7 @@ function setCharts(){
 		    .renderLabel(true)
 		    .yAxisLabel("PM 25");
 		pm25Chart.yAxis().ticks(4);
+                pm25Chart.xAxis().ticks(5);
 		pm25Chart.xUnits(d3.time.hours);
 
 		tempChart
@@ -598,6 +600,7 @@ function setCharts(){
 		    .renderLabel(true)
 		    .yAxisLabel("Temp")
 		tempChart.yAxis().ticks(4);
+		tempChart.xAxis().ticks(5);
 		tempChart.xUnits(d3.time.hours);
 
 		humidityChart
@@ -627,6 +630,7 @@ function setCharts(){
 		    })
 		    .yAxisLabel("Humidity");
 		humidityChart.yAxis().ticks(4);
+		humidityChart.xAxis().ticks(5);
 		humidityChart.xUnits(d3.time.hours);
 
 
@@ -667,7 +671,7 @@ function setCharts(){
 		.renderLabel(true)
 		.yAxisLabel("PM 10");
 	    clChart.yAxis().ticks(4);
-	    clChart.xAxis().ticks(8);
+	    clChart.xAxis().ticks(5);
 	    clChart.xUnits(d3.time.hours);	
 	    
 
@@ -708,7 +712,7 @@ function setCharts(){
 		.renderLabel(true)
 		.yAxisLabel("PM 2.5");
 	    csChart.yAxis().ticks(4);
-	    csChart.xAxis().ticks(8);
+	    csChart.xAxis().ticks(5);
 	    csChart.xUnits(d3.time.hours);	
 	    
 
@@ -730,6 +734,7 @@ function setCharts(){
 		.renderHorizontalGridLines(true)
 		.yAxisLabel("PM 10");
 	    pm10Chart2.yAxis().ticks(4);
+	    pm10Chart2.xAxis().ticks(5);
 	    pm10Chart2.xUnits(function range(x0, x1, dx) {
 		    var x = Math.ceil(x0), xs = [];
 		    if (dx > 1) {
@@ -765,6 +770,7 @@ function setCharts(){
 	.renderHorizontalGridLines(true)
 	.yAxisLabel("PM 2.5");
     pm25Chart2.yAxis().ticks(4);
+    pm25Chart2.xAxis().ticks(5);
     pm25Chart2.xUnits(function range(x0, x1, dx) {
 	var x = Math.ceil(x0), xs = [];
 	if (dx > 1) {
@@ -800,6 +806,7 @@ function setCharts(){
 	    csChart2.yAxisLabel("PM 25");
 	    //clChart2.xAxisLabel("Frequency of occurence");
 	    csChart2.yAxis().ticks(4);
+	    csChart2.xAxis().ticks(5);
 	    csChart2.xUnits(function range(x0, x1, dx) {
 		var x = Math.ceil(x0), xs = [];
 		if (dx > 1) {
@@ -836,6 +843,7 @@ function setCharts(){
 	    clChart2.yAxisLabel("PM 10");
 	    //clChart2.xAxisLabel("Frequency of occurence");
 	    clChart2.yAxis().ticks(4);
+	    clChart2.xAxis().ticks(5);
 	    clChart2.xUnits(function range(x0, x1, dx) {
 		var x = Math.ceil(x0), xs = [];
 		if (dx > 1) {
@@ -1036,14 +1044,12 @@ function setCharts(){
 
 	} // end of setCharts
 
-
-
     
     function updateAQIChart(data){		
 	if(data == null){
 	    var data = _.max(aqiAvgGroupByDay.all(), function (d) { return d.key });
 	    data['desc'] = getAQIDesc(data.value.average);	    
-z	}
+	}
 		
 	var aqiCircle = aqiDisplay.selectAll("circle")
 	    .data([data]);	    
