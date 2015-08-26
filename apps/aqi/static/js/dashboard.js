@@ -64,7 +64,7 @@ zoomRender = false;
     var d3humavg = d3.select("#humidity-avg");
 
 var aqiText, aqiDisplay, aqiCircle, aqiTextDate;
-
+var aqiTextRemark = d3.select(".switch-label").append("div");
 
 var margin = 30; //DeviceWidth*0.05,
 w = 200 - margin * 2, // DeviceWidth
@@ -1127,12 +1127,9 @@ function setCharts(){
 	    .data([data])
 	    .html(function(d){ 		
 		return "on: " + dateFormat(d.key);
-	    });
+	    });	
 
-	
-
-	var aqiTextRemark = d3.select(".switch-label")
-            .append("div")
+	aqiTextRemark
 	    .data([data])
 	    .attr("class", "aqiremark")
 	    .text(function(d){ 
