@@ -981,7 +981,7 @@ function setCharts(){
 		    })
 		    .attr("font-family", "'Lato', sans-serif")
 		    .attr("font-size", function(d) {
-			return "4.0em";
+			return "3.0em";
 			//return Math.min(2 * aqiradius, (2 * aqiradius - 8) / numberFormat(d.value.average).length * 24) + "px";
 			//return (d.value.average > 999) ? "27px":"40px";})
 		    })  
@@ -1074,9 +1074,8 @@ function setCharts(){
 	    .text(function(d){ 
 		return numberFormat(d.value.average).substr(0,5); 
 	    })
-	    .attr("font-family", "'Aladin', cursive")
-	    .attr("font-size", "4.0em")
-	    .attr("font-style", "bold")
+	    .attr("font-family", "'Lato', sans-serif")
+	    .attr("font-size", "3.0em")
 	    .attr("fill",   function (d) {
 		// AQI Color Standards
 		//return "#111111";	
@@ -1133,10 +1132,15 @@ function setCharts(){
 	
 
 	var aqiTextRemark = d3.select(".switch-label")
+            .append("div")
 	    .data([data])
-	    .attr("aqi",function(d){ 
+	    .attr("class", "aqiremark")
+	    .text(function(d){ 
 		return d.desc.remark;
 	    });
+	    //.attr("aqi",function(d){ 
+	//	return d.desc.remark;
+	 //   });
 	
 	/*
 	var aqiTextDate = aqiDisplay.selectAll("text")
