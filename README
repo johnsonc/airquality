@@ -172,3 +172,14 @@ Some miscellaneous troubleshooting links:
 
     http://www.gisinternals.com/query.html?content=filelist&file=release-1600-x64-gdal-1-11-1-mapserver-6-4-1.zip
 
+* The device does need initial data which will be available from the server:
+    DUMP:
+    mongodump --out dbbackup --db indiaspend
+
+    RESTORE:
+    mongorestore --db indiaspend ./dbbackup/indiaspend --drop
+  
+    PER COLLECTION:
+    mongodump --out dbbackup --collection <model_name> --db indiaspend
+    mongorestore -c <model_name> --db indiaspend ./dbbackup/indiaspend/aqi_aqdevice.bson --drop
+    
