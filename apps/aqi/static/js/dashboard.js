@@ -323,10 +323,12 @@ function streamUpdate()
 	    prevDate = d3.time.day.offset(maxDate, -1);	    
 	    // Toggle live streaming if date is current date here. 
 	    streamStart();
+	    console.log("Streaming started");
 	}
 	else{
 	    prevDate = d3.time.day(maxDate);
 	    maxDate = d3.time.day.offset(prevDate, +1);
+	    console.log("Streaming disabled");
 	    streamStop();
 	}
 	prevWeekDate = d3.time.day.offset(new Date(), -7);
@@ -635,7 +637,7 @@ function setCharts(){
 
 
 	    clChart
-		.width(Math.round(Width*0.3)).height(chartHeightDim)
+		.width(Math.round(linechartWidth)).height(chartHeightDim)
 		.dimension(hourDim)
 		.group(clAvgGroupByHour)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
@@ -676,7 +678,7 @@ function setCharts(){
 	    
 
 	    csChart
-		.width(Math.round(Width*0.3)).height(chartHeightDim)
+		.width(Math.round(linechartWidth)).height(chartHeightDim)
 		.dimension(hourDim)
 		.group(csAvgGroupByHour)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
@@ -717,7 +719,7 @@ function setCharts(){
 	    
 
 	    pm10Chart2 
-		.width(Math.round(Width*0.3)).height(chartHeightDim)
+		.width(Math.round(linechartWidth)).height(chartHeightDim)
 		.dimension(pm10)
 		.group(pm10s)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
@@ -750,7 +752,7 @@ function setCharts(){
 		}); 	
 
     pm25Chart2 
-	.width(Math.round(Width*0.3)).height(chartHeightDim)
+	.width(Math.round(linechartWidth)).height(chartHeightDim)
 	.dimension(pm25)
 	.group(pm25s)
 	.margins({top: 10, right: 50, bottom: 30, left: 50})
@@ -786,7 +788,7 @@ function setCharts(){
     
 
 	    csChart2 
-		.width(Math.round(Width*0.3)).height(chartHeightDim)
+		.width(Math.round(linechartWidth)).height(chartHeightDim)
 		.dimension(small_particle_count)
 		.group(small_particle_counts)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
@@ -822,8 +824,8 @@ function setCharts(){
 	    }); 	
 
 
-	    clChart2 
-		.width(Math.round(Width*0.3)).height(chartHeightDim)
+	    clChart2
+		.width(Math.round(linechartWidth)).height(chartHeightDim) 
 		.dimension(large_particle_count)
 		.group(large_particle_counts)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
