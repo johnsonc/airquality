@@ -135,13 +135,13 @@ var aqiIndicators = [
     timerId = setInterval( streamUpdate, 30000);
 	// lazy loading... do not stream immediately, only start timer.
 	// so no click surging
-	console.log('Stream started');
+	console.log('Streaming enabled');
     }
 
     function streamStop() {
 	clearInterval(timerId);
 	timerId = null;
-	console.log('Stream stopped');
+	console.log('Streaming disabled');
     }
 
 
@@ -178,23 +178,17 @@ function streamUpdate()
 	if (!lastStreamTimeStamp) { return };
 	now = new Date();
 	queue()
-	    .defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/"+lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
-	    .await(dataUpdate);        
+	    //.defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/"+lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
+	.defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/" + $('#devicePicker').val() + "/" +lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
+	.await(dataUpdate);        
     }
         
-    function dataUpdate(error, newdatapoints, append){	
+    function dataUpdate(error, newdatapoints, append){		
+	append=true;
 	if(newdatapoints.length != 0){	    
-	    processdata(newdatapoints);
-	    console.log(newdatapoints);	
-	    console.log('Data stream updated');
-	    if (append == true) {
-		datapoints.push(newdatapoints);
-		datapointCF.add(newdatapoints);
-	    }
-	    else{
-		datapoints = newdatapoints;
-		datapointCF  = crossfilter(datapoints);		
-	    }
+	    processdata(newdatapoints, append=true);
+	    //console.log(newdatapoints);	
+	    //console.log('Data stream updated');
 	    renderAll();
 	}
 	else{
@@ -266,9 +260,7 @@ function streamUpdate()
 	      t['count_small']   =  tmp1;
 	      t['pm25']   =  tmp2;	   
 	    */
-	    //debugger;
 	    t['time'] = aqparseDateUtc(t['created_on'].substr(0,16));
-	    //t['created_on'] = d3.time.minute.offset(t['time'], 330);
 	    t['index'] = i;
 	    a = getAQI(t);
 	    t['aqi'] = _.min([a.aqi, 500]); 
@@ -279,17 +271,21 @@ function streamUpdate()
 	    //t['year']= t.time.getFullYear();
 	})	
 	//console.log("Old data size:" + datapoints.size());
-	datapoints = [];
-	datapoints = tmpdatapoints;
-	console.log("Data processed New data size:") 
-	console.log(datapoints);	
+	if(append==true){
+	    datapoints.push(tmpdatapoints);
+	    datapointCF.add(tmpdatapoints);
+	}
+	else{
+	    datapoints = [];
+	    datapoints = tmpdatapoints;
+	}
 	updateDimensions();
     }
 
     function updateDimensions(){
 	if (datapointCF == null){
-	    console.log("datapointCF is not initialized!.. Initializing!")
-	    console.log(datapointCF);
+	    //console.log("datapointCF is not initialized!.. Initializing!")
+	    //console.log(datapointCF);
 	    initDimensions();
 	    return;
 	}
@@ -319,28 +315,19 @@ function streamUpdate()
 	dateDim = datapointCF.dimension(function(d) { return d.time;})
 	minDate = dateDim.bottom(1)[0].time;
 	maxDate = dateDim.top(1)[0].time;
-	if (d3.time.day(new Date())==d3.time.day(maxDate)){
+	
+	if (d3.time.day(new Date()).toISOString()==d3.time.day(maxDate).toISOString()){
 	    prevDate = d3.time.day.offset(maxDate, -1);	    
 	    // Toggle live streaming if date is current date here. 
 	    streamStart();
-	    console.log("Streaming started");
 	}
 	else{
 	    prevDate = d3.time.day(maxDate);
 	    maxDate = d3.time.day.offset(prevDate, +1);
-	    console.log("Streaming disabled");
 	    streamStop();
 	}
 	prevWeekDate = d3.time.day.offset(new Date(), -7);
 
-	
-	console.log("minDate:");
-	console.log(minDate);
-	console.log("maxDate:");
-	console.log(maxDate);
-	console.log("prevDate:");
-	console.log(prevDate);
-	
 	//datapointIndex = datapointCF.dimension(function(d){ return d.index; });
 	//datapointIndexs = datapointIndex.group();
 
@@ -488,8 +475,7 @@ function getAQIDesc(v){
 }
 
 
-function setCharts(){
-    
+function setCharts(){    
 	    pm10Chart
 		.width(Math.round(linechartWidth)).height(chartHeightDim)
 		.dimension(hourDim)

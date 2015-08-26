@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-  <!--  {% load static from staticfiles %}   -->  
-     <meta charset="utf-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">    
     <title>IndiaSpend Air Quality Initiative</title>
@@ -538,7 +537,7 @@ $(tag).addClass('active_most');
 	    <div class="col-xs-0 col-md-3"></div>
 	    <div style="text-align:center; margin:25px;" id="aqi-display3" class="col-xs-12 col-md-5">
 	      <div class="switch">
-                <b>Air Quality Index:</b> <br/>		      
+		<div class="aqiText1" ><b>Air Quality Index</b></div>		      
 		<span class="switch-label" aqi="">
 		</span> 			
 		<div id="aqiDate"></div> 		      
@@ -573,7 +572,7 @@ $(tag).addClass('active_most');
           <div class="chart-notes">
             Click on the map markers or choose from the menu. 
 	    <br />
-	    To get a deeper context for the current day, use the map layers. 
+	    To get a deeper context for the current day, use the map layers.
 	    One can view wind, rain, clouds and temperature indicators at a global scale.
 	    <br/>
 	    Overlay data and imagery is from various agencies mentioned at the page bottom. 
@@ -605,7 +604,7 @@ $(tag).addClass('active_most');
 	      <div id="pm25container" class="row" >
 		<div id="pm25-chart"  class="col-xs-10"> 
 		</div>
-		<div id="pm25-stats" class="stats col-xs-2"> 			
+		<div id="pm25-stats" class="col-xs-2 stats"> 			
 		  <div id="pm25-max" class="max"> Max		
 		  </div> 		
 		  <div id="pm25-avg" class="avg"> Avg		
@@ -619,7 +618,7 @@ $(tag).addClass('active_most');
 	      <div id="tempcontainer" class="row" >
 		<div id="temp-chart"  class="col-xs-10"> 
 		</div>
-		<div id="temp-stats" class="stats col-xs-2"> 			
+		<div id="temp-stats" class="col-xs-2 stats"> 			
 		  <div id="temp-max" class="max"> Max		
 		  </div> 		
 		  <div id="temp-avg" class="avg"> Avg		
@@ -633,7 +632,7 @@ $(tag).addClass('active_most');
 	      <div id="humcontainer" class="row" >
 		<div id="hum-chart"  class="col-xs-10"> 
 		</div>
-		<div id="humidity-stats" class="stats col-xs-2"> 			
+		<div id="humidity-stats" class="col-xs-2 stats"> 			
 		  <div id="humidity-max" class="max"> Max		
 		  </div> 		
 		  <div id="humidity-avg" class="avg"> Avg		
@@ -830,7 +829,7 @@ $(tag).addClass('active_most');
   
 </div>
 
-      <p style=" width: auto; " class="small text-muted">By IndiaSpend.org  License:Creative Commons CC-By-SA 3.0, Map data and Image courtesy:OSM, NASA, Mapbox, Stamen, University of Heidelberg, Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System  <a href=""></a></p>
+      <p style=" width: auto; " class="small text-muted">By <a href="http://johnc.in">Johnson Chetty</a> for IndiaSpend.org  License: The MIT License (MIT), Map data and Image courtesy:OSM, NASA, Mapbox, Stamen, University of Heidelberg, Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System  <a href=""></a></p>
       
     </div>
 <!-- 2 added div-->

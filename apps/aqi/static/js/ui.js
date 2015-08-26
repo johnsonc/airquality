@@ -1,4 +1,3 @@
-
 /*
   -Parts of this code have been taken from Sagar Parihar and Swapnil Mahajan's work 
   -for the National Air Quality website. 
@@ -244,7 +243,6 @@ var ui = function(configObj){
     
     function deviceClicked(id) {
 	var device = AQIVis.getDevice(id);
-	console.log("clicked device:");
 	setDropdowns(device.stateID, device.cityID, device.imei);
     }
     
@@ -289,8 +287,7 @@ var ui = function(configObj){
 	    map.showDevice(AQIVis.getDevice(id));
 	    deviceSet(id);
 	}	
-	$("#aqi-display3").removeClass("display-none");
-	
+	$("#aqi-display3").removeClass("display-none");	
     }
     
     function beforeDeviceSet() {
