@@ -10,8 +10,9 @@ simplejson
 ox
 jsonfield
 django-leaflet
-djgeojson
+django-geojson
 django-cors-headers
 python-geoip
 drf_ujson
 djangorestframework-csv
+requests
