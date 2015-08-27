@@ -16,4 +16,4 @@ python-geoip
 drf_ujson
 djangorestframework-csv
 requests
-dateutils
+python-dateutils
