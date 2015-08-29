@@ -1,10 +1,22 @@
 
+* Features:
+   - Captures device location based on request IP of device.
+   - Feed data location will be based on request IP geo location, so as to enable geo tracking of weather points.
+   - Device streams only if day is current day.
+   - If current day, then previous 24 hours w.r.t. to current time are shown, else only the given day's 24 hour data.
+   - Widgets are responsive on load.
+   - Data charts show aggregated hourly data for PM10, PM25, Temp and Humidity. 
+   - Histograms shows spread/frequency of the datapoints, which are drillable by dragging on the charts
+   - CSV download of data enabled.
+   - Django Admin backend to modify/view data
+   - REST API Docs: http://aqi.indiaspend.org/aq/api-docs/#!/ 
+
+
 * INSTALL INSTRUCTIONS 
-   ** FOR LINUX DEVELOPMENT
-   ** FOR LINUX DEPLOYMENT
-   ** FOR WINDOWS DEVELOPMENT
-
-
+  ** FOR LINUX DEVELOPMENT
+  ** FOR LINUX DEPLOYMENT
+  ** FOR WINDOWS DEVELOPMENT
+  
 ** FOR LINUX DEVELOPMENT
 
   mkdir airquality
@@ -15,14 +27,11 @@
   git clone https://github.com/johnsonc/airquality.git
   cd airquality
   sudo bash dependencies.sh  # run as root to install deps
-  pip install -r requirements.txt 
-  
-
-  Run
+  pip install -r requirements.txt   
   python manage.py runserver  
 
 
-**  FOR LINUX DEPLOYMENT
+** FOR LINUX DEPLOYMENT
   
   If you want to deploy, follow intial setup steps from /srv/
   the folder structure should look like:
@@ -62,36 +71,26 @@
   
 
 ** FOR WINDOWS DEVELOPMENT
+   First, download the latest Python 2.7 installer from:  https://python.org/download/ 
+   if you have a 32-bit system: https://www.python.org/downloads/release/python-2710/
 
-  First, download the latest Python 2.7 installer from:  https://python.org/download/ 
-  if you have a 32-bit system: https://www.python.org/downloads/release/python-2710/
+   I have installed python2.7  (x64 bit)
+   link: https://www.python.org/ftp/python/2.7.10/python-2.7.10.amd64.msi
 
-  I have installed python2.7  (x64 bit)
-  link: https://www.python.org/ftp/python/2.7.10/python-2.7.10.amd64.msi
+   Next, run the installer and keep the defaults for example, 
+   keep 'install for all users' checked and the installation path set as C:\Python27
+   This will install pip as well:
 
-  Next, run the installer and keep the defaults for example, 
-  keep 'install for all users' checked and the installation path set as C:\Python27
-  This will install pip as well:
+   Install 'Github For Windows'. This gives us the powershell as well.
+   link: https://github-windows.s3.amazonaws.com/GitHubSetup.exe
 
+   Install mongodb for windows:
+   https://www.mongodb.org/downloads
+   go to: C:\mongodb\mongodb\bin
+   click on mongod to run the service
 
-  > Install 'Github For Windows'. This gives us the powershell as well.
-
-  link: https://github-windows.s3.amazonaws.com/GitHubSetup.exe
-
-  ---
-
-  Install mongodb for windows:
-  https://www.mongodb.org/downloads
-
-  go to: C:\mongodb\mongodb\bin
-
-  click on mongod to run the service
-  
-  --
-
-  REFERENCE DOC:  https://docs.djangoproject.com/en/1.8/ref/contrib/gis/install/#windows
-
-   Then open up the git shell
+   REFERENCE DOC:  https://docs.djangoproject.com/en/1.8/ref/contrib/gis/install/#windows
+   Then open up the git shell	
    Go to the desired location where you want to store the repo.
 
    mkdir airquality
@@ -108,20 +107,20 @@
    pip install -r requirements.txt
 
    Run python from command line to determine the compiler version used to build python (mine shows: 
-    Python 2.7.10 (default, Aug 24 2015, 09:15:03) [MSC v.1600 64 bit (AMD64)] on x64)
-    According to the version number, MSC and 32/64 bit, 
-    Download the corresponding SDK from this link: 	      
- 
-    Download the following:    
-    OSGeo4W   
-    link: http://trac.osgeo.org/osgeo4w/
+   Python 2.7.10 (default, Aug 24 2015, 09:15:03) [MSC v.1600 64 bit (AMD64)] on x64)
+   According to the version number, MSC and 32/64 bit, 
+   Download the corresponding SDK from this link: 	      
+   
+   Download the following:    
+   OSGeo4W   
+   link: http://trac.osgeo.org/osgeo4w/
 
-    The OSGeo4W installer makes it simple to install the PROJ.4, GDAL, and GEOS libraries required by GeoDjango. First, download the OSGeo4W installer, and run it. 
-    
-    Select Express Web-GIS Install and click next. 
-    In the 'Select Packages' list, ensure that GDAL is selected; 
-    MapServer and Apache are also enabled by default, but are not required by GeoDjango and may be unchecked safely. 
-    After clicking next, the packages will be automatically downloaded and installed, after which you may exit the installer.
+   The OSGeo4W installer makes it simple to install the PROJ.4, GDAL, and GEOS libraries required by GeoDjango. First, download the OSGeo4W installer, and run it. 
+   
+   Select Express Web-GIS Install and click next. 
+   In the 'Select Packages' list, ensure that GDAL is selected; 
+   MapServer and Apache are also enabled by default, but are not required by GeoDjango and may be unchecked safely. 
+   After clicking next, the packages will be automatically downloaded and installed, after which you may exit the installer.
 
 
 **  Modify Windows environment variables
@@ -130,7 +129,6 @@
     https://docs.djangoproject.com/en/1.8/ref/contrib/gis/install/#windows
 
     In order to use GeoDjango, you will need to add your Python and OSGeo4W directories to your Windows system Path, as well as create GDAL_DATA and PROJ_LIB environment variables. The following set of commands, executable with cmd.exe, will set this up:
-
     set OSGEO4W_ROOT=C:\OSGeo4W
     set PYTHON_ROOT=C:\Python27
     set GDAL_DATA=%OSGEO4W_ROOT%\share\gdal
@@ -139,47 +137,43 @@
     reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v Path /t REG_EXPAND_SZ /f /d "%PATH%"
     reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v GDAL_DATA /t REG_EXPAND_SZ /f /d "%GDAL_DATA%"
     reg ADD "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v PROJ_LIB /t REG_EXPAND_SZ /f /d "%PROJ_LIB%"
-		  
-
+    
     Add these line at the end of indiaspend/local_settings.py 
 
-       GEOS_LIBRARY_PATH = 'C:\\OSGeo4W64\\bin\\geos_c.dll'
-       REST_FRAMEWORK={}
+    GEOS_LIBRARY_PATH = 'C:\\OSGeo4W64\\bin\\geos_c.dll'
+    REST_FRAMEWORK={}
 
     (The windows version will not have CSV downloads enabled in the API as well. Further testing would be needed. )
 
+    Run the dev instance. 
+    python manage.py runserver  
 
-     * Run the dev instance. 
-        python manage.py runserver  
+    Download the c++ compiler for Python:
+    This is so that certain packages which do not have binaries will stil get compiled.
+    link: http://download.microsoft.com/download/7/9/6/796EF2E4-801B-4FC4-AB28-B59FBF6D907B/VCForPython27.msi
 
+** Some miscellaneous troubleshooting links:
+    https://groups.google.com/forum/#!topic/geodjango/QwUw3JWj6sQ
 
-Download the c++ compiler for Python:
-	 This is so that certain packages which do not have binaries will stil get compiled.
+    https://pypi.python.org/pypi/Shapely/1.2#downloads
 
-	 link: http://download.microsoft.com/download/7/9/6/796EF2E4-801B-4FC4-AB28-B59FBF6D907B/VCForPython27.msi
-
-
-Some miscellaneous troubleshooting links:
-     https://groups.google.com/forum/#!topic/geodjango/QwUw3JWj6sQ
-
-     https://pypi.python.org/pypi/Shapely/1.2#downloads
-
-     http://stackoverflow.com/questions/9684254/i-cannot-install-numpy-because-it-cant-find-python-2-7-althought-i-have-instal
-
-    reg copy HKLM\SOFTWARE\Wow6432Node\Python HKLM\SOFTWARE\Python  /s
+    http://stackoverflow.com/questions/9684254/i-cannot-install-numpy-because-it-cant-find-python-2-7-althought-i-have-instal
 
     http://www.gisinternals.com/release.php
 
     http://www.gisinternals.com/query.html?content=filelist&file=release-1600-x64-gdal-1-11-1-mapserver-6-4-1.zip
 
-* The device does need initial data which will be available from the server:
-    DUMP:
-    mongodump --out dbbackup --db indiaspend
-
-    RESTORE:
-    mongorestore --db indiaspend ./dbbackup/indiaspend --drop
+* DATA
+  The device does need initial data which will be available from the server:
+  DUMP:
+  mongodump --out dbbackup --db indiaspend
   
-    PER COLLECTION:
-    mongodump --out dbbackup --collection <model_name> --db indiaspend
-    mongorestore -c <model_name> --db indiaspend ./dbbackup/indiaspend/aqi_aqdevice.bson --drop
+  RESTORE:
+  mongorestore --db indiaspend ./dbbackup/indiaspend --drop
+  
+  PER COLLECTION:
+  mongodump --out dbbackup --collection <model_name> --db indiaspend
+  mongorestore -c <model_name> --db indiaspend ./dbbackup/indiaspend/aqi_aqdevice.bson --drop
     
+
+

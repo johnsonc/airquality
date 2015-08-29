@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     #'pinax_theme_bootstrap',
     #'bootstrapform',
     'rest_framework',
+    'rest_framework_swagger',
     'djangotoolbox',
     'django_mongodb_engine',
     #'account',
@@ -168,6 +169,31 @@ REST_FRAMEWORK = {
         'drf_ujson.parsers.UJSONParser',
         ),
     }
+
+SWAGGER_SETTINGS = {
+    'exclude_namespaces': [],
+    'api_version': '0.1',
+    'api_path': '',
+    'enabled_methods': [
+        'get',
+        'post',
+    ],
+    'api_key': '',
+    'is_authenticated': False,
+    'is_superuser': False,
+    'permission_denied_handler': None,
+    'resource_access_handler': None,
+    #'base_path':'/api-docs' , #aqi.indiaspend.org/api-docs',
+    'info': {
+        #'contact': 'johnsonchetty@gmail.com',
+        'description': 'Click on the "Show/Hide" option for each row to expand the API calls with the endpoint',
+        #'license': 'MIT',
+        #'licenseUrl': 'http://www.apache.org/licenses/LICENSE-2.0.html',
+        'termsOfServiceUrl': '',
+        'title': 'Air Quality',
+    },
+    'doc_expansion': 'none',
+}
 
 
 LEAFLET_CONFIG = {

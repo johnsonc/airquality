@@ -380,6 +380,7 @@ def aqdatapoint(request):
         d['count_large'] = request.GET['l']
         d['count_small'] = request.GET['s']         
         d['created_on'] = datetime.datetime.now()
+        d['ip'] = deviceip             
         #import pdb; pdb.set_trace()        
         
         if float(d['pm25']) > 1500 or float(d['pm10']) > 1500:            
@@ -425,9 +426,11 @@ def aqdatapoint(request):
                 #aqd.save()
                 #f.write("\nAQD:" + str(aqd.__dict__))
                 #write to log if loc of AQD changed.
-            d['ip'] = deviceip             #aqd.ip
-            d['lat'] = ipdetails['lat']    #aqd.geom['coordinates'][1]   
-            d['lon'] = ipdetails['lon']    #aqd.geom['coordinates'][0]   
+                d['lat']=ipdetails['lat'] 
+                d['lat']=ipdetails['lat'] 
+            else:
+                d['lat'] = aqd.geom['coordinates'][1]   
+                d['lon'] = aqd.geom['coordinates'][0]   
         except:       
             import sys
             f.write("\nERROR: " + str(sys.exc_info()))

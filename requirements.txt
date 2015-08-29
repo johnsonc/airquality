@@ -17,3 +17,4 @@ drf_ujson
 djangorestframework-csv
 requests
 python-dateutils
+django-rest-swagger
