@@ -288,7 +288,7 @@ def aqfeed_detail_time(request, imei, until_date):
             #import pdb; pdb.set_trace();
             #ed = datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
             sdd = datetime.datetime.strptime(until_date, '%d-%m-%Y')
-            sd = dateparser.parse(until_date + " 00:00 +0530")
+            sd = dateparser.parse(sdd.isoformat() + '+0530')
             today = datetime.datetime.now(tzlocal())
             if today.date() == sd.date():
                 ed = today
