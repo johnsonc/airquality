@@ -367,18 +367,23 @@ def aqdatapoint(request):
     """
     
     deviceip = get_client_ip(request)
-    f = open('/tmp/aqrequest.log', 'a+')
+    f = open('aqrequest.log', 'a+')    
     f.write("\n" + str(deviceip))
     
     if request.method == "GET":                
         d={}
+        try:
+            d['lon'] = request.GET['lon']
+            d['lat'] = request.GET['lat']        
+        except: 
+            pass
         d['imei'] = request.GET['i']
         d['humidity'] = request.GET['h']
         d['temperature'] = request.GET['t']
         d['pm10'] = request.GET['10']
         d['pm25'] = request.GET['25']
         d['count_large'] = request.GET['l']
-        d['count_small'] = request.GET['s']         
+        d['count_small'] = request.GET['s']        
         d['created_on'] = datetime.datetime.now()
         d['ip'] = deviceip             
         #import pdb; pdb.set_trace()        
@@ -390,47 +395,60 @@ def aqdatapoint(request):
         
         try:
             #import pdb; pdb.set_trace()        
-            try:            
-                deviceip = request.GET['ip']
-            except:
-                pass
+            #    deviceip = request.GET['ip']
+            #try:            
+            #except:
+            #    pass
 
             #1. check the device IP and load lat, lon from there, if changed, update location
-            aqd = AQDevice.objects.get(imei=d['imei'])   
-            if aqd.ip != deviceip:
-                #2.  if not matching , ask for new geo loc. 
-                #even if call fails, fail silently since device streams every 5 min.
-                ipdetails = requests.get("http://ip-api.com/json/"+ deviceip ).json()
-                aqd.ip = deviceip
-                #aqd.lat = ipdetails['lat']
-                #aqd.lon = ipdetails['lon']            
-                # Until GPS coarse loc is available, turn off overwriting            
-                #aqd.geom = {u'type': u'Point', u'coordinates': [ipdetails['lon'], ipdetails['lat']}
-                # 3. Update state, city details if device changes locations
-                try:
-                    # 4. Check and get state in incoming IP
-                    s = getState(ipdetails)    
-                    c = create_or_getCity(ipdetails['city'], s, ipdetails['lat'], ipdetails['lon'])
-                    # update status as live. 
-                    s.live="true"
-                    s.save()
-                    c.live="true"
-                    c.save()
+            aqd = AQDevice.objects.get(imei=d['imei'])
+            if not (d['lat'] == aqd.geom['coordinates'][1] and d['lon'] == aqd.geom['coordinates'][0]):   
+                try:                
+                    aqd.geom = {u'type': u'Point', u'coordinates': [d['lon'], d['lat']]}
+                    aqd.save()
                 except:
                     import sys
                     f.write("\nERROR: " + str(sys.exc_info()))
+                                        
+            #if aqd.geom != deviceip:
+            #if not (d['lat'] = aqd.geom['coordinates'][1] and d['lon'] = aqd.geom['coordinates'][0]) :   
+
+                #2.  if not matching , ask for new geo loc. 
+                #even if call fails, fail silently since device streams every 5 min.
+                #ipdetails = requests.get("http://ip-api.com/json/"+ deviceip ).json()
+                #aqd.ip = deviceip
+                #aqd.lat = ipdetails['lat']
+                #aqd.lon = ipdetails['lon']            
+                # Until GPS coarse loc is available, turn off overwriting            
+                #aqd.geom = {u'type': u'Point', u'coordinates': [d['lon'], d['lat']]}
+                #aqd.save()
+                
+                # 3. Update state, city details if device changes locations
+                #try:
+                #    # 4. Check and get state in incoming IP
+                #    s = getState(ipdetails)    
+                #    //jj needs geo lookup
+                #    c = create_or_getCity(ipdetails['city'], s, ipdetails['lat'], ipdetails['lon'])
+                #    # update status as live. 
+                #    s.live="true"
+                #    s.save()
+                #    c.live="true"
+                #    c.save()
+                #except:
+                #    import sys
+                #    f.write("\nERROR: " + str(sys.exc_info()))
                 #after ascertaining city and state objects, save aqd 
-                aqd.city = c.name
-                aqd.state = s.name
+                #aqd.city = c.name
+                #aqd.state = s.name
                 # Until GPS coarse loc is available, turn off overwriting            
                 #aqd.save()
                 #f.write("\nAQD:" + str(aqd.__dict__))
                 #write to log if loc of AQD changed.
-                d['lat']=ipdetails['lat'] 
-                d['lat']=ipdetails['lat'] 
-            else:
-                d['lat'] = aqd.geom['coordinates'][1]   
-                d['lon'] = aqd.geom['coordinates'][0]   
+                #d['lat']=ipdetails['lat'] 
+                #d['lat']=ipdetails['lat'] 
+            #else:
+                #d['lat'] = aqd.geom['coordinates'][1]   
+                #d['lon'] = aqd.geom['coordinates'][0]   
         except:       
             import sys
             f.write("\nERROR: " + str(sys.exc_info()))
