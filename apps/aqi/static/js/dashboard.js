@@ -23,7 +23,7 @@ zoomRender = false;
     var datapoint;
     var datapoints;
     var datapointCF;
-    dateFormat = d3.time.format('%d/%m/%Y');
+    dateFormat = d3.time.format('%d-%B-%Y');
     var numberFormat = d3.format('.2f');
 
     //var timeChart  = dc.barChart("#time-chart");
@@ -1126,7 +1126,7 @@ function setCharts(){
 	var aqiTextDate = d3.select("#aqiDate")
 	    .data([data])
 	    .html(function(d){ 		
-		return "on: " + dateFormat(d.key);
+		return "on: " + dateFormat(d.key)+"(For past 24 hours)";
 	    });	
 
 	aqiTextRemark
