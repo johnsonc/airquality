@@ -373,22 +373,45 @@ def aqdatapoint(request):
     if request.method == "GET":                
         d={}
         try:
-            d['lon'] = request.GET['lon']
-            d['lat'] = request.GET['lat']        
-        except: 
-            pass
-        d['imei'] = request.GET['i']
-        d['humidity'] = request.GET['h']
-        d['temperature'] = request.GET['t']
-        d['pm10'] = request.GET['10']
-        d['pm25'] = request.GET['25']
-        d['count_large'] = request.GET['l']
-        d['count_small'] = request.GET['s']        
-        d['created_on'] = datetime.datetime.now()
-        d['ip'] = deviceip             
+            try:
+                d['lon'] = request.GET['lon']
+                d['lat'] = request.GET['lat']        
+                d['imei'] = request.GET['i']
+                d['humidity'] = request.GET['h']
+                d['temperature'] = request.GET['t']
+                d['pm10'] = request.GET['10']
+                d['pm25'] = request.GET['25']
+                d['count_large'] = request.GET['l']
+                d['count_small'] = request.GET['s']        
+                d['ip'] = deviceip             
+            except: 
+                d['lon'] = request.GET['longitude']
+                d['lat'] = request.GET['latitude']        
+                d['pm10conc'] = request.GET['PM10Conc']
+                d['pm25conc'] = request.GET['PM25Conc']
+                d['pm10count'] = request.GET['PM10Count']
+                d['pm25count'] = request.GET['PM25Count']
+                d['humidity'] = request.GET['Humidity']
+                d['temperature'] = request.GET['Temp']
+                d['pm10avg'] = request.GET['PM10avg']
+                d['pm25avg'] = request.GET['PM25avg']
+                d['pm10countavg'] = request.GET['PM10Countavg']
+                d['pm25countavg'] = request.GET['PM25Countavg']                        
+            
+            #legacy fields
+                d['count_large'] = request.GET['PM10Conc']
+                d['count_small'] = request.GET['PM25Conc']        
+                d['pm10'] = request.GET['PM10Count']
+                d['pm25'] = request.GET['PM25Count']
+            except:
+                import sys
+                f.write("\nERROR: " + str(sys.exc_info()))
+                
+            
         #import pdb; pdb.set_trace()        
+        d['created_on'] = datetime.datetime.now()
         
-        if float(d['pm25']) > 1500 or float(d['pm10']) > 1500:            
+        if float(d['pm25']) > 1500 or float(d['pm10']) > 1500:
             f.write("\nInvalid data: " + str(d))
             f.close()                    
             return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
@@ -402,7 +425,7 @@ def aqdatapoint(request):
 
             #1. check the device IP and load lat, lon from there, if changed, update location
             aqd = AQDevice.objects.get(imei=d['imei'])
-            if not (d['lat'] == aqd.geom['coordinates'][1] and d['lon'] == aqd.geom['coordinates'][0]):   
+            if not (d['lat'] == aqd.geom['coordinates'][1] and d['lon'] == aqd.geom['coordinates'][0]):                   
                 try:                
                     aqd.geom = {u'type': u'Point', u'coordinates': [d['lon'], d['lat']]}
                     aqd.save()

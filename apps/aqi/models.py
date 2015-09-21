@@ -40,7 +40,16 @@ class AQFeed(models.Model):
     lat =  models.CharField(max_length=24,  null=True, blank=True)
     lon =  models.CharField(max_length=24, null=True, blank=True)
     ip =  models.CharField(max_length=28, null=True, blank=True) # include IPv6
-    created_on = models.DateTimeField(blank=True, null=True)    
+    created_on = models.DateTimeField(blank=True, null=True)
+    #   conc/l  ,   10 = pm10Count
+    pm25conc =  models.FloatField(null=True, blank=True)
+    pm10conc =  models.FloatField(null=True, blank=True)
+    pm25count =  models.FloatField(null=True, blank=True)
+    pm10count =  models.FloatField(null=True, blank=True)
+    pm25avg =  models.FloatField(null=True, blank=True)
+    pm10avg =  models.FloatField(null=True, blank=True)
+    pm25countavg =  models.FloatField(null=True, blank=True)
+    pm10countavg =  models.FloatField(null=True, blank=True)
     objects = MongoDBManager()
 
     class Meta:
