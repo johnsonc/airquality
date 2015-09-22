@@ -395,8 +395,7 @@ def aqdatapoint(request):
                 d['pm10avg'] = request.GET['pm10avg']
                 d['pm25avg'] = request.GET['pm25avg']
                 d['pm10countavg'] = request.GET['pm10countavg']
-                d['pm25countavg'] = request.GET['pm25countavg']                        
-            
+                d['pm25countavg'] = request.GET['pm25countavg']                              
             #legacy fields
                 d['count_large'] = request.GET['pm10conc']
                 d['count_small'] = request.GET['pm25conc']        
@@ -408,16 +407,19 @@ def aqdatapoint(request):
             
         d['created_on'] = datetime.datetime.now()
         
-        if float(d['pm25']) > 1500 or float(d['pm10']) > 1500:
-            f.write("\nInvalid data: " + str(d))
-            f.close()                    
-            return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
+        # try:
+        #     if float(d['pm25']) > 1500 or float(d['pm10']) > 1500:
+        #         f.write("\nInvalid data: " + str(d))
+        #         f.close()                    
+        #         return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)          
+        # except:
+        #     pass
         
         try:
             #1. check the device IP and load lat, lon from there, if changed, update location
             aqd = AQDevice.objects.get(imei=d['imei'])
             try:
-                if not (d['lat'] == aqd.geom['coordinates'][1] and d['lon'] == aqd.geom['coordinates'][0]):                   
+                if not (d['lat'] == aqd.geom['coordinates'][1] and d['lon'] == aqd.geom['coordinates'][0]):
                     try:                
                         aqd.geom = {u'type': u'Point', u'coordinates': [d['lon'], d['lat']]}
                         aqd.save()
