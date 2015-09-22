@@ -2,6 +2,8 @@ from django.conf.urls import patterns, include, url
 import views as aqviews
 
 urlpatterns = patterns("",
+    url(r'', include('rest_framework_swagger.urls')),
+    #url(r'api-docs/$', include('rest_framework_swagger.urls')),
     url(r'config/$', aqviews.displayConfig),
     url(r'devices/$', aqviews.aqdevice_list),
     url(r'devices/locations/$', aqviews.aqdevice_locations),

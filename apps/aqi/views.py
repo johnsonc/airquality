@@ -365,7 +365,7 @@ def aqdatapoint(request):
     """
     Add a AQ data point via GET
     """
-    #import pdb; pdb.set_trace()            
+    #import pdb; pdb.set_trace()
     deviceip = get_client_ip(request)
     f = open('aqrequest.log', 'a+')    
     f.write("\n" + str(deviceip))
@@ -384,24 +384,24 @@ def aqdatapoint(request):
                 d['ip'] = deviceip             
             except: 
                 d['imei'] = request.GET['imei']
-                d['lon'] = request.GET['longitude']
-                d['lat'] = request.GET['latitude']        
-                d['pm10conc'] = request.GET['PM10Conc']
-                d['pm25conc'] = request.GET['PM25Conc']
-                d['pm10count'] = request.GET['PM10Count']
-                d['pm25count'] = request.GET['PM25Count']
-                d['humidity'] = request.GET['Humidity']
-                d['temperature'] = request.GET['Temp']
-                d['pm10avg'] = request.GET['PM10avg']
-                d['pm25avg'] = request.GET['PM25avg']
-                d['pm10countavg'] = request.GET['PM10Countavg']
-                d['pm25countavg'] = request.GET['PM25Countavg']                        
+                d['lon'] = request.GET['lon']
+                d['lat'] = request.GET['lat']        
+                d['pm10conc'] = request.GET['pm10conc']
+                d['pm25conc'] = request.GET['pm25conc']
+                d['pm10count'] = request.GET['pm10count']
+                d['pm25count'] = request.GET['pm25count']
+                d['humidity'] = request.GET['humidity']
+                d['temperature'] = request.GET['temp']
+                d['pm10avg'] = request.GET['pm10avg']
+                d['pm25avg'] = request.GET['pm25avg']
+                d['pm10countavg'] = request.GET['pm10countavg']
+                d['pm25countavg'] = request.GET['pm25countavg']                        
             
             #legacy fields
-                d['count_large'] = request.GET['PM10Conc']
-                d['count_small'] = request.GET['PM25Conc']        
-                d['pm10'] = request.GET['PM10Count']
-                d['pm25'] = request.GET['PM25Count']
+                d['count_large'] = request.GET['pm10conc']
+                d['count_small'] = request.GET['pm25conc']        
+                d['pm10'] = request.GET['pm10count']
+                d['pm25'] = request.GET['pm25count']
         except:
             import sys
             f.write("\nERROR: " + str(sys.exc_info()))                
