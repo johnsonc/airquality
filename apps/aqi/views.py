@@ -365,17 +365,15 @@ def aqdatapoint(request):
     """
     Add a AQ data point via GET
     """
-    
+    #import pdb; pdb.set_trace()            
     deviceip = get_client_ip(request)
     f = open('aqrequest.log', 'a+')    
     f.write("\n" + str(deviceip))
     
     if request.method == "GET":                
         d={}
-        try:
+        try:            
             try:
-                d['lon'] = request.GET['lon']
-                d['lat'] = request.GET['lat']        
                 d['imei'] = request.GET['i']
                 d['humidity'] = request.GET['h']
                 d['temperature'] = request.GET['t']
@@ -385,6 +383,7 @@ def aqdatapoint(request):
                 d['count_small'] = request.GET['s']        
                 d['ip'] = deviceip             
             except: 
+                d['imei'] = request.GET['imei']
                 d['lon'] = request.GET['longitude']
                 d['lat'] = request.GET['latitude']        
                 d['pm10conc'] = request.GET['PM10Conc']
@@ -403,12 +402,10 @@ def aqdatapoint(request):
                 d['count_small'] = request.GET['PM25Conc']        
                 d['pm10'] = request.GET['PM10Count']
                 d['pm25'] = request.GET['PM25Count']
-            except:
-                import sys
-                f.write("\nERROR: " + str(sys.exc_info()))
-                
+        except:
+            import sys
+            f.write("\nERROR: " + str(sys.exc_info()))                
             
-        #import pdb; pdb.set_trace()        
         d['created_on'] = datetime.datetime.now()
         
         if float(d['pm25']) > 1500 or float(d['pm10']) > 1500:
@@ -417,21 +414,18 @@ def aqdatapoint(request):
             return Response({"Feed not parsed!":"Values too large"}, status=status.HTTP_400_BAD_REQUEST)            
         
         try:
-            #import pdb; pdb.set_trace()        
-            #    deviceip = request.GET['ip']
-            #try:            
-            #except:
-            #    pass
-
             #1. check the device IP and load lat, lon from there, if changed, update location
             aqd = AQDevice.objects.get(imei=d['imei'])
-            if not (d['lat'] == aqd.geom['coordinates'][1] and d['lon'] == aqd.geom['coordinates'][0]):                   
-                try:                
-                    aqd.geom = {u'type': u'Point', u'coordinates': [d['lon'], d['lat']]}
-                    aqd.save()
-                except:
-                    import sys
-                    f.write("\nERROR: " + str(sys.exc_info()))
+            try:
+                if not (d['lat'] == aqd.geom['coordinates'][1] and d['lon'] == aqd.geom['coordinates'][0]):                   
+                    try:                
+                        aqd.geom = {u'type': u'Point', u'coordinates': [d['lon'], d['lat']]}
+                        aqd.save()
+                    except:
+                        import sys
+                        f.write("\nERROR updating location: " + str(sys.exc_info()))
+            except:
+                pass
                                         
             #if aqd.geom != deviceip:
             #if not (d['lat'] = aqd.geom['coordinates'][1] and d['lon'] = aqd.geom['coordinates'][0]) :   

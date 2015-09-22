@@ -52,7 +52,8 @@ class AQDeviceSerializer(serializers.Serializer):
 class AQFeedSerializer(serializers.ModelSerializer):
      class Meta:
          model = AQFeed
-         fields = ('name','imei','created_on', 'humidity', 'temperature', 'pm10', 'pm25', 'count_large', 'count_small', 'lat', 'lon', 'ip')
+         fields = ('name','imei','created_on', 'humidity', 'temperature', 'pm10', 'pm25', 'count_large', 'count_small', 'lat', 'lon', 'ip', 'pm25conc', 'pm10conc', 'pm25count' , 'pm10count', 'pm25avg', 'pm10avg', 'pm25countavg', 'pm10countavg' )
+#'PM25Conc', 'PM10Conc', 'PM25Count' , 'PM10Count', 'PM25avg', 'PM10avg', 'PM25Countavg', 'PM10Countavg' )
 
 class StateSerializer(serializers.ModelSerializer):
      class Meta:
