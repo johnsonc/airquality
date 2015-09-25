@@ -27,7 +27,7 @@ zoomRender = false;
     var numberFormat = d3.format('.2f');
 
     //var timeChart  = dc.barChart("#time-chart");
-    var pm10Chart  = dc.lineChart("#pm10-chart"); 
+    var pm10Chart  = dc.barChart("#pm10-chart"); 
     var pm25Chart = dc.barChart('#pm25-chart');
     var tempChart = dc.barChart('#temp-chart');
     var humidityChart = dc.barChart('#hum-chart');
@@ -187,12 +187,12 @@ function streamUpdate()
 	append=true;
 	if(newdatapoints.length != 0){	    
 	    processdata(newdatapoints, append=true);
-	    //console.log(newdatapoints);	
-	    //console.log('Data stream updated');
+	    console.log(newdatapoints);	
+	    console.log('Data stream updated');
 	    renderAll();
 	}
 	else{
-	    //console.log('Nothing to add from stream ');
+	    console.log('Nothing to add from stream ');
 	}   
 	lastStreamTimeStamp = new Date();
     }
@@ -270,22 +270,24 @@ function streamUpdate()
 	    //t['month']= t.time.getMonth();
 	    //t['year']= t.time.getFullYear();
 	})	
-	//console.log("Old data size:" + datapoints.size());
 	if(append==true){
+	    console.log("Old data size:" + datapoints.length);	
 	    datapoints.push(tmpdatapoints);
 	    datapointCF.add(tmpdatapoints);
+	    console.log("New data size:" + datapoints.length);	
 	}
 	else{
 	    datapoints = [];
 	    datapoints = tmpdatapoints;
+	    console.log("Initial data size:" + datapoints.length);	
 	}
 	updateDimensions();
     }
 
     function updateDimensions(){
 	if (datapointCF == null){
-	    //console.log("datapointCF is not initialized!.. Initializing!")
-	    //console.log(datapointCF);
+	    console.log("datapointCF is not initialized!.. Initializing!")
+	    console.log(datapointCF);
 	    initDimensions();
 	    return;
 	}
@@ -1126,7 +1128,7 @@ function setCharts(){
 	var aqiTextDate = d3.select("#aqiDate")
 	    .data([data])
 	    .html(function(d){ 		
-		return "on: " + dateFormat(d.key)+"(For past 24 hours)";
+		return "on: " + dateFormat(d.key)+" <br/> (For past 24 hours)";
 	    });	
 
 	aqiTextRemark
