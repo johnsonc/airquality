@@ -1127,8 +1127,12 @@ function setCharts(){
 	    */
 	var aqiTextDate = d3.select("#aqiDate")
 	    .data([data])
-	    .html(function(d){ 		
-		return "on: " + dateFormat(d.key)+" <br/> (For past 24 hours)";
+	    .html(function(d){ 				
+		var sendText = "on: " + dateFormat(d.key);
+		if (d3.time.day(new Date()).toISOString()==d3.time.day(d.key).toISOString()){
+		    sendText += "<br /> (previous 24 hours)";
+		}		
+		return sendText;
 	    });	
 
 	aqiTextRemark
