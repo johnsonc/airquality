@@ -111,22 +111,23 @@
           </div>
       
           <div class="">
-	    <div class="col-xs-0 col-md-4"></div>
-	    <div style="text-align:center; margin:25px;" id="aqi-display3" class="col-xs-12 col-md-4">
+	    <div class="col-xs-0 col-sm-4 col-md-4"></div>
+	    <div style="text-align:center; margin:25px;" id="aqi-display3" 
+class="col-xs-12 col-md-4 col-sm-4">
 	      <div class="switch">
-		<div class="aqiText1" >Air Quality Index</div>		      
-		<div class="switch-label" aqi="">
-		</div> 			
-		<div id="aqiDate"></div> 		      
-		<span class="switch-handle">
-		  <div style="text-align:center;" id="aqi-display" class="aqid1">
-		  </div> 
-		  <div style="text-align:center;" id="aqi-display2" class="aqid2">
-		  </div> 
-		</span>
+		  <div class="aqiText1" >Air Quality Index</div>		      
+		  <div class="switch-label" aqi="">
+		    <div class="aqiremark"></div>
+		  </div> 			
+		  <div id="aqiDate"></div> 		      
+		  <span class="switch-handle">
+		    <div style="text-align:center;" id="aqi-display" class="aqid1"></div> 
+		    <div style="text-align:center;" id="aqi-display2" class="aqid2"></div> 
+		  </span>
 	      </div>
+
 	    </div> 	 
-	    <div class="col-xs-0 col-md-4"></div>
+	    <div class="col-xs-0 col-sm-4 col-md-4"></div>
 
           </div>
         </div>
@@ -165,9 +166,9 @@
             <div id="dashboard">
 
 	      <div id="pm10container" class="row" >
-		<div id="pm10-chart"  class="col-xs-10"> 
+		<div id="pm10-chart"  class="col-xs-10 col-sm-10"> 
 		</div>
-		<div id="pm10-stats" class="stats col-xs-2"> 			
+		<div id="pm10-stats" class="stats col-xs-2 col-sm-2"> 			
 		  <div id="pm10-max" class="max"> Max		
 		  </div> 		
 		  <div id="pm10-avg" class="avg"> Avg		
@@ -179,9 +180,9 @@
 
 
 	      <div id="pm25container" class="row" >
-		<div id="pm25-chart"  class="col-xs-10"> 
+		<div id="pm25-chart"  class="col-xs-10 col-sm-10"> 
 		</div>
-		<div id="pm25-stats" class="col-xs-2 stats"> 			
+		<div id="pm25-stats" class="col-xs-2 stats col-sm-2"> 			
 		  <div id="pm25-max" class="max"> Max		
 		  </div> 		
 		  <div id="pm25-avg" class="avg"> Avg		
@@ -193,9 +194,9 @@
 
 
 	      <div id="tempcontainer" class="row" >
-		<div id="temp-chart"  class="col-xs-10"> 
+		<div id="temp-chart"  class="col-xs-10 col-sm-10"> 
 		</div>
-		<div id="temp-stats" class="col-xs-2 stats"> 			
+		<div id="temp-stats" class="col-xs-2 stats col-sm-2"> 			
 		  <div id="temp-max" class="max"> Max		
 		  </div> 		
 		  <div id="temp-avg" class="avg"> Avg		
@@ -403,6 +404,8 @@
             });
         </script>-->
   <script src="/aq/static/js/bootstrap-sortable.js" ></script>
+  <script src="/aq/static/js/jquery.fittext.js" ></script>
+  <script src="/aq/static/js/bigtext.js" ></script>
   <script src="/aq/static/js/lib/eventemitter2.js" ></script>
   <script src="/aq/static/js/lib/queue.js" ></script>
   <script src="/aq/static/js/elems/circleChart.js"></script>

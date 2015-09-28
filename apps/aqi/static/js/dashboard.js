@@ -64,7 +64,7 @@ zoomRender = false;
     var d3humavg = d3.select("#humidity-avg");
 
 var aqiText, aqiDisplay, aqiCircle, aqiTextDate;
-var aqiTextRemark = d3.select(".switch-label").append("div");
+var aqiTextRemark = d3.select(".aqiremark");
 
 var margin = 30; //DeviceWidth*0.05,
 w = 200 - margin * 2, // DeviceWidth
@@ -854,9 +854,10 @@ function setCharts(){
 		    data = _.max(aqiAvgGroupByDay.all(), function (d) { return d.key });
 		    data['desc'] = getAQIDesc(data.value.average);
 		}		
+		
 		// requires data in key value format
 		aqiCircle = aqiDisplay.selectAll("circle")
-		    .attr("class", "bubble")
+		    //.attr("class", "bubble")
 		    .data([data])
 		    .enter()
 		    .append("circle")
@@ -970,24 +971,29 @@ function setCharts(){
 		} // end collide
 		*/
 		
-		aqiText = aqiDisplay.selectAll("text.title")
+		aqiText = aqiDisplay.selectAll("text.aqinumber")
 		    .data([data])
 		    .enter()
 		    .append("text")
 		    .attr("x", aqiradius)
-		    .attr("y", aqiradius+8+5)
+		    .attr("y", aqiradius+10)
 		    .attr("text-anchor", "middle")
-		    .attr("class", "title aqinumber")
+		    .attr("text-align", "center")
+		    .attr("class", "aqinumber")
 		    .text(function(d){ 
 			return numberFormat(d.value.average).substr(0,5);
 		    })
 		    .attr("font-family", "'Lato', sans-serif")
-		    .attr("font-size", function(d) {
-			return "3.0em";
-			//return Math.min(2 * aqiradius, (2 * aqiradius - 8) / numberFormat(d.value.average).length * 24) + "px";
-			//return (d.value.average > 999) ? "27px":"40px";})
-		    })  
-		    .attr("font-style", "bold")
+		    .style("font-size", function(d) { 
+			//var txtLength = d.value.average.substr(0,5).length();
+			return "4.77rem";
+			var txtLength = numberFormat(d.value.average).substr(0,5).length;
+			var size1 = 3*radius/txtLength;
+			var size2 =  ((2 * radius - 8) / this.getComputedTextLength() * 24);
+			var textLength = this.getComputedTextLength();
+			return Math.min(size1,size2) + "px"; 
+		    })	    
+		    .attr("font-weight", "bold")
 		    .attr("fill",   function (d) {
 			// AQI Color Standards
 			//return "#111111";
@@ -1000,6 +1006,9 @@ function setCharts(){
 			else if(a < 401){ return c[4];}			    
 			else if(a > 400){ return c[5];}			    
 		    });	
+		//jQuery(".aqiremark").fitText(1.4, { minFontSize: '40px', maxFontSize: '50px' });
+		jQuery(".aqiremark").bigtext();
+		//1.4, { minFontSize: '40px', maxFontSize: '50px' });
 		  
 		/*
 		aqiText2 = aqiDisplay.selectAll("text.value")
@@ -1028,8 +1037,7 @@ function setCharts(){
 			else if(a > 400){ return c[5];}			    
 		    });	
 		    */
-	    };
-	    
+	    };  
 	    initAQIChart();
 
 	} // end of setCharts
@@ -1063,26 +1071,47 @@ function setCharts(){
 	    });
 	
 	
-	var aqiText = aqiDisplay.selectAll("text.title")
+	var aqiText = aqiDisplay.selectAll("text.aqinumber")
 	    .data([data]);
 
 	aqiText.exit()
 	    .remove();
-	
+
+	/*
 	aqiText
+	    .attr("font-size", "2.9em")
+	    .text(function(d){ 
+		return numberFormat(d.value.average).substr(0,5); 
+	    });
+	    */
+
+	//d3.select('.aqinumber')
+	//  .select('.aqinumber').text ('23.66').attr('font-size','3.0em');
+
+ 	
+	aqiText		       
 	    .attr("x", radius)
-	    .attr("y", radius+8+5)
+	    .attr("y", radius+10)
 	    .attr("text-anchor", "middle")
+	    .attr("text-align", "center")
 	    .text(function(d){ 
 		return numberFormat(d.value.average).substr(0,5); 
 	    })
 	    .attr("font-family", "'Lato', sans-serif")
-	    .attr("font-size", "3.0em")
+	    .attr("font-weight", "bold")
+	    .style("font-size", function(d) { 
+		return "4.77rem";
+		var txtLength = numberFormat(d.value.average).substr(0,5).length;
+		var size1 = 3*radius/txtLength;
+		var size2 = ((2 * radius - 8) / this.getComputedTextLength() * 24);
+		var textLength = this.getComputedTextLength();
+		return Math.min(size1, size2) + "px"; 
+	    })	    
 	    .attr("fill",   function (d) {
 		// AQI Color Standards
 		//return "#111111";	
 		a = Math.round(d.value.average);		
-		var c = ['aliceblue', 'aliceblue', '#009900', '#0000aa',  'aliceblue', 'aliceblue'];
+		var c = ['aliceblue', 'aliceblue', '#009900', '#3333cc',  'aliceblue', 'aliceblue'];
 		if(a < 50 ){ return c[0];}
 		else if(a < 101){ return c[1];}
 		else if(a < 201){ return c[2];}		    
@@ -1092,6 +1121,7 @@ function setCharts(){
 
 	    });	
 		  
+	//jQuery(".aqiremark").fitText(1.4, { minFontSize: '40px', maxFontSize: '50px' });
 
 	/*
 	var aqiText2 = aqiDisplay.selectAll("text.value")
@@ -1137,7 +1167,6 @@ function setCharts(){
 
 	aqiTextRemark
 	    .data([data])
-	    .attr("class", "aqiremark")
 	    .text(function(d){ 
 		return d.desc.remark;
 	    });

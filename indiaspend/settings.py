@@ -160,7 +160,9 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 REST_FRAMEWORK = {
     # specifying the renderers
+    
     'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.BrowsableAPIRenderer',
         'drf_ujson.renderers.UJSONRenderer',
         'rest_framework_csv.renderers.CSVRenderer',
         ),
@@ -168,7 +170,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'drf_ujson.parsers.UJSONParser',
         ),
+   
     }
+
 
 SWAGGER_SETTINGS = {
     'exclude_namespaces': [],
@@ -183,7 +187,7 @@ SWAGGER_SETTINGS = {
     'is_superuser': False,
     'permission_denied_handler': None,
     'resource_access_handler': None,
-    #'base_path':'/api-docs' , #aqi.indiaspend.org/api-docs',
+    #'base_path':'/api/' , #aqi.indiaspend.org/api-docs',
     'info': {
         #'contact': 'johnsonchetty@gmail.com',
         'description': 'Click on the "Show/Hide" option for each row to expand the API calls with the endpoint',
