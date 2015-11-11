@@ -226,6 +226,7 @@ var ui = function(configObj){
 	$states = $("#statePicker");
 	$cities = $("#cityPicker");
 	$devices = $("#devicePicker");
+   
 	$date = $("#datePicker");
 	initializeDatepicker(datepickerOptions);
 	//map.initialize();
@@ -243,6 +244,10 @@ var ui = function(configObj){
     
     function deviceClicked(id) {
 	var device = AQIVis.getDevice(id);
+    
+    store_deiveplace=device.title;
+   device_place(store_deiveplace);
+   
 	setDropdowns(device.stateID, device.cityID, device.imei);
     }
     
@@ -257,6 +262,7 @@ var ui = function(configObj){
 	clearDevices();
 	populateDevices();
 	$devices.val(deviceID);
+    
 	map.showDevice(AQIVis.getDevice(deviceID));    
 	deviceSet(deviceID);
     }
@@ -267,6 +273,7 @@ var ui = function(configObj){
 
     function stateSelected() {
 	map.showState(AQIVis.getState($(this).val()));
+    //alert(map.showState(AQIVis.getState($(this).val())));
 	clearCities();
 	clearDevices();
 	populateCities();
@@ -275,15 +282,22 @@ var ui = function(configObj){
     
     function citySelected() {
 	map.showCity(AQIVis.getCity($(this).val()));
+    //alert(AQIVis.getCity($(this).val()));
 	clearDevices();
 	populateDevices();
 	$("#aqi-display3").addClass("display-none");
     }
     
     function deviceSelected() {	
-	//debugger;
+	
+   
+    
 	var id = $(this).val();
 	if ( "0" != id ) {
+     var device = AQIVis.getDevice(id);
+    //debugger;
+   store_deiveplace=device.title;
+   device_place(store_deiveplace);
 	    map.showDevice(AQIVis.getDevice(id));
 	    deviceSet(id);
 	}	
@@ -352,6 +366,7 @@ var ui = function(configObj){
 	$states.change(stateSelected);
 	$cities.change(citySelected);
 	$devices.change(deviceSelected);
+   // alert($devices.change(deviceSelected));
 	$date.datepicker().on('changeDate', dateChanged);
 	//$enddate.datepicker().on('changeDate', dateChanged);
     }
@@ -429,7 +444,7 @@ var ui = function(configObj){
 	//console.log(AQIVis.getDevicesByCity($cities.find(":selected").val()));	    	    
 	_.each(	    
 	    AQIVis.getDevicesByCity($cities.find(":selected").val()),	    	    
-	    function(device) {
+	    function(device) { //alert(device.title);
 		//if(!device.live) 
 		$devices.append($("<option />", {
 		    value: device.imei,

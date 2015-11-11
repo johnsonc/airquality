@@ -135,13 +135,15 @@ var aqiIndicators = [
     timerId = setInterval( streamUpdate, 30000);
 	// lazy loading... do not stream immediately, only start timer.
 	// so no click surging
-	console.log('Streaming enabled');
+	console.log('Streaming enabled123');
+    //alert('Streaming enabled');
     }
 
     function streamStop() {
 	clearInterval(timerId);
 	timerId = null;
 	console.log('Streaming disabled');
+   // alert('Streaming disabled');
     }
 
 
@@ -264,6 +266,7 @@ function streamUpdate()
 	    t['index'] = i;
 	    a = getAQI(t);
 	    t['aqi'] = _.min([a.aqi, 500]); 
+        
 	    t['pollutant'] = a.pollutant;
 	    t['hour'] = d3.time.hour(t.time);
 	    //t['day']= t.time.getHour();
@@ -319,13 +322,17 @@ function streamUpdate()
 	maxDate = dateDim.top(1)[0].time;
 	
 	if (d3.time.day(new Date()).toISOString()==d3.time.day(maxDate).toISOString()){
+    //alert(d3.time.day(new Date()).toISOString());
+    //alert(d3.time.day(maxDate).toISOString());
 	    prevDate = d3.time.day.offset(maxDate, -1);	    
 	    // Toggle live streaming if date is current date here. 
 	    streamStart();
 	}
 	else{
 	    prevDate = d3.time.day(maxDate);
+        //alert(prevDate);
 	    maxDate = d3.time.day.offset(prevDate, +1);
+        //alert(maxDate);
 	    streamStop();
 	}
 	prevWeekDate = d3.time.day.offset(new Date(), -7);
@@ -469,7 +476,7 @@ function computeAverages(){
 
 function getAQIDesc(v){
     for (var i in aqiIndicators){
-	if (v < aqiIndicators[i].uplimit+1){
+	if (v < aqiIndicators[i].uplimit+1){ 
 	    return aqiIndicators[i];
 	}		    
     }
@@ -853,6 +860,8 @@ function setCharts(){
 	 	if(data == null){
 		    data = _.max(aqiAvgGroupByDay.all(), function (d) { return d.key });
 		    data['desc'] = getAQIDesc(data.value.average);
+            aqi_index_store=data.value.average  ; 
+          aqi_index(aqi_index_store);
 		}		
 		
 		// requires data in key value format
@@ -868,12 +877,12 @@ function setCharts(){
 			// AQI Color Standards
 			a = Math.round(d.value.average);
 			var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
-			if(a < 50 ){ return c[0];}
-			else if(a < 101){ return c[1];}
-			else if(a < 201){ return c[2];}		    
-			else if(a < 301){ return c[3];}			    
-			else if(a < 401){ return c[4];}			    
-			else if(a > 400){ return c[5];}			    
+			if(a < 50 ){aqi_color_color=c[0];aqi_colorfn(aqi_color); return c[0]; }
+			else if(a < 101){aqi_color=c[1]; aqi_colorfn(aqi_color);return c[1];}
+			else if(a < 201){aqi_color=c[2] ; aqi_colorfn(aqi_color);return c[2];}		    
+			else if(a < 301){aqi_color=c[3] ; aqi_colorfn(aqi_color);return c[3];}			    
+			else if(a < 401){aqi_color=c[4]; aqi_colorfn(aqi_color); return c[4];}			    
+			else if(a > 400){aqi_color=c[5] ; aqi_colorfn(aqi_color); return c[5];}			    
 		    });
 		
 		// air bubbles
@@ -1008,6 +1017,8 @@ function setCharts(){
 		    });	
 		//jQuery(".aqiremark").fitText(1.4, { minFontSize: '40px', maxFontSize: '50px' });
 		jQuery(".aqiremark").bigtext();
+       
+        
 		//1.4, { minFontSize: '40px', maxFontSize: '50px' });
 		  
 		/*
@@ -1046,7 +1057,10 @@ function setCharts(){
     function updateAQIChart(data){		
 	if(data == null){
 	    var data = _.max(aqiAvgGroupByDay.all(), function (d) { return d.key });
-	    data['desc'] = getAQIDesc(data.value.average);	    
+	    data['desc'] = getAQIDesc(data.value.average);	 
+         aqi_index_store=data.value.average  ; 
+        aqi_index(aqi_index_store);
+        
 	}
 		
 	var aqiCircle = aqiDisplay.selectAll("circle")
@@ -1062,12 +1076,13 @@ function setCharts(){
 		// AQI Color Standards
 		a = Math.round(d.value.average);
 		var c = ['#00b050', '#92d050', '#ffff00', '#ff9900', '#ff0000', '#c00000'];
-		if(a < 50 ){ return c[0];}
-		else if(a < 101){ return c[1];}
-		else if(a < 201){ return c[2];}		    
-		else if(a < 301){ return c[3];}			    
-		else if(a < 401){ return c[4];}			    
-		else if(a > 400){ return c[5];}			    
+		if(a < 50 ){aqi_color=c[0]; aqi_colorfn(aqi_color); return c[0]; }
+			else if(a < 101){aqi_color=c[1]; aqi_colorfn(aqi_color);return c[1];}
+			else if(a < 201){aqi_color=c[2] ; aqi_colorfn(aqi_color);return c[2];}		    
+			else if(a < 301){aqi_color=c[3] ; aqi_colorfn(aqi_color);return c[3];}			    
+			else if(a < 401){aqi_color=c[4]; aqi_colorfn(aqi_color); return c[4];}			    
+			else if(a > 400){aqi_color=c[5] ; aqi_colorfn(aqi_color); return c[5];}				    
+			else if(a > 400){aqi_color=c[5] ; aqi_colorfn(aqi_color); return c[5];}				    
 	    });
 	
 	
@@ -1157,17 +1172,23 @@ function setCharts(){
 	    */
 	var aqiTextDate = d3.select("#aqiDate")
 	    .data([data])
-	    .html(function(d){ 				
+	    .html(function(d){ 	
+         store_date=dateFormat(d.key)  ; 
+         aqi_date(store_date);
 		var sendText = "on: " + dateFormat(d.key);
 		if (d3.time.day(new Date()).toISOString()==d3.time.day(d.key).toISOString()){
 		    sendText += "<br /> (previous 24 hours)";
-		}		
+		}	
+          
 		return sendText;
 	    });	
 
 	aqiTextRemark
 	    .data([data])
 	    .text(function(d){ 
+        store_remark=d.desc.remark;
+        aqi_remark(store_remark);
+         
 		return d.desc.remark;
 	    });
 	    //.attr("aqi",function(d){ 
