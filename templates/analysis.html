@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-  
+  <head>  
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">    
@@ -9,31 +8,37 @@
     <script src="/aq/static/js/pace.min.js"></script>
     <link rel="stylesheet" href="/aq/static/css/pace-theme-barber-shop-red.css"/>
     <style>
-    #valuesTable{
-    font-family: "Source Sans Pro", Helvetica, sans-serif  !important;
-   /* font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
-	background-color: #6699FF;
-	background: rgba(0, 0, 0, 0.7);
-	
-	left: 1%;
-	
-	height: 100%;
-	
-	color: white;
-	z-index: 1;
-	/*overflow: auto;*/
-}
-.even
-{    background: #2e292a ;}
+      #valuesTable{
+      font-family: "Source Sans Pro", Helvetica, sans-serif  !important;
+      /* font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+      background-color: #6699FF;
+      background: rgba(0, 0, 0, 0.7);     
+      left: 1%;	
+      height: 100%;	
+      color: white;
+      z-index: 1;
+      /*overflow: auto;*/
+      }
+      .even
+      {    background: #2e292a ;}
+      
+      background: #282425;
+      
+      tr:nth-child(odd)
+      {     background: #282425 !important;}
+      
+      td
+      {     border-top: none !important; 
+      }
 
-    background: #282425;
-    
-    tr:nth-child(odd)
-{     background: #282425 !important;}
+      .alpha-header {
+         background-color: #ccc;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        bottom: auto;
+       }
 
-  td
-  {     border-top: none !important; 
- }
     </style>
     <!-- <link rel="stylesheet" href="http://clairity.mit.edu/site/css/graphstyles.css"/>-->
     <link rel="stylesheet" href="/aq/static/css/filter.css"/>
@@ -71,7 +76,7 @@
 			<div class="logo" style="padding:15px 0px 0px 0px;">	
 									<h1>
 						<a href="http://www.indiaspend.com/" title="">
-							<img src="http://www.indiaspend.com/wp-content/uploads/is_logo.png" alt="IndiaSpend" title="IndiaSpend"/>
+							<img src="http://www.indiaspend.com/wp-content/uploads/is_logo.png" alt="IndiaSpend" title="IndiaSpend" height="42"/>
 						</a>
 					</h1>
 							</div><!-- logo -->
@@ -399,14 +404,14 @@ class="col-xs-12 col-md-4 col-sm-4">
 		  <div class="title">Small particle count</div>
 		  <span class='reset' style='display: none;'>  
 		    Current filter: <span class='filter'></span>
-		    
+		  </span>  
 		</div>
 
 		<div id="cl-chart" class="">
 		  <div class="title">Large particle count</div>
 		  <span class='reset' style='display: none;'>  
 		    Current filter: <span class='filter'></span>
-
+		  </span>
 		</div>
 
           </div>
@@ -429,13 +434,14 @@ class="col-xs-12 col-md-4 col-sm-4">
 	      </div>
 	      <span class="reset" style='display: none;'>  
 		Current filter: <span class='filter'></span>
-		
+	      </span>
 	    </div>	    
 	    <div id="pm10-chart2" class="">
 	      <div class="title">PM 10
 	      </div>
 		<span class='reset' style='display: none;'>  
 		  Current filter: <span class='filter'></span>
+		</span>
 	    </div>	    
           </div>
           <div class="chart-notes">
@@ -513,64 +519,65 @@ class="col-xs-12 col-md-4 col-sm-4">
             });
         </script>-->
         <script type='text/javascript' > 
-  var my_var ; 
-  var aqi_index_store;
-  var store_remark;
-  var store_deiveplace;
-   var aqi_color
-</script>
-  <script src="/aq/static/js/bootstrap-sortable.js" ></script>
-  <script src="/aq/static/js/jquery.fittext.js" ></script>
-  <script src="/aq/static/js/bigtext.js" ></script>
-  <script src="/aq/static/js/lib/eventemitter2.js" ></script>
-  <script src="/aq/static/js/lib/queue.js" ></script>
-  <script src="/aq/static/js/elems/circleChart.js"></script>
-  <script src="/aq/static/leaflet/leaflet.js" ></script>
-<!--  <script src="/aq/static/js/drawMap5.js" ></script> -->
-  <script src="/aq/static/js/map.js" ></script>
-  <script src="/aq/static/js/dashboard.js" ></script>
-  <script src="/aq/static/js/ui.js" ></script>  
-  <script>
- // $( document ).ready(function() {
-  //$('#my_id').html(my_var);
-  // alert(my_var);
-//});
-function aqi_index(data)
-{
-var my_var=data;
-//alert(my_var);
-my_var=Math.round(my_var * 100) / 100
-document.getElementById('aqi_index').innerHTML = my_var;
-}
-function aqi_remark(data)
-{
-var my_var=data;
-//alert(my_var);
-document.getElementById('aqi_remark').innerHTML = my_var;
-}
+	  var my_var ; 
+	  var aqi_index_store;
+	  var store_remark;
+	  var store_deiveplace;
+	  var aqi_color
+	</script>
+	<script src="/aq/static/js/bootstrap-sortable.js" ></script>
+	<script src="/aq/static/js/jquery.fittext.js" ></script>
+	<script src="/aq/static/js/bigtext.js" ></script>
+	<script src="/aq/static/js/lib/eventemitter2.js" ></script>
+	<script src="/aq/static/js/lib/queue.js" ></script>
+	<script src="/aq/static/js/elems/circleChart.js"></script>
+	<script src="/aq/static/leaflet/leaflet.js" ></script>
+	<link rel="stylesheet" href="/aq/static/leaflet/MarkerCluster.css" />
+	<link rel="stylesheet" href="/aq/static/leaflet/MarkerCluster.Default.css" />
+	<script src="/aq/static/leaflet/leaflet.markercluster.js" ></script>
+	<script src="/aq/static/js/map.js" ></script>
+	<script src="/aq/static/js/dashboard.js" ></script>
+	<script src="/aq/static/js/ui.js" ></script>  
+	<script>
+	  // $( document ).ready(function() {
+	  //$('#my_id').html(my_var);
+	  // alert(my_var);
+	  //});
+	  function aqi_index(data)
+	  {
+	  var my_var=data;
+	  //alert(my_var);
+	  my_var=Math.round(my_var * 100) / 100
+	  document.getElementById('aqi_index').innerHTML = my_var;
+	  }
+	  function aqi_remark(data)
+	  {
+	  var my_var=data;
+	  //alert(my_var);
+	  document.getElementById('aqi_remark').innerHTML = my_var;
+	  }
 
-function device_place(data)
-{
-var my_var=data;
-//alert(my_var);
-document.getElementById('device_place').innerHTML = my_var;
-}
-function aqi_date(data)
-{
-var my_var=data;
-//alert(my_var);
-document.getElementById('aqi_date').innerHTML = my_var;
-}
-function aqi_colorfn(data)
-{
-var my_var=data;
-//alert(my_var);
-document.getElementById("aqiholder").style.background = my_var;
-document.getElementById("aqitextholder").style.color = 'black';
-
-//document.getElementById('aqi_date').innerHTML = my_var;
-}
-
-  </script>
+	  function device_place(data)
+	  {
+	  var my_var=data;
+	  //alert(my_var);
+	  document.getElementById('device_place').innerHTML = my_var;
+	  }
+	  function aqi_date(data)
+	  {
+	  var my_var=data;
+	  //alert(my_var);
+	  document.getElementById('aqi_date').innerHTML = my_var;
+	  }
+	  function aqi_colorfn(data)
+	  {
+	  var my_var=data;
+	  //alert(my_var);
+	  document.getElementById("aqiholder").style.background = my_var;
+	  document.getElementById("aqitextholder").style.color = 'black';
+	  //document.getElementById('aqi_date').innerHTML = my_var;
+	  }
+	</script>	
+  </div>  
 </body>
 </html>
