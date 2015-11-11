@@ -1,7 +1,7 @@
 from django.forms import widgets
 from rest_framework import serializers
 from rest_framework_gis import serializers as gs
-from .models import AQDevice, AQFeed, City, State
+from .models import AQDevice, AQFeed, AQFeedLatest, City, State
 
 class AQDeviceSerializer(serializers.Serializer):
     id = serializers.CharField(max_length=512)
@@ -52,8 +52,15 @@ class AQDeviceSerializer(serializers.Serializer):
 class AQFeedSerializer(serializers.ModelSerializer):
      class Meta:
          model = AQFeed
-         fields = ('name','imei','created_on', 'humidity', 'temperature', 'pm10', 'pm25', 'count_large', 'count_small', 'lat', 'lon', 'ip', 'pm25conc', 'pm10conc', 'pm25count' , 'pm10count', 'pm25avg', 'pm10avg', 'pm25countavg', 'pm10countavg' )
+         #ajay
+         fields = ('name','imei','created_on', 'humidity', 'temperature', 'pm10', 'pm25', 'count_large', 'count_small', 'lat', 'lon', 'ip', 'pm25conc', 'pm10conc', 'pm25count' , 'pm10count', 'pm25avg', 'pm10avg', 'pm25countavg', 'pm10countavg', 'aqi', 'aqi10', 'aqi25' )
 #'PM25Conc', 'PM10Conc', 'PM25Count' , 'PM10Count', 'PM25avg', 'PM10avg', 'PM25Countavg', 'PM10Countavg' )
+
+class AQFeedLatestSerializer(serializers.ModelSerializer):
+     class Meta:
+         model = AQFeedLatest
+         #ajay
+         fields = ('name','imei','created_on', 'humidity', 'temperature', 'pm10', 'pm25', 'count_large', 'count_small', 'lat', 'lon', 'ip', 'pm25conc', 'pm10conc', 'pm25count' , 'pm10count', 'pm25avg', 'pm10avg', 'pm25countavg', 'pm10countavg', 'aqi', 'aqi10', 'aqi25' )
 
 class StateSerializer(serializers.ModelSerializer):
      class Meta:

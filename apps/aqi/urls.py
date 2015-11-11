@@ -17,4 +17,5 @@ urlpatterns = patterns("",
     url(r'aqfeed/(?P<start_time>[:T\-\d]+)/(?P<end_time>[:T\-\d]+)/$', aqviews.aqdatapointintime),
     url(r'aqfeed/(?P<device_imei>[\d]+)/(?P<start_time>[:T\-\d]+)/(?P<end_time>[:T\-\d]+)/$', aqviews.aqdatapointsfordevice),
     url(r'aqd/$', aqviews.aqdatapoint),                       
+    url(r'aqfeed/latestAll/$', aqviews.aqfeed_latestAll),
                        )

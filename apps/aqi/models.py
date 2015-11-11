@@ -50,6 +50,11 @@ class AQFeed(models.Model):
     pm10avg =  models.FloatField(null=True, blank=True)
     pm25countavg =  models.FloatField(null=True, blank=True)
     pm10countavg =  models.FloatField(null=True, blank=True)
+    #ajay 4_Oct_15
+    aqi = models.FloatField(null=True, blank=True)
+    aqi10 = models.FloatField(null=True, blank=True)
+    aqi25 = models.FloatField(null=True, blank=True)
+
     objects = MongoDBManager()
 
     class Meta:
@@ -58,6 +63,41 @@ class AQFeed(models.Model):
     def __unicode__(self):
         return self.imei
 
+
+class AQFeedLatest(models.Model):
+    name = models.CharField(max_length=128, null=True, blank=True )
+    imei = models.CharField(max_length=128)
+    humidity =  models.FloatField(null=True, blank=True )
+    temperature =  models.FloatField(null=True, blank=True)
+    pm10 =  models.FloatField(null=True, blank=True)
+    pm25 =  models.FloatField(null=True, blank=True)
+    count_large =  models.FloatField(null=True, blank=True)
+    count_small =  models.FloatField(null=True, blank=True)
+    lat =  models.CharField(max_length=24,  null=True, blank=True)
+    lon =  models.CharField(max_length=24, null=True, blank=True)
+    ip =  models.CharField(max_length=28, null=True, blank=True) # include IPv6
+    created_on = models.DateTimeField(blank=True, null=True)
+    #   conc/l  ,   10 = pm10Count
+    pm25conc =  models.FloatField(null=True, blank=True)
+    pm10conc =  models.FloatField(null=True, blank=True)
+    pm25count =  models.FloatField(null=True, blank=True)
+    pm10count =  models.FloatField(null=True, blank=True)
+    pm25avg =  models.FloatField(null=True, blank=True)
+    pm10avg =  models.FloatField(null=True, blank=True)
+    pm25countavg =  models.FloatField(null=True, blank=True)
+    pm10countavg =  models.FloatField(null=True, blank=True)
+    #ajay 4_Oct_15
+    aqi = models.FloatField(null=True, blank=True)
+    aqi10 = models.FloatField(null=True, blank=True)
+    aqi25 = models.FloatField(null=True, blank=True)
+
+    objects = MongoDBManager()
+
+    class Meta:
+        ordering = ('-created_on',)
+
+    def __unicode__(self):
+        return self.imei
 
 class State(models.Model):
     auto = models.AutoField(primary_key=True, blank=True )   

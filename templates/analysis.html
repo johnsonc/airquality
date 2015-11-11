@@ -26,6 +26,13 @@
       .leaflet-control-attribution {
       display:none
       }
+      .alpha-header {
+         background-color: #ccc;
+   	 width: 100%;
+    	 position: fixed;
+    	 top: 0;
+    	 bottom: auto;
+	}
       
     </style>
     <link rel="stylesheet" type="text/css" media="all" href="http://www.indiaspend.com/wp-content/themes/advanced-newspaper/style.css" />
@@ -33,7 +40,7 @@
 
 </head>
 <body class="application" style=" width: 100%; ">
-
+	<div class="alpha-header">This site is currently in beta release</div>
 
 	<div id="header">
 	     <div class="header_inner">
@@ -42,7 +49,7 @@
 			<div class="logo" style="padding:15px 0px 0px 0px;">	
 									<h1>
 						<a href="http://www.indiaspend.com/" title="">
-							<img src="http://www.indiaspend.com/wp-content/uploads/is_logo.png" alt="IndiaSpend" title="IndiaSpend"/>
+							<img src="http://www.indiaspend.com/wp-content/uploads/is_logo.png" alt="IndiaSpend" title="IndiaSpend" height="42"/>
 						</a>
 					</h1>
 							</div><!-- logo -->
@@ -56,94 +63,38 @@
 <!--- rest body starts here-->
 
  
-  <div class="container-fluid">
-    <div class="row">
-      <div class="fullrow">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Air Quality Dashboard
-		   </div>
-          <div class="chart-stage">
+   <div class="">
+            <div class="col-xs-0 col-sm-4 col-md-4"></div>
+            <div style="text-align:center; margin:25px;" id="aqi-display3" class="col-xs-12 col-md-4 col-sm-4">
+              <div class="switch">
+                  <div class="aqiText1" >Air Quality Index</div>
+                  <div class="switch-label" aqi="">
+                    <div class="aqiremark"></div>
+                  </div>
+                  <div id="aqiDate"></div>
+                  <span class="switch-handle">
+                    <div style="text-align:center;" id="aqi-display" class="aqid1"></div>
+                    <div style="text-align:center;" id="aqi-display2" class="aqid2"></div>
+                  </span>
+              </div>
 
-
-    <div  class="container-x row-x col-md-12 col-xs-12">
-      <div id="station-aqi" class="container-x">
-        <!--h2 class="text-center">Station AQI</h2-->
-        <div class="row col-md-12 col-xs-12" style=" margin-top: 10px; ">
-          <div class=" col-md-3 col-xs-12  col-sm-3 col-lg-3  form-group nullable">
-            <div class="input-group">
-              <div class="input-group-addon">State &nbsp;</div>
-              <select id="statePicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select State" >
-              </select>              
             </div>
-          </div>
-          <div class=" col-md-3 col-xs-12  col-sm-3 col-lg-3  form-group">
-            <div class="input-group">
-              <div class="input-group-addon">City &nbsp; &nbsp;</div>
-              <select id="cityPicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select City">
-              </select>              
-            </div>            
-          </div>
-          <div class="col-md-3 col-xs-12  col-sm-3 col-lg-3  form-group">
-            <div class="input-group">
-              <div class="input-group-addon">Device</div>
-              <select id="devicePicker" class="form-control selectpicker" data-width="30%" data-live-search="true"  title="Select Device">
-              </select>              
-            </div>                        
-          </div>
-          <div class="col-md-3 col-xs-12  col-sm-3 col-lg-3 form-group">
-            <div id="datePicker" class="input-group date">
-              <input type="text" style=" height: 34px; " class="form-control" required>
-              <span class="input-group-addon">
-                <i class="glyphicon glyphicon-th"></i>
-              </span>
-            </div>
-          </div>
-        </div>
+   </div>
 
-	    <!--
-	    <div id="" style="display:none;"> Time line</div> 
-	    <div style="display:none;" style="float:left" id="time-chart">
-	      <span class='reset' style='display: none;'>  
-		Current filter: <span class='filter'></span>
-	    </div> 
-	    -->	    
-          </div>
-      
-          <div class="">
-	    <div class="col-xs-0 col-sm-4 col-md-4"></div>
-	    <div style="text-align:center; margin:25px;" id="aqi-display3" 
-class="col-xs-12 col-md-4 col-sm-4">
-	      <div class="switch">
-		  <div class="aqiText1" >Air Quality Index</div>		      
-		  <div class="switch-label" aqi="">
-		    <div class="aqiremark"></div>
-		  </div> 			
-		  <div id="aqiDate"></div> 		      
-		  <span class="switch-handle">
-		    <div style="text-align:center;" id="aqi-display" class="aqid1"></div> 
-		    <div style="text-align:center;" id="aqi-display2" class="aqid2"></div> 
-		  </span>
-	      </div>
 
-	    </div> 	 
-	    <div class="col-xs-0 col-sm-4 col-md-4"></div>
 
-          </div>
-        </div>
-      </div>
       
     </div>
 
     <div class="row">
-      <div class="col-sm-5">
+      <div class="col-sm-7">
         <div class="chart-wrapper">
           <div class="chart-title">
 	    Device Map with weather overlays
           </div>
           <div class="chart-stage">
             <div id="grid-1-1">
-	      <div id="mappa" class="display" style="height: 400px"> </div> 
+	      <div id="mappa" class="display" style="height: 500px"> </div> 
               <!-- img data-src="holder.js/100%x240/white/text:#grid-1-1"> -->
             </div>
           </div>
@@ -157,7 +108,7 @@ class="col-xs-12 col-md-4 col-sm-4">
           </div>
         </div>
       </div>
-      <div class="col-sm-7">
+      <div class="col-sm-5">
         <div class="chart-wrapper">
           <div class="chart-title">
             Sensor data
@@ -367,7 +318,6 @@ class="col-xs-12 col-md-4 col-sm-4">
       </div>
 
       <div class="row col-md-12 col-xs-12" style=" margin-top: 10px; ">	
-      <p style=" width: auto; " class="small text-muted">By <a class="text-muted" href="http://johnc.in">Johnson Chetty</a> for IndiaSpend.org, License: The MIT License (MIT). Map data and Image courtesy:OSM, NASA, Mapbox, Stamen, University of Heidelberg, Imagery provided by services from the Global Imagery Browse Services (GIBS), operated by the NASA/GSFC/Earth Science Data and Information System <a href=""></a></p>
       </div>
     </div>
 <!-- 2 added div-->
@@ -410,9 +360,12 @@ class="col-xs-12 col-md-4 col-sm-4">
   <script src="/aq/static/js/lib/queue.js" ></script>
   <script src="/aq/static/js/elems/circleChart.js"></script>
   <script src="/aq/static/leaflet/leaflet.js" ></script>
+  <link rel="stylesheet" href="/aq/static/leaflet/MarkerCluster.css" />
+  <link rel="stylesheet" href="/aq/static/leaflet/MarkerCluster.Default.css" />
+  <script src="/aq/static/leaflet/leaflet.markercluster.js" ></script>
 <!--  <script src="/aq/static/js/drawMap5.js" ></script> -->
-  <script src="/aq/static/js/map.js" ></script>
   <script src="/aq/static/js/dashboard.js" ></script>
+  <script src="/aq/static/js/map.js" ></script>
   <script src="/aq/static/js/ui.js" ></script>  
 </body>
 </html>

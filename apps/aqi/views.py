@@ -5,8 +5,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from models import AQDevice, AQFeed, State, City
-from serializers import AQDeviceSerializer, AQFeedSerializer, StateSerializer, CitySerializer
+from models import AQDevice, AQFeed,AQFeedLatest, State, City
+from serializers import AQDeviceSerializer, AQFeedSerializer, AQFeedLatestSerializer, StateSerializer, CitySerializer
 import datetime
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -14,6 +14,7 @@ from rest_framework.response import Response
 import requests
 from dateutil.tz import tzlocal
 from dateutil import parser as dateparser
+from django.core.exceptions import ObjectDoesNotExist
 
 class JSONResponse(HttpResponse):
     """
@@ -351,6 +352,35 @@ def aqfeed_latest(request, imei):
         return Response(serializer.data)    
 
 
+@csrf_exempt
+@api_view(['GET'])
+def aqfeed_latestAll(request):
+    """
+    Retrieve, the latest feed instance.
+    """
+    try:
+        #aqfeed = AQFeedLatest.objects.order_by('imei');
+        ed = datetime.datetime.now()
+        sd = ed - datetime.timedelta(days=2)
+        aqfeed = AQFeedLatest.objects.raw_query(
+                {
+                    "created_on":
+                    {
+                        '$gte': sd
+                        }
+                    }
+                ).order_by("-created_on")
+
+    except AQFeedLatest.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        #serializer = AQFeedSerializer(aqfeed)
+        serializer = AQFeedLatestSerializer(aqfeed,many=True)
+        return Response(serializer.data)
+
+
+
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -396,11 +426,18 @@ def aqdatapoint(request):
                 d['pm25avg'] = request.GET['pm25avg']
                 d['pm10countavg'] = request.GET['pm10countavg']
                 d['pm25countavg'] = request.GET['pm25countavg']                              
-            #legacy fields
-                d['count_large'] = request.GET['pm10conc']
-                d['count_small'] = request.GET['pm25conc']        
-                d['pm10'] = request.GET['pm10count']
-                d['pm25'] = request.GET['pm25count']
+                try:
+                        d['aqi'] = request.GET['aqi']                              
+                        d['aqi10'] = request.GET['aqi10']                              
+                        d['aqi25'] = request.GET['aqi25']                              
+                        #legacy fields
+                        d['count_large'] = request.GET['pm10conc']
+                        d['count_small'] = request.GET['pm25conc']        
+                        d['pm10'] = request.GET['pm10count']
+                        d['pm25'] = request.GET['pm25count']
+                except:
+                        pass
+
         except:
             import sys
             f.write("\nERROR: " + str(sys.exc_info()))                
@@ -474,6 +511,43 @@ def aqdatapoint(request):
 
         f.write("\nAQFeed:" + str(d))
         f.close()        
+        try:
+            serLatest = AQFeedLatest.objects.get(imei=d['imei'])
+            try:
+                serLatest.humidity = d['humidity']
+                serLatest.temperature = d['temperature']
+                serLatest.pm10 = d['pm10']
+                serLatest.pm25 = d['pm25']
+                serLatest.count_large = d['count_large']
+                serLatest.count_small = d['count_small']
+            except:
+                pass
+            try:
+                serLatest.pm25 = d['pm25']
+                serLatest.pm10conc = d['pm10conc']
+                serLatest.pm25conc = d['pm25conc']
+                serLatest.pm10count = d['pm10count']
+                serLatest.pm25count = d['pm25count']
+                serLatest.pm10avg = d['pm10avg']
+                serLatest.pm25avg = d['pm25avg']
+                serLatest.pm10countavg = d['pm10countavg']
+                serLatest.pm25countavg = d['pm25countavg']
+                serLatest.created_on = d['created_on']
+                serLatest.aqi = d['aqi']
+                serLatest.aqi10 = d['aqi10']
+                serLatest.aqi25 = d['aqi25']
+                serLatest.lon = d['lon'].replace(",", "")
+                serLatest.lat = d['lat'].replace(",", "")
+            except:
+                pass
+            serLatest.save()
+        except AQFeedLatest.DoesNotExist: 
+            serLatest = AQFeedLatestSerializer(data=d)
+            if serLatest.is_valid():
+                serLatest.save()
+        else:       
+            pass
+
         serializer = AQFeedSerializer(data=d)
         if serializer.is_valid():
             serializer.save()

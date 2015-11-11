@@ -8,6 +8,12 @@
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
 
+
+.leaflet-container {  /* all maps */
+    width:  100%;
+    height: 70%;
+}
+
 .clearfix {
   *zoom: 1;
 }
@@ -8825,9 +8831,9 @@ body.vjs-full-window {
 .navbar a.btn {padding:3px 10px !important; margin:7px 3px;}
 .navbar-search .btn {display:none;}
 a.brand {
-    background:url('/airquality/static/img/is-logo.png') no-repeat; background-position:5px 6px;
+    background:url('/static/img/is-logo.png') no-repeat; background-position:5px 6px;
     text-indent:13px; margin-left:-3px !important;
-    font-family: 'Lato', cursive;
+    font-family: 'Lato', sans-serif;
     font-size:28px !important;
     padding:3px 20px !important;
     text-decoration:none;
