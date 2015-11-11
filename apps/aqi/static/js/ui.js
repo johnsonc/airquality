@@ -294,10 +294,9 @@ var ui = function(configObj){
     
 	var id = $(this).val();
 	if ( "0" != id ) {
-     var device = AQIVis.getDevice(id);
-    //debugger;
-   store_deiveplace=device.title;
-   device_place(store_deiveplace);
+	    var device = AQIVis.getDevice(id);
+	    store_deiveplace=device.title;
+	    device_place(store_deiveplace);
 	    map.showDevice(AQIVis.getDevice(id));
 	    deviceSet(id);
 	}	
