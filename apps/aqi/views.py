@@ -427,22 +427,25 @@ def aqdatapoint(request):
                 d['pm10countavg'] = request.GET['pm10countavg']
                 d['pm25countavg'] = request.GET['pm25countavg']                              
                 try:
-                        d['aqi'] = request.GET['aqi']                              
-                        d['aqi10'] = request.GET['aqi10']                              
-                        d['aqi25'] = request.GET['aqi25']                              
-                        #legacy fields
-                        d['count_large'] = request.GET['pm10conc']
-                        d['count_small'] = request.GET['pm25conc']        
-                        d['pm10'] = request.GET['pm10count']
-                        d['pm25'] = request.GET['pm25count']
+                    # new fields from 2nd gen devices
+                    d['aqi'] = request.GET['aqi']                              
+                    d['aqi10'] = request.GET['aqi10']                              
+                    d['aqi25'] = request.GET['aqi25']                              
                 except:
-                        pass
-
+                    pass                
+                try:
+                    #legacy fields
+                    d['count_large'] = request.GET['pm10conc']
+                    d['count_small'] = request.GET['pm25conc']        
+                    d['pm10'] = request.GET['pm10count']
+                    d['pm25'] = request.GET['pm25count']
+                except:
+                    pass
         except:
             import sys
             f.write("\nERROR: " + str(sys.exc_info()))                
-            
-        d['created_on'] = datetime.datetime.now()
+
+        d['created_on'] = request.GET.get('created_on', datetime.datetime.now()) 
         
         # try:
         #     if float(d['pm25']) > 1500 or float(d['pm10']) > 1500:
