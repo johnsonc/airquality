@@ -8,6 +8,7 @@ var mapwidth = Math.round(Width*0.3);
 mapheight = 600,
 centered = true;
 zoomRender = false;
+var selDevice = "";
     
     var varWidth = Math.round(Width*0.5);
     var varHeight = Math.round(Width*0.3);    
@@ -75,6 +76,7 @@ hyp2 = Math.pow(radius, 2),
 nodeBaseRad = 5;
 
 var aqiradius = 70;
+
 var AQIDisp = d3.select('#aqi-display')
     .append('svg')
     .attr('width', w)
@@ -127,12 +129,12 @@ var aqiIndicators = [
      "color":"#C00000",
      "uplimit":500,
      "description":"Affects healthy people and seriously impacts those with existing diseases"}
-]
+];
 
 
     function streamStart(){
     if (timerId) return;
-    timerId = setInterval( streamUpdate, 30000);
+     // ajay DISABLED a delta URL was invalid in aqfeed timerId = setInterval( streamUpdate, 30000);
 	// lazy loading... do not stream immediately, only start timer.
 	// so no click surging
 	console.log('Streaming enabled');
@@ -179,7 +181,7 @@ function streamUpdate()
 	now = new Date();
 	queue()
 	    //.defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/"+lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
-	.defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/" + $('#devicePicker').val() + "/" +lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
+	.defer(d3.json, "http://aqi.indiaspend.org/aq/api/aqfeed/" + selDevice + "/" +lastStreamTimeStamp.toISOString().substr(0,19) + "/"+ now.toISOString().substr(0,19)+ "?format=json")
 	.await(dataUpdate);        
     }
         
@@ -202,7 +204,7 @@ function streamUpdate()
     }, 10000);    
 
 
-    var getpm10AQI = function(d){    
+    function getpm10AQI(d){    
 	scale = [
 	    d3.scale.linear().domain([0, 50]).range([0,50]),
 	    d3.scale.linear().domain([51, 100]).range([51,100]),
@@ -221,7 +223,7 @@ function streamUpdate()
     }
     
     
-    var getpm25AQI = function(d){    
+    function getpm25AQI(d){    
 	scale = [
 	    d3.scale.linear().domain([0, 30]).range([0,50]),
 	    d3.scale.linear().domain([31, 60]).range([51,100]),
@@ -240,8 +242,13 @@ function streamUpdate()
     }
 
     function getAQI(t){
-	pm25aqi = getpm25AQI(t.pm25);
-	pm10aqi = getpm10AQI(t.pm10);
+	//ajay
+	pm25aqi = getpm25AQI(t['pm25']);
+	pm10aqi = getpm10AQI(t['pm10']);
+	//console.log ("calculated=" + pm25aqi +" " + pm10aqi);
+	if ('aqi25' in t && t['aqi25'] != null) {
+		//console.log ("device=" + t['aqi25'] +" " + t['aqi10']);
+	}
 	if (pm10aqi >= pm25aqi) { return {'aqi': pm10aqi, 'pollutant':'pm10'  }; } 
 	else { return {'aqi': pm25aqi, 'pollutant':'pm25' };} 
     }
@@ -468,7 +475,10 @@ function computeAverages(){
 
 
 function getAQIDesc(v){
+	console.log ("Value is " + v + "AI " + aqiIndicators);
+	console.log ("AI [0]" + aqiIndicators[0]);
     for (var i in aqiIndicators){
+	console.log (" uplimit is " + aqiIndicators[i].uplimit);
 	if (v < aqiIndicators[i].uplimit+1){
 	    return aqiIndicators[i];
 	}		    
@@ -875,7 +885,6 @@ function setCharts(){
 			else if(a < 401){ return c[4];}			    
 			else if(a > 400){ return c[5];}			    
 		    });
-		
 		// air bubbles
 		/*
 		function randomNodes(n, cs, cl) {
@@ -1009,7 +1018,6 @@ function setCharts(){
 		//jQuery(".aqiremark").fitText(1.4, { minFontSize: '40px', maxFontSize: '50px' });
 		jQuery(".aqiremark").bigtext();
 		//1.4, { minFontSize: '40px', maxFontSize: '50px' });
-		  
 		/*
 		aqiText2 = aqiDisplay.selectAll("text.value")
 		    .data([data])
@@ -1044,11 +1052,11 @@ function setCharts(){
 
     
     function updateAQIChart(data){		
+	//alert ("In updateAQIChart " + data);
 	if(data == null){
 	    var data = _.max(aqiAvgGroupByDay.all(), function (d) { return d.key });
 	    data['desc'] = getAQIDesc(data.value.average);	    
 	}
-		
 	var aqiCircle = aqiDisplay.selectAll("circle")
 	    .data([data]);	    
 	
@@ -1088,7 +1096,6 @@ function setCharts(){
 	//d3.select('.aqinumber')
 	//  .select('.aqinumber').text ('23.66').attr('font-size','3.0em');
 
- 	
 	aqiText		       
 	    .attr("x", radius)
 	    .attr("y", radius+10)
@@ -1120,7 +1127,6 @@ function setCharts(){
 		else if(a > 400){ return c[5];}			    		
 
 	    });	
-		  
 	//jQuery(".aqiremark").fitText(1.4, { minFontSize: '40px', maxFontSize: '50px' });
 
 	/*

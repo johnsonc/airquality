@@ -1,5 +1,8 @@
 // Leaflet
 
+var markers = null;
+var devSel = '866762021276207';
+
 var Map = function() { 
     var OpenWeatherMap_Clouds = L.tileLayer('http://{s}.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png', {
 	maxZoom: 19,
@@ -36,14 +39,14 @@ var Map = function() {
 
     var OpenTopoMap = L.tileLayer('http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
 	minZoom: 1,
-	maxZoom: 8,
+	maxZoom: 1,
 	attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
     });
 
 
     var OpenStreetMap_Mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-	minZoom:9,
-	maxZoom: 19,
+	minZoom:2,
+	maxZoom: 18,
 	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
@@ -105,8 +108,8 @@ var Map = function() {
     });
 
     var baseMaps = {
-	"Default": OpenTopoMap,
-	"Political": OpenStreetMap_Mapnik,
+	"Default": OpenStreetMap_Mapnik,
+	"Topo": OpenTopoMap,
 	"Satellite": OpenStreetMap_Mapquest,
 	"Night": NASAGIBS_ViirsEarthAtNight2012,
     };
@@ -124,15 +127,15 @@ var Map = function() {
 	"OverlayLabels": Stamen_TonerLabels,    
     };   
     
-
     var getLayers =  function(){ 
 	dd = new Date();	    
 	if ( dd.getHours() < 18 )
 	{ 
-	    return [OpenStreetMap_Mapnik, OpenTopoMap, Stamen_TonerLabels, OpenMapSurfer_AdminBounds];
+	    return [OpenStreetMap_Mapnik, OpenTopoMap, Stamen_TonerLabels];
 	}
 	else {
-	    return [OpenStreetMap_Mapnik, NASAGIBS_ViirsEarthAtNight2012, Stamen_TonerLabels];
+	    return [OpenStreetMap_Mapnik, OpenTopoMap, Stamen_TonerLabels];
+	    //return [OpenStreetMap_Mapnik, NASAGIBS_ViirsEarthAtNight2012, Stamen_TonerLabels];
 	}
     };
 
@@ -140,17 +143,24 @@ var Map = function() {
 	center: ["21.15","79.09"],  //[20,72],
 	zoom: 4,
 	layers: getLayers(), 
-	touchZoom:false,
+ 	maxZoom: 17,
+	//touchZoom:false,
 	//tap:false,
     });
 
+    thismap.on('click', function(d){
+                        console.log ("Zooom is " + this.getZoom());
+                      }); 
     L.control.layers(baseMaps, overlayMaps).addTo(thismap);
 
 
+    markers = new L.MarkerClusterGroup({spiderfyDistanceMultiplier:2});
+    thismap.addLayer (markers);
+
     function markDevice(d){
-	marker = L.marker([d.lat,d.lon],{
-	    'imei':d.imei
-	}).addTo(thismap);
+	//marker = L.marker([d.lat,d.lon],{
+	//    'imei':d.imei
+	//}).addTo(thismap);
 	
 	/*
 	marker.on('mouseover', function(e) {
@@ -164,6 +174,7 @@ var Map = function() {
 
 		});*/
 
+/*
 	popupText = "<b>" + d.title + "</b><hr/>"+ d.desc + "<hr/>" + d.city + ","+d.state;
 	marker.bindPopup(popupText, { offset: new L.Point(0, -27) });
 	
@@ -181,6 +192,7 @@ var Map = function() {
 	    //imei.filter(this.options.imei);
 	    //console.log(this.options.imei);
 	});				   
+*/
     }
 
     /*
@@ -209,7 +221,7 @@ var Map = function() {
 
     function markDevices(devices){
 	_.each(devices, function(device){ 
-	    this.markDevice(device)
+	    //this.markDevice(device)
 	});
     }
 
@@ -257,9 +269,52 @@ var Map = function() {
  
 	 */
     }
-            
-    var requiredFields = ['mapCenterLat', 'mapCenterLng', 'mapZoom', 'mapStateZoom', 'mapCityZoom', 'mapDeviceZoom'];
-    var loaded = false;    
+
+    function showLatest(latestdata) {
+	//alert ("In showLatest " + latestdata);
+        //var markers = new L.MarkerClusterGroup({zoomToBoundsOnClick: true,maxClusterRadius:100, disableClusteringAtZoom:20});
+	if (markers != null) {
+		markers.clearLayers();
+	}
+	
+	var added = 0;
+        for ( var i = 0; i < latestdata.length; ++i ) {
+              if (latestdata[i].lat != null && latestdata[i].lon != null && !isNaN(latestdata[i].lat)
+                             && !isNaN(latestdata[i].lon) && latestdata[i].lat != '' && latestdata[i].lon != '') {
+		      var imei = latestdata[i].imei;
+                      var marker = L.marker([latestdata[i].lat, latestdata[i].lon],{'thisimei': imei});//.addTo(thismap);
+		      var dt = new Date(latestdata[i].created_on).toString().slice(0,24);
+		      marker.on('click', function(d){ 
+			//alert ("marker clicked " + this.options.thisimei);
+			aqiVizObj.deviceSet(this.options.thisimei);
+			devSel = this.options.thisimei;
+		      });
+		      ++added;
+		      if (i == 0) {
+			//aqiVizObj.deviceSet(imei);
+		      }
+                      marker.bindPopup( "<table border=1>" +
+					"<tr><td><b>Dev:</b></td><td>" + latestdata[i].imei + "</td></tr>" +
+                                        "<tr><td><b>pm25cnt:</b></td><td>"+latestdata[i].pm25count + "</td></tr>" +
+                                        "<tr><td><b>pm10cnt:</b></td><td>"+latestdata[i].pm10count + "</td></tr>" +
+                                        "<tr><td><b>aqi25:</b></td><td>"+latestdata[i].aqi25 + "</td></tr>" +
+                                        "<tr><td><b>aqi10:</b></td><td>"+latestdata[i].aqi10 + "</td></tr>" +
+                                        "<tr><td><b>aqi:</b></td><td>"+latestdata[i].aqi + "</td></tr>" +
+                                        "<tr><td><b>Time:</b></td><td>" + dt + "</td></tr></table>" +
+                                        //"<button onClick=showDetails('"+ JSON.stringify(latestdata[i]) + "')>Details</button>" +
+					"</br>&nbsp;"
+                                 );
+		      markers.addLayer(marker);
+              } else {
+		      console.log ("Not added " + latestdata[i].imei);
+	      }
+        }
+	console.log("Added = " + added);
+	//aqiVizObj.deviceSet('866762021286776');
+	aqiVizObj.deviceSet(devSel);
+    }
+
+
     this.markDevice = markDevice;
     this.markDevices = markDevices;
     this.configure = configure;
@@ -268,6 +323,15 @@ var Map = function() {
     this.showDevice = showDevice;
     this.showCity = showCity;
     this.showState = showState;    
+    this.showLatest = showLatest;    
+    this.showDetails = showDetails;    
 };
 
+
+function showDetails(devJson) {
+          dev = JSON.parse(devJson);
+          //alert (dev.imei);
+	  aqiVizObj.deviceSet(dev.imei);
+          //document.getElementById("details").innerHTML = "<b>pm25cnt:</b>"+dev.pm25count ;
+}
 var map = new Map();

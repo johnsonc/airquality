@@ -16,12 +16,26 @@ var Loader = function() {
       }
     
 
-  function loadDevices() {
-    $.getJSON(urlprefix + "/aq/api/devices/locations/?format=json", function(data) {
+  function loadLatestData () {
+    $.getJSON(urlprefix + "/aq/api/devices/?format=json", function(data) {
 	if ( !data ) return null;
-	self.data = data;
-	self.emit('devicesLoaded');
+	self.latestdata = data;
+	self.emit('latestLoaded');
     });
+  }
+  function loadDevices() {
+//    $.getJSON(urlprefix + "/aq/api/devices/locations/?format=json", function(data) {
+//
+//	if ( !data ) return null;
+//	self.data = data;
+//	self.emit('devicesLoaded');
+ //
+//   });
+  }
+
+  function latestLoaded () {
+	map.showLatest(self.latestdata);
+	setTimeout (loadLatestData, 60000);
   }
 
   function devicesLoaded() {
@@ -36,7 +50,7 @@ var Loader = function() {
 	if (enddate  == null){	    
 	    var dateFormat = d3.time.format('%d/%m/%Y');
 	    enddate = dateFormat(new Date());
-	    $date.datepicker('setDate', enddate);
+	    //$date.datepicker('setDate', enddate);
 	     // resp =  $.getJSON(
 	    //	"/aq/api/aqfeed/" + imei 	      
 	   // );
@@ -61,7 +75,9 @@ var Loader = function() {
   
   function run() {
     self.on('devicesLoaded', devicesLoaded)
-    loadDevices();
+    self.on('latestLoaded', latestLoaded)
+    //loadDevices();
+    loadLatestData();
   }
 
   function getDevice(id) {
@@ -304,10 +320,11 @@ var ui = function(configObj){
     }
 
     function deviceSet(id) {
+	selDevice = id;
 	beforeDeviceSet();
 	//var hours = 23;
 	//var startdate = $date.find("input").val();
-	var enddate = $date.find("input").val();
+	var enddate = null;//$date.find("input").val();
 	if ( "0" != id ) {
 	    AQIVis.getDeviceMetrics(id, null, enddate)	    
 		.done(updateVis) 
@@ -318,13 +335,14 @@ var ui = function(configObj){
 	    AQIVis.getCityMetrics($cities.find(":selected").val(), null,null) 
 		.done(updateVis)
 		.fail(onJSONFail)
-		.always(afterDeviceSet);
+	//	.always(afterDeviceSet);
 		*/
 	}
 	
     }
     
     function updateVis(datapoints){
+	//alert ("me in updateVis " + datapoints);
 	//debugger;
 	processdata(datapoints, append=false);
 	setCharts();
@@ -477,6 +495,7 @@ var ui = function(configObj){
     this.updateVis = updateVis;
     this.afterDeviceSet = afterDeviceSet;
     this.deviceClicked = deviceClicked;    
+    this.deviceSet = deviceSet;    
     /* For context issues */
     var self = this;
 };
@@ -484,7 +503,7 @@ var ui = function(configObj){
 //$(function() {
     //$(".loader-inner").removeClass("ball-grid-pulse");
     //$("pulsar").removeClass("vjs-loading-spinner");
-    var AQIVis = new Loader();
+    var AQIVis = new Loader(map);
     var aqiVizObj = new ui(AQIVis);
 
 $.getJSON(urlprefix + "/aq/api/config", function(config) {
